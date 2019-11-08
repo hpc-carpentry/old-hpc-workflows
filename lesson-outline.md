@@ -1,78 +1,53 @@
-# Lesson outline and todo list
+# Lesson Outline
 
-This is the tentative list of tasks and topics for each lesson.
-Lesson writers are indicated with first/last initials (e.g. AR).
-Feel free to edit the topics for your section.
+## Section 1: Introduction
 
-## 1. UNIX fundamentals - AR
+1. Introduction to the example workflow
+    1. layout of example package
+    2. book files
+    3. running the wordcount script manually
+    4. running plotcount
+    5. testing for zipf's law
+    6. bash version of a workflow and discussion of limitations (FIXME: remove hands-on sections and just discuss to save time?)
 
-* SSH to a cluster
-* Bash fundamentals (`cd`, `ls`, ..., aliases, functions, ~/.bashrc)
-* Transferring files (`scp`? `sftp`? Maybe only one?)
-* Overview of HPC resources
+## Section 2: Introduction
 
-	* What is a cloud?
-	* What is a cluster? Different cluster types
-	* Overview of services available (Compute Canada, Amazon EC2, etc.)
+2. Introduction to Snakemake
+3. Snakefiles
+    1. count words
+    2. running snakemake
+    3. clean rule
+    4. default rule is first
+4. Wildcards
+   1. Keep it DRY
+   2. highlight duplication in current Snakefile
+   3. introduce wildcards
+   4. cleaning up dependencies
+5. Pattern rules
+   1. identify remaining duplication in word count rules: they have a common pattern
+   2. wildcards
+   3. replace all count words rules with a single pattern rule
+6. Snakefiles are Python code
+   1. importing and calling python functions
+   2. simplify dynamic handling of input files
+7. Adding remaining stages to pipeline
+   1. Creating png plots
+   2. Creating an archive. FIXME: will this work on Windows?
+   3. Adding more books
+8. Resources and parallelism
 
-## 2. Submitting / running jobs - JS
+## Section 3: Nextflow
 
-* Scheduler - lesson will cover SLURM (which can also run PBS scripts/commands natively)
-
-	* Submitting jobs
-	* Checking status of jobs
-	* Deleting jobs
-	* Job size consequences
-	* GUI vs. batch programs (X-forwarding, SSH tunnels?)
-
-* Using software and environment modules
-* Playing friendly in the cluster
-
-	* Understanding resource utilization
-	* Profiling code - time, size, etc.
-	* Getting system stats
-	* Consequences of going over
-
-## 3. Language refresher / introduction (Python - JB, Chapel - JZ+AR)
-
-* Programming language concepts
-
-	* Compiled vs. interpreted languages
-	* How does a program work?
-	* Quick intro of programming language of choice
-
-		* Major features + pros/cons
-		* What is it good at? 
-
-* Actual language overview
-
-	* Basic syntax (arithmetic, variables, etc.)
-	* Basic data structures (lists, arrays, etc.)
-	* Defining functions
-	* Conditional expressions
-	* For-loops
-	* Reading/writing data
-
-Some side notes: 
-perhaps a quick refresh of key concepts right before use in parallel section,
-certain concepts could get mixed in right before they're needed by the parallel lesson.
-
-## 4. Intro to parallel programming (Python - JB, Chapel - JZ+AR)
-
-* Pipelining / automatic job submission / serial farming
-* Shared memory programming
-* Distributed memory programming
-* Overview of good parallel design
-
-	* Dependencies within own code
-	* Race conditions
-
-* Typical problems and bottlenecks
-
-	* running in parallel (parallel scaling)
-	* parallel I/O (don't write a 1GB file from one processor if data is already distributed, etc.)
-	* Storage limitations (millions of files, compression, text vs. binary storage)
-	* Filesystem choice (home, scratch, tmp, etc.)
-
-
-Good luck!
+1. Introduction to Nextflow
+    1. concepts: channels and processes
+2. Starting on the workflow
+    1. A simple main.nf to count words in a file
+    2. running nextflow
+    3. building a channel from a directory to get list of all books
+3. Adding Zipf analysis
+   1. channels as communication between processes
+4. Adding plots
+   1. need a new channel, as the dats channel used in previous episode cannot be reused by another process
+5. Adding the archive
+   1. Highlight challenge in nextflow of specifying a process that always runs last after everything else is complete.
+   2. The onComplete event

@@ -2,37 +2,37 @@
 layout: lesson
 root: .
 ---
-Python is probably the most versatile language in existence. However one of its most useful features is its ability to tie things together and automate the execution of other programs.
 
-This tutorial focuses on using Python in high-performance computing environments to automate data analysis pipelines with 
-[Snakemake](http://snakemake.readthedocs.io/en/stable/)
-(for a detailed discussion for why we are teaching Snakemake, see this lesson's 
-<a href="{{ page.root }}/discuss/">discussion page</a>). 
-We’ll start with the basics and cover everything you need to get started. 
-Some elements of writing performance-oriented code will be covered, 
-but it is not the main focus. 
-There is no prerequisite knowlege for this tutorial, 
-although having some prior experience with the command-line or a compute cluster will be very helpful.
+This lesson focuses on techniques to automate data analysis pipelines with two modern workflow engines:
+ [Snakemake](https://snakemake.readthedocs.io/en/stable/) and
+ [Nextflow](https://www.nextflow.io/).
 
-At the end of this lesson, you will know how to:
+After completing this lesson you should have a good understanding of the role
+of workflow engines and the value they can bring to complex data processing.
+Additionally, by implementing the same workflow in two different systems, you
+will start to understand some of the strengths and limitations of each.
+Hopefully this will help you choose the best approach for your own work.
 
-* Write and run basic Python programs.
+There are 2 primary components to this lesson. Each component is budgeted
+half a day's worth of teaching-time, resulting in a one day workshop.
 
-* Create a reproducible analysis pipeline in Python. 
+At the end of this lesson, you will:
 
-* Run your pipeline on your computer or on a high-performance computing cluster and have it scale appropriately.
+* Understand the benefits of workflow engines.
+* Be able to create reproducible analysis pipelines in Snakemake and Nextflow.
+* Be aware of some of the relative strengths and weakness of Snakemake and Nextflow.
 
-**NOTE: This is the draft HPC Carpentry release. Comments and feedback are welcome.** 
+## Pre-requisites
 
+FIXME: add links to relevant Data School lessons.
+
+* Some basic Python programming experience, ideally in Python 3.
+* Familiarity with running programs on a command line.
+
+FIXME: adjust setup instructions to link to main setup page instead.
 > ## Setup
 >
-> You will want to have Python 3 and your favorite Python editor preinstalled and ready to go. 
-> If you don’t know where to get things or what to install, 
-> just install Anaconda (the Python 3 version) from [https://www.continuum.io/downloads](https://www.continuum.io/downloads). 
-> Anaconda is an extremely comprehensive Python distribution that comes with all of the bells and whistles ready to go.
-> 
-> To install snakemake, please run the following in a command-line terminal:
-> `pip install --user snakemake`
+> Please follow the instructions in the [Setup page](FIXME).
 >
 > The files used in this lesson can be downloaded [here](files/snakemake-lesson.zip).
 {: .prereq}
