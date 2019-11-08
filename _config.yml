@@ -6,12 +6,12 @@
 carpentry: "swc"
 
 # Overall title for pages.
-title: "Analysis pipelines with Python"
+title: "Workflow Engines - snakemake and nextflow"
 
 # Contact.  This *must* include the protocol: if it's an email
 # address, it must look like "mailto:lessons@software-carpentry.org",
 # or if it's a URL, "https://gitter.im/username/ProjectName".
-contact: "mailto:lessons@software-carpentry.org"
+contact: "mailto:daniel.collins@csiro.au"
 
 #------------------------------------------------------------
 # Generic settings (should not need to change).

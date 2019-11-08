@@ -5,13 +5,13 @@ permalink: /setup/
 ---
 
 There are several pieces of software you will wish to install before the workshop.
-Though installation help will be provided at the workshop, 
+Though installation help will be provided at the workshop,
 we recommend that these tools are installed (or at least downloaded) beforehand.
 Anaconda Python is a very large download.
 
 ## Python 3
 
-Please install Anaconda from [https://www.continuum.io/downloads](https://www.continuum.io/downloads) 
+Please install Anaconda from [https://www.continuum.io/downloads](https://www.continuum.io/downloads)
 (however any version of Python 3 will work).
 Anaconda is a free version of Python that comes bundled with all of its most useful tools.
 Even better, it includes several significant performance improvements over "vanilla" Python.
@@ -32,7 +32,7 @@ You will want to get the Home edition (Installer edition).
 
 **macOS**
 
-Although macOS comes with SSH pre-installed, 
+Although macOS comes with SSH pre-installed,
 you will typically want to install [XQuartz](www.xquartz.org) to enable graphical support.
 Note that you must restart your computer to complete the installation.
 
