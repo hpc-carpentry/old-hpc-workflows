@@ -13,6 +13,9 @@ title: "Workflow Engines - snakemake and nextflow"
 # or if it's a URL, "https://gitter.im/username/ProjectName".
 contact: "mailto:daniel.collins@csiro.au"
 
+# Lesson issues
+issues: "https://github.com/csiro-data-school/workflows/issues"
+
 #------------------------------------------------------------
 # Generic settings (should not need to change).
 #------------------------------------------------------------
