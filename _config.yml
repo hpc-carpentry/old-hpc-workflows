@@ -79,3 +79,5 @@ exclude:
 # Force syntax highlighting.
 highlighter: rouge
 
+
+theme: jekyll-theme-minimal
