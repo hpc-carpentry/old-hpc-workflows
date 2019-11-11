@@ -1,5 +1,4 @@
-A Note on the Texts' Licensing
-==============================
+# A Note on the Texts' Licensing
 
 Each text is from [Project Gutenberg](http://www.gutenberg.org/).
 
@@ -14,7 +13,7 @@ The texts and originating URLs are:
 * [My First Summer in the Sierra by John Muir](http://www.gutenberg.org/cache/epub/32540/pg32540.txt)
 * [Scott's Last Expedition Volume I by Robert Falcon Scott](http://www.gutenberg.org/ebooks/11579)
 
-*** START: FULL LICENSE ***
+## START: FULL LICENSE
 
 THE FULL PROJECT GUTENBERG LICENSE
 PLEASE READ THIS BEFORE YOU DISTRIBUTE OR USE THIS WORK
