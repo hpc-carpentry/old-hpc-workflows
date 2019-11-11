@@ -6,3 +6,7 @@
 __pycache__
 _site
 .jekyll-cache/
+
+# Artifacts from running the lesson sample code in-place
+code/snakemake/.snakemake/
+code/snakemake/results/
