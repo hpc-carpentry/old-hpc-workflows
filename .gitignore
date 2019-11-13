@@ -10,4 +10,8 @@ _site
 # Artifacts from running the lesson sample code in-place
 code/snakemake/.snakemake/
 code/snakemake/results/
+code/nextflow/.nextflow/
+code/nextflow/.nextflow.log*
+code/nextflow/results/
+code/nextflow/work/
 code/Pipfile.lock
