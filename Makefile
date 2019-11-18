@@ -36,6 +36,13 @@ clean :
 	@find . -name .DS_Store -exec rm {} \;
 	@find . -name '*~' -exec rm {} \;
 	@find . -name '*.pyc' -exec rm {} \;
+	@rm -rf code/snakemake/.snakemake/
+	@rm -rf code/snakemake/results/
+	@rm -rf code/nextflow/.nextflow/
+	@rm -f code/nextflow/.nextflow.log*
+	@rm -rf code/nextflow/results/
+	@rm -rf code/nextflow/work/
+	@rm -f code/Pipfile.lock
 
 ## clean-rmd        : clean intermediate R files (that need to be committed to the repo).
 clear-rmd :

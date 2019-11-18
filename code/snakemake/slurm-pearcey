@@ -1,0 +1,8 @@
+#!/bin/bash
+module load python/3.6.1
+snakemake \
+--jobs 100 \
+--local-cores 1 \
+--latency-wait 60 \
+--cluster-config cluster.json \
+--cluster "sbatch --mem={cluster.mem} --time {cluster.time} --cpus-per-task {threads}"
