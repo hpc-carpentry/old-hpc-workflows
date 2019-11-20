@@ -23,7 +23,7 @@ rule all:
 rule clean:
     shell:
         '''
-        rm -rf {OUTPUT_DIR}
+        rm -rf results/
         rm -rf __pycache__
         rm -rf *.out
         '''
