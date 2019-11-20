@@ -8,6 +8,7 @@ jinja2 = "*"
 networkx = "*"
 pygraphviz = "*"
 pygments = "*"
+pylama = "*"
 
 [packages]
 snakemake = "*"
