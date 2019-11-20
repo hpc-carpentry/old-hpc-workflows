@@ -6,6 +6,11 @@
 __pycache__
 _site
 .jekyll-cache/
+Pipfile
+Pipfile.lock
+.Rproj.user
+.Rhistory
+.RData
 
 # Artifacts from running the lesson sample code in-place
 code/snakemake/.snakemake/

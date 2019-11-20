@@ -1,7 +1,5 @@
 ---
-layout: page
 title: Setup
-permalink: /setup/
 ---
 
 There are several pieces of software you will wish to install before the workshop.
@@ -45,3 +43,5 @@ Note that you must restart your computer to complete the installation.
 ### Linux
 
 Linux users do not need to install anything, you should be set!
+
+{% include links.md %}
