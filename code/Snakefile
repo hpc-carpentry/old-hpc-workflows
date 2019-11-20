@@ -4,39 +4,20 @@
 # Snakefile.
 
 
-# Directories
-OUTPUT_DIR = 'results/'               # output directory
-DATS_DIR = f'{OUTPUT_DIR}dats/'       # dat directory
-BOOKS_DIR = '../books/'               # input book directory
-PLOTS_DIR = f'{OUTPUT_DIR}plots/'     # plot directory
-RESULTS_DIR = f'{OUTPUT_DIR}results/' # results summary directory
-EXE_DIR = '../'                       # path to executable scripts
-ARCHIVE_NAME = 'zipf_analysis.tgz'    # archive file name
-
-
-# File Lists
-
 # the list of book names used to build the other file patterns
-BOOK_NAMES = glob_wildcards('../books/{book}.txt').book
-# The list of *.dat files, with relative paths built in
-DATS = expand('{dats_dir}{book}.dat', book=BOOK_NAMES, dats_dir=DATS_DIR)
-# The list of *.png files, with relative paths built in
-PLOTS = expand('{plots_dir}{book}.png', book=BOOK_NAMES, plots_dir=PLOTS_DIR)
-# Relative path to the archive file
-ARCHIVE = f'{OUTPUT_DIR}{ARCHIVE_NAME}'
-# Relative path to the Zipf results summary
-ZIPF_RESULTS = f'{RESULTS_DIR}results.txt'
+BOOK_NAMES = glob_wildcards('books/{book}.txt').book
 
 
 # Define the rules that always run locally:
 localrules: all, clean, create_archive
+
 
 # pseudo-rule that tries to build everything.
 # Just add all the final outputs that you want built.
 # In this case, the archive file depends on everything else,
 # so just the archive is sufficient here.
 rule all:
-    input:  ARCHIVE
+    input: 'results/zipf_analysis.tgz'
 
 # delete everything so we can re-run things
 rule clean:
@@ -50,34 +31,37 @@ rule clean:
 # count words in one of our "books"
 rule count_words:
     input:
-        cmd=EXE_DIR + 'wordcount.py',
-        book=BOOKS_DIR + '{file}.txt'
-    output: DATS_DIR + '{file}.dat'
-    shell: 	'{input.cmd} {input.book} {output}'
+        cmd='wordcount.py',
+        book='books/{file}.txt'
+    output: 'results/dats/{file}.dat'
+    shell: 	'python {input.cmd} {input.book} {output}'
 
 # plot one word count dat file
 rule make_plots:
     input:
-        cmd=EXE_DIR + 'plotcount.py',
-        dat=DATS_DIR + '{file}.dat'
-    output: PLOTS_DIR + '{file}.png'
+        cmd='plotcount.py',
+        dat='results/dats/{file}.dat'
+    output: 'results/plots/{file}.png'
     resources: gpu=1
-    shell: '{input.cmd} {input.dat} {output}'
+    shell: 'python {input.cmd} {input.dat} {output}'
 
 # generate summary table
 rule zipf_test:
     input:
-        cmd=EXE_DIR + 'zipf_test.py',
-        books=DATS
-    output: ZIPF_RESULTS
-    shell:  '{input.cmd} {input.books} > {output}'
+        cmd='zipf_test.py',
+        books=expand('results/dats/{book}.dat', book=BOOK_NAMES)
+    output: 'results/results.txt'
+    shell:  'python {input.cmd} {input.books} > {output}'
 
 # create an archive with all results
 rule create_archive:
-    input: DATS, ZIPF_RESULTS, PLOTS
-    output: ARCHIVE
+    input:
+        expand('results/dats/{book}.dat', book=BOOK_NAMES),  # All dat files
+        expand('results/plots/{book}.png', book=BOOK_NAMES), # All png files
+        'results/results.txt'
+    output: 'results/zipf_analysis.tgz'
     shell:
         '''
         cd results
-        tar czvf {ARCHIVE_NAME} *
+        tar czvf zipf_analysis.tgz *
         '''
