@@ -16,16 +16,20 @@ def plot_word_counts(counts, limit=10):
     Given a list of (word, count, percentage) tuples, plot the counts as a
     histogram. Only the first limit tuples are plotted.
     """
-    plt.title("Word Counts")
+    # Calculate plot values
     limited_counts = counts[0:limit]
     word_data = [word for (word, _, _) in limited_counts]
     count_data = [count for (_, count, _) in limited_counts]
     position = np.arange(len(word_data))
     width = 1.0
-    ax = plt.axes()
+
+    # Create the plot
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.set_title("Word Counts")
     ax.set_xticks(position + (width / 2))
     ax.set_xticklabels(word_data)
-    plt.bar(position, count_data, width, color="b")
+    ax.bar(position, count_data, width, color="b")
 
 
 def typeset_labels(labels=None, gap=5):
