@@ -11,6 +11,7 @@ Pipfile.lock
 .Rproj.user
 .Rhistory
 .RData
+.vscode/
 
 # Artifacts from running the lesson sample code in-place
 code/.snakemake/
