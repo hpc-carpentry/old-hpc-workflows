@@ -4,38 +4,40 @@ root: .  # Is the only page that doesn't follow the pattern /:path/index.html
 permalink: index.html  # Is the only page that doesn't follow the pattern /:path/index.html
 ---
 
-This lesson focuses on techniques to automate data analysis pipelines with two modern workflow engines:
- [Snakemake](https://snakemake.readthedocs.io/en/stable/) and
- [Nextflow](https://www.nextflow.io/).
+This lesson teaches the basics of modern workflow engines
+through [Snakemake](https://snakemake.readthedocs.io/en/stable/).
 
-After completing this lesson you should have a good understanding of the role
-of workflow engines and the value they can bring to complex data processing.
-Additionally, by implementing the same workflow in two different systems, you
-will start to understand some of the strengths and limitations of each.
-Hopefully this will help you choose the best approach for your own work.
-
-There are 2 primary components to this lesson. Each component is budgeted
-half a day's worth of teaching-time, resulting in a one day workshop.
+The example workflow performs a frequency analysis of several public domain
+books sourced from [Project Gutenberg](https://www.gutenberg.org/), testing
+how closely each book conforms to [Zipf's
+Law](https://en.wikipedia.org/wiki/Zipf%27s_law). All code and data are
+provided. This example has been chosen over a more complex scientific
+workflow as the goal is to appeal to a wide audience and to focus on building
+the workflow without distraction from the underlying processing.
 
 At the end of this lesson, you will:
 
 * Understand the benefits of workflow engines.
-* Be able to create reproducible analysis pipelines in Snakemake and Nextflow.
-* Be aware of some of the relative strengths and weakness of Snakemake and Nextflow.
+* Be able to create reproducible analysis pipelines with Snakemake.
 
 ## Pre-requisites
-
-FIXME: add links to relevant Data School lessons.
 
 * Some basic Python programming experience, ideally in Python 3.
 * Familiarity with running programs on a command line.
 
-FIXME: adjust setup instructions to link to main setup page instead.
+If you require a refresher or introductory course, then I suggest one or more of these Carpentry courses:
+
+* [CSIRO Data School Introduction to Python](https://csiro-data-school.github.io/python/)
+* [Programming with Python](http://swcarpentry.github.io/python-novice-inflammation/)
+* [The Unix Shell](https://swcarpentry.github.io/shell-novice/)
+
 > ## Setup
 >
-> Please follow the instructions in the [Setup page](FIXME).
+> Please follow the instructions in the [Setup page][lesson-setup].
 >
-> The files used in this lesson can be downloaded [here](files/snakemake-lesson.zip).
+> The files used in this lesson can be downloaded:
+>  * [for Linux/Mac](files/workflow-engines-lesson.tar.gz)
+>  * [for Windows](files/workflow-engines-lesson.zip)
 {: .prereq}
 
 {% include links.md %}

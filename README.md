@@ -1,22 +1,19 @@
-# Workflow Engines
+# Tame Your Workflow with Snakemake
+This lesson teaches the basics of modern workflow engines
+through [Snakemake](https://snakemake.readthedocs.io/en/stable/).
 
-This lesson is focused on teaching the basics of two modern workflow engines: [Snakemake](https://snakemake.readthedocs.io/en/stable/) and [Nextflow](https://www.nextflow.io/).
+The example workflow performs a frequency analysis of several public domain
+books sourced from [Project Gutenberg](https://www.gutenberg.org/), testing
+how closely each book conforms to [Zipf's
+Law](https://en.wikipedia.org/wiki/Zipf%27s_law). All code and data are
+provided. This example has been chosen over a more complex scientific
+workflow as the goal is to appeal to a wide audience and to focus on building
+the workflow without distraction from the underlying processing.
 
-After completing this lesson you should have a good understanding of the role
-of workflow engines and the value they can bring to complex data processing.
-Additionally, by implementing the same workflow in two different systems, you
-will start to understand some of the strengths and limitations of each.
-Hopefully this will help you choose the best approach for your work.
+At the end of this lesson, you will:
 
-There are 2 primary components to this lesson. Each component is budgeted
-half a day's worth of teaching-time, resulting in a one day workshop.
-
-1. Snakemake
-2. Nextflow
-
-In each section we will implement the same data processing pipeline. This gives the best opportunity to compare the two approaches.
-
-The example workflow performs a frequency analysis of several public domain books sourced from [Project Gutenberg](https://www.gutenberg.org/), testing how closely each book conforms to [Zipf's Law](https://en.wikipedia.org/wiki/Zipf%27s_law). All code and data are provided. This example has been chosen over a more complex scientific workflow as the goal is to appeal to a wide audience and to focus on building the workflow without distraction by the underlying science.
+* Understand the benefits of workflow engines.
+* Be able to create reproducible analysis pipelines with Snakemake.
 
 ## Topic breakdown
 

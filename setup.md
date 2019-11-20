@@ -7,41 +7,50 @@ Though installation help will be provided at the workshop,
 we recommend that these tools are installed (or at least downloaded) beforehand.
 Anaconda Python is a very large download.
 
-## Python 3 and Snakemake
+## Python 3
 
-Please install Anaconda from [https://www.continuum.io/downloads](https://www.continuum.io/downloads)
+Please install the Python 3 version of Anaconda from
+[https://www.continuum.io/downloads](https://www.continuum.io/downloads)
 (however any version of Python 3 will work).
-Anaconda is a free version of Python that comes bundled with all of its most useful tools.
-Even better, it includes several significant performance improvements over "vanilla" Python.
 
-You can install Snakemake with `pip install --user snakemake`
+Anaconda is a free version of Python that comes bundled with all of its most
+useful tools. Even better, it includes several significant performance
+improvements over "vanilla" Python.
 
-## Nextflow
+## Snakemake
 
-FIXME: Nextflow instructions
 
-FIXME: Do I need SSH clients? Resolve once I know how workshop will be delivered.
+### Anaconda
 
-## SSH Client
+Once Anaconda 3 is installed, you can install Snakemake at an Anaconda prompt:
+~~~
+conda create -c bioconda -c conda-forge -n snakemake snakemake-minimal
+~~~
+{: .language-bash}
 
-For the final part of this course (scaling our workflow across a cluster),
-all students should have an SSH client installed.
-SSH is a tool that allows us to connect to and use a remote computer as our own.
-Please follow the directions below to install an SSH client for your system.
+> ## Note
+> At the time of writing, the `snakemake` conda package was not installing correctly, however the `snakemake-minimal` was working.
+> This lesson does not require any features beyond those included with the minimal install.
+{: .callout}
 
-### Windows
+### Vanilla Python
 
-Install MobaXterm from [http://mobaxterm.mobatek.net](http://mobaxterm.mobatek.net).
-You will want to get the Home edition (Installer edition).
+You can install Snakemake with:
+~~~
+pip install --user snakemake
+~~~
+{: .language-bash}
 
-### macOS
+For more information, please refer to the [Snakemake installation documentation](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html).
 
-Although macOS comes with SSH pre-installed,
-you will typically want to install [XQuartz](www.xquartz.org) to enable graphical support.
-Note that you must restart your computer to complete the installation.
+## Lesson Data Files
 
-### Linux
+The files used in this lesson can be downloaded:
 
-Linux users do not need to install anything, you should be set!
+* [for Linux/Mac](files/workflow-engines-lesson.tar.gz)
+* [for Windows](files/workflow-engines-lesson.zip)
+
+Once downloaded, please extract to the directory you wish to work in for all
+the hands-on exercises.
 
 {% include links.md %}
