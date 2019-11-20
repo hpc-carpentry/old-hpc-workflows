@@ -7,13 +7,50 @@ Though installation help will be provided at the workshop,
 we recommend that these tools are installed (or at least downloaded) beforehand.
 Anaconda Python is a very large download.
 
-## Python 3 and Snakemake
+## Python 3
 
-Please install Anaconda from [https://www.continuum.io/downloads](https://www.continuum.io/downloads)
+Please install the Python 3 version of Anaconda from
+[https://www.continuum.io/downloads](https://www.continuum.io/downloads)
 (however any version of Python 3 will work).
-Anaconda is a free version of Python that comes bundled with all of its most useful tools.
-Even better, it includes several significant performance improvements over "vanilla" Python.
 
-You can install Snakemake with `pip install --user snakemake`
+Anaconda is a free version of Python that comes bundled with all of its most
+useful tools. Even better, it includes several significant performance
+improvements over "vanilla" Python.
+
+## Snakemake
+
+
+### Anaconda
+
+Once Anaconda 3 is installed, you can install Snakemake at an Anaconda prompt:
+~~~
+conda create -c bioconda -c conda-forge -n snakemake snakemake-minimal
+~~~
+{: .language-bash}
+
+> ## Note
+> At the time of writing, the `snakemake` conda package was not installing correctly, however the `snakemake-minimal` was working.
+> This lesson does not require any features beyond those included with the minimal install.
+{: .callout}
+
+### Vanilla Python
+
+You can install Snakemake with:
+~~~
+pip install --user snakemake
+~~~
+{: .language-bash}
+
+For more information, please refer to the [Snakemake installation documentation](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html).
+
+## Lesson Data Files
+
+The files used in this lesson can be downloaded:
+
+* [for Linux/Mac](files/workflow-engines-lesson.tar.gz)
+* [for Windows](files/workflow-engines-lesson.zip)
+
+Once downloaded, please extract to the directory you wish to work in for all
+the hands-on exercises.
 
 {% include links.md %}

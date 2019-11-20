@@ -30,9 +30,11 @@ FIXME: add links to relevant Data School lessons.
 FIXME: adjust setup instructions to link to main setup page instead.
 > ## Setup
 >
-> Please follow the instructions in the [Setup page](FIXME).
+> Please follow the instructions in the [Setup page][lesson-setup].
 >
-> The files used in this lesson can be downloaded [here](files/snakemake-lesson.zip).
+> The files used in this lesson can be downloaded:
+>  * [for Linux/Mac](files/workflow-engines-lesson.tar.gz)
+>  * [for Windows](files/workflow-engines-lesson.zip)
 {: .prereq}
 
 {% include links.md %}
