@@ -27,7 +27,6 @@ FIXME: add links to relevant Data School lessons.
 * Some basic Python programming experience, ideally in Python 3.
 * Familiarity with running programs on a command line.
 
-FIXME: adjust setup instructions to link to main setup page instead.
 > ## Setup
 >
 > Please follow the instructions in the [Setup page][lesson-setup].
