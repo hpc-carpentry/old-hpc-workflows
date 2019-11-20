@@ -22,10 +22,14 @@ At the end of this lesson, you will:
 
 ## Pre-requisites
 
-FIXME: add links to relevant Data School lessons.
-
 * Some basic Python programming experience, ideally in Python 3.
 * Familiarity with running programs on a command line.
+
+If you require a refresher or introductory course, then I suggest one or more of these Carpentry courses:
+
+* [CSIRO Data School Introduction to Python](https://csiro-data-school.github.io/python/)
+* [Programming with Python](http://swcarpentry.github.io/python-novice-inflammation/)
+* [The Unix Shell](https://swcarpentry.github.io/shell-novice/)
 
 > ## Setup
 >
