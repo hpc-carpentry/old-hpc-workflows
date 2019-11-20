@@ -1,5 +1,5 @@
 ---
-title: "Introduction to Snakemake"
+title: "Introduction"
 teaching: 15
 exercises: 15
 questions:
@@ -7,7 +7,7 @@ questions:
 objectives:
 - "Understand our example problem."
 keypoints:
-- "Bash scripts are not an efficient way of storing a workflow."
+- "Bash scripts are not an efficient way of defining a workflow."
 - "Snakemake is one method of managing a complex computational workflow."
 ---
 
@@ -112,7 +112,6 @@ it    ###########
 python plotcount.py isles.dat show
 ```
 
-
 Close the window to exit the plot.
 
 `plotcount.py` can also create the plot as an image file (e.g. a PNG file):
@@ -171,7 +170,6 @@ python plotcount.py abyss.dat abyss.png
 python zipf_test.py abyss.dat isles.dat > results.txt
 ```
 
-
 Run the script and check that the output is the same as before:
 
 ```bash
@@ -179,14 +177,13 @@ bash run_pipeline.sh
 cat results.txt
 ```
 
-
 This shell script solves several problems in computational reproducibility:
 
-1.  It explicitly documents our pipeline,
+1. It explicitly documents our pipeline,
     making communication with colleagues (and our future selves) more efficient.
-2.  It allows us to type a single command, `bash run_pipeline.sh`, to
+2. It allows us to type a single command, `bash run_pipeline.sh`, to
     reproduce the full analysis.
-3.  It prevents us from _repeating_ typos or mistakes.
+3. It prevents us from _repeating_ typos or mistakes.
     You might not get it right the first time, but once you fix something
     it'll stay fixed.
 
@@ -215,7 +212,6 @@ for book in abyss isles; do
 done
 ```
 
-
 With this approach, however,
 we don't get many of the benefits of having a shell script in the first place.
 
@@ -225,7 +221,7 @@ Another popular option is to comment out a subset of the lines in
 ```bash
 # USAGE: bash run_pipeline.sh
 # to produce plots for isles and abyss
-# and the summary table 
+# and the summary table
 
 # These lines are commented out because they don't need to be rerun.
 #python wordcount.py books/isles.txt isles.dat
@@ -250,25 +246,4 @@ allows software to do the tricky part for us:
 figuring out what tasks need to be run where and when,
 then perform those tasks for us.
 
-## What is Snakemake and why are we using it?
-
-There are many different tools that researchers use to automate this type of work.
-Snakemake is a very popular tool, and the one we have selected for this tutorial. 
-There are several reasons this tool was chosen:
-
-* It’s free, open-source, and installs in about 5 seconds flat via `pip`.
-
-* Snakemake works cross-platform (Windows, MacOS, Linux) and is compatible with all HPC schedulers. More importantly, the same workflow will work and scale appropriately regardless of whether it’s on a laptop or cluster without modification.
-
-* Snakemake uses pure Python syntax. There is no tool specific-language to learn like in GNU Make, NextFlow, WDL, etc.. Even if students end up not liking Snakemake, you’ve still taught them how to program in Python at the end of the day.
-
-* Anything that you can do in Python, you can do with Snakemake (since you can pretty much execute arbitrary Python code anywhere).
-
-* Snakemake was written to be as similar to GNU Make as possible. Users already familiar with Make will find Snakemake quite easy to use.
-
-* It’s easy. You can (hopefully!) learn Snakemake in an afternoon!
-
-The rest of these lessons aim to teach you how to use Snakemake by example. 
-Our goal is to automate our example workflow, and have it do everything for us in parallel
-regardless of where and how it is run (and have it be reproducible!).
-
+{% include links.md %}
