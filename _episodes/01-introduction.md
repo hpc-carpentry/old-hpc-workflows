@@ -11,10 +11,10 @@ keypoints:
 - "Snakemake is one method of managing a complex computational workflow."
 ---
 
-Let's imagine that we're interested in
-seeing the frequency of various words in various books.
+Let's imagine that we're interested in understanding the frequency of words
+in various books.
 
-We've compiled our raw data i.e. the books we want to analyze
+We've compiled our raw data (the books we want to analyze)
 and have prepared several Python scripts that together make up our
 analysis pipeline.
 
@@ -23,7 +23,7 @@ Let's take quick look at one of the books using the command `head books/isles.tx
 Our directory has the Python scripts and data files we
 we will be working with:
 
-```
+~~~
 |- books
 |  |- abyss.txt
 |  |- isles.txt
@@ -33,7 +33,7 @@ we will be working with:
 |- plotcount.py
 |- wordcount.py
 |- zipf_test.py
-```
+~~~
 {: .output}
 
 The first step is to count the frequency of each word in a book.
