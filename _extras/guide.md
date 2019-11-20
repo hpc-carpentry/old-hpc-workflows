@@ -3,6 +3,7 @@ layout: page
 title: "Instructor Notes"
 permalink: /guide/
 ---
+FIXME
 
 This lesson does not cover the specifics of using a Python IDE. 
 As the instructor, you should be familar with the editor you intend to teach, 
@@ -21,3 +22,5 @@ The only significant change is the `snakemake clean` rule:
 If students get lost, there is a hidden `.Snakemake` file in the lesson materials 
 (`snakemake-lesson.tar.gz`)
 that students can use as a reference or use for the final "cluster submission" section.
+
+{% include links.md %}

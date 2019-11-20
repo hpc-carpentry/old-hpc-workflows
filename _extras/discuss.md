@@ -3,6 +3,7 @@ layout: page
 title: Discussion
 permalink: /discuss/
 ---
+FIXME
 
 This lesson is heavily skewed towards teaching basic Python syntax and analysis pipelines using 
 [Snakemake](http://snakemake.readthedocs.io/en/stable/).
@@ -66,3 +67,5 @@ Why teach Snakemake instead of these other tools?
 * Snakemake was written to be as similar to GNU Make as possible. Users already familiar with Make will find Snakemake quite easy to use.
 
 * It's easy. You can teach Snakemake in an afternoon. 
+
+{% include links.md %}

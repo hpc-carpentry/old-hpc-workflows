@@ -1,9 +1,6 @@
 ---
 ---
 
-//syntax higlighlighting
-@import url(manni.css);
-
 //----------------------------------------
 // Colors.
 //----------------------------------------
@@ -34,7 +31,7 @@ $color-testimonial: #fc8dc1 !default;
 @mixin cdSetup($color) {
     color: $color;
     border-left: solid 5px $color;
-    margin: 15px;
+    margin: 15px 0;
     border-radius: 4px 0 0 4px;
 }
 
@@ -47,7 +44,7 @@ $color-testimonial: #fc8dc1 !default;
 .matlab, .language-matlab { @include cdSetup($color-source); }
 .python, .language-python { @include cdSetup($color-source); }
 .r, .language-r           { @include cdSetup($color-source); }
-.sql, .langauge-sql       { @include cdSetup($color-source); }
+.sql, .language-sql       { @include cdSetup($color-source); }
 
 .error pre,
 .output pre,
@@ -87,7 +84,7 @@ $codeblock-padding: 5px !default;
   border-radius: 4px;
   padding-bottom: $codeblock-padding;
 
-  margin: 15px;
+  margin: 15px 0;
 
   h2 {
     padding-top: $codeblock-padding;
@@ -153,9 +150,20 @@ article img {
     max-width: 100%;
 }
 
+article h2 {
+  margin: 48px 0 16px;
+  border-bottom: solid 1px #eaecef;
+  padding-bottom: 0.3em;
+  line-height: 1.25;
+}
+
+article h3 { margin: 40px 0 16px; }
+
 //----------------------------------------
 // Miscellaneous.
 //----------------------------------------
+
+.figures h2 { margin-top: 100px; }
 
 .maintitle {
   text-align: center;

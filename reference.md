@@ -6,3 +6,5 @@ permalink: /reference/
 ## Glossary
 
 FIXME
+
+{% include links.md %}

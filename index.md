@@ -1,6 +1,7 @@
 ---
 layout: lesson
-root: .
+root: .  # Is the only page that doesn't follow the pattern /:path/index.html
+permalink: index.html  # Is the only page that doesn't follow the pattern /:path/index.html
 ---
 
 This lesson focuses on techniques to automate data analysis pipelines with two modern workflow engines:
@@ -36,3 +37,5 @@ FIXME: adjust setup instructions to link to main setup page instead.
 >
 > The files used in this lesson can be downloaded [here](files/snakemake-lesson.zip).
 {: .prereq}
+
+{% include links.md %}

@@ -41,13 +41,6 @@ clean :
 	@find . -name .DS_Store -exec rm {} \;
 	@find . -name '*~' -exec rm {} \;
 	@find . -name '*.pyc' -exec rm {} \;
-	@rm -rf code/snakemake/.snakemake/
-	@rm -rf code/snakemake/results/
-	@rm -rf code/nextflow/.nextflow/
-	@rm -f code/nextflow/.nextflow.log*
-	@rm -rf code/nextflow/results/
-	@rm -rf code/nextflow/work/
-	@rm -f code/Pipfile.lock
 
 ## clean-rmd        : clean intermediate R files (that need to be committed to the repo).
 clean-rmd :
@@ -95,9 +88,8 @@ HTML_DST = \
 ## lesson-md        : convert Rmarkdown files to markdown
 lesson-md : ${RMD_DST}
 
-# Use of .NOTPARALLEL makes rule execute only once
-${RMD_DST} : ${RMD_SRC}
-	@bin/knit_lessons.sh ${RMD_SRC}
+_episodes/%.md: _episodes_rmd/%.Rmd
+	@bin/knit_lessons.sh $< $@
 
 ## lesson-check     : validate lesson Markdown.
 lesson-check : lesson-fixme

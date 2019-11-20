@@ -1,5 +1,4 @@
 ---
-layout: page
 title: Setup
 permalink: /setup/
 ---
@@ -45,3 +44,5 @@ Note that you must restart your computer to complete the installation.
 ### Linux
 
 Linux users do not need to install anything, you should be set!
+
+{% include links.md %}
