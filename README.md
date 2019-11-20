@@ -18,10 +18,10 @@ In each section we will implement the same data processing pipeline. This gives 
 
 The example workflow performs a frequency analysis of several public domain books sourced from [Project Gutenberg](https://www.gutenberg.org/), testing how closely each book conforms to [Zipf's Law](https://en.wikipedia.org/wiki/Zipf%27s_law). All code and data are provided. This example has been chosen over a more complex scientific workflow as the goal is to appeal to a wide audience and to focus on building the workflow without distraction by the underlying science.
 
-## Topic breakdown and todo list
+## Topic breakdown
 
 The lesson outline and rough breakdown of topics is in
-[lesson-outline.md](lesson-outline.md).
+[lesson-outline.md](_extras/lesson-outline.md).
 
 ## Lesson writing instructions
 
