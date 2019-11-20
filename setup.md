@@ -19,10 +19,10 @@ improvements over "vanilla" Python.
 
 ## Snakemake
 
-
 ### Anaconda
 
 Once Anaconda 3 is installed, you can install Snakemake at an Anaconda prompt:
+
 ~~~
 conda create -c bioconda -c conda-forge -n snakemake snakemake-minimal
 ~~~
@@ -36,6 +36,7 @@ conda create -c bioconda -c conda-forge -n snakemake snakemake-minimal
 ### Vanilla Python
 
 You can install Snakemake with:
+
 ~~~
 pip install --user snakemake
 ~~~
