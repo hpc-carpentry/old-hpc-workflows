@@ -21,4 +21,8 @@ If students get lost, there is a hidden `.Snakemake` file in the lesson material
 (`snakemake-lesson.tar.gz`)
 that students can use as a reference or use for the final "cluster submission" section.
 
+For the C3DIS2020 workshop, the cluster submission episode will be skipped
+due to the workshop only being delivered on student laptops. The material is
+included for self-study after the workshop concludes.
+
 {% include links.md %}
