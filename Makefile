@@ -119,3 +119,4 @@ lesson-fixme :
 #-------------------------------------------------------------------------------
 
 -include commands.mk
+-include commands-local.mk

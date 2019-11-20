@@ -20,3 +20,4 @@ code/nextflow/.nextflow.log*
 code/nextflow/results/
 code/nextflow/work/
 code/Pipfile.lock
+commands-local.mk
