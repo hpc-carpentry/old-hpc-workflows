@@ -17,6 +17,21 @@ Anaconda is a free version of Python that comes bundled with all of its most
 useful tools. Even better, it includes several significant performance
 improvements over "vanilla" Python.
 
+The example code also requires the `matplotlib` and `numpy` libraries. They
+are installed by default with Anaconda, but if you are using a different
+Python you may need to install them manually. Using `pip`, the command would be:
+
+~~~bash
+pip install --user numpy matplotlib
+~~~
+{: .language-bash}
+
+The example files download also contains a `requirements.txt` file that can
+be used to specify the required packages for a Python virtual environment.
+There are many guides to this process online, and the [official
+documentation](https://docs.python.org/3/tutorial/venv.html) can help as
+well.
+
 ## Snakemake
 
 ### Anaconda
