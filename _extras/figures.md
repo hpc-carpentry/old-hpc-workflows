@@ -1,7 +1,6 @@
 ---
 layout: page
 title: Figures
-permalink: /figures/
 ---
 
 {% include base_path.html %}

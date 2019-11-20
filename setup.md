@@ -1,6 +1,5 @@
 ---
 title: Setup
-permalink: /setup/
 ---
 
 There are several pieces of software you will wish to install before the workshop.
