@@ -8,15 +8,32 @@ objectives:
 - "Understand our example problem."
 keypoints:
 - "Bash scripts are not an efficient way of defining a workflow."
+- "Snakemake is one method of managing a complex computational workflow."
 ---
 
 Let's imagine that we're interested in understanding the frequency of words
-in various books.
+in various books, testing how closely each book conforms to [Zipf's
+Law](lesson-reference#zipfs-law)
 
 We've compiled our raw data (the books we want to analyze) and have prepared
 several Python scripts that together make up our analysis pipeline.
 
-Let's take quick look at one of the books using the command `head books/isles.txt`.
+Let's take quick look at one of the books using the command `head books/isles.txt`:
+
+~~~
+$ head books/isles.txt
+A JOURNEY TO THE WESTERN ISLANDS OF SCOTLAND
+
+
+INCH KEITH
+
+
+I had desired to visit the Hebrides, or Western Islands of Scotland, so
+long, that I scarcely remember how the wish was originally excited; and
+was in the Autumn of the year 1773 induced to undertake the journey, by
+finding in Mr. Boswell a companion, whose acuteness would help my
+~~~
+{: .output}
 
 Our directory has the Python scripts and data files we we will be working
 with:
@@ -33,6 +50,9 @@ with:
 |- zipf_test.py
 ~~~
 {: .output}
+
+There may be some other files as well, but the ones listed above are the
+ones we are concerned with at present.
 
 The first step is to count the frequency of each word in a book. For this, we
 use the `wordcound.py` script. The first argument (`books/isles.txt`) to
@@ -51,7 +71,7 @@ head -5 isles.dat
 ~~~
 {: .language-bash}
 
-This shows us the top 5 lines in the output file:
+This shows us the first 5 lines in the output file:
 
 ~~~
 the 3822 6.7371760973
@@ -62,10 +82,11 @@ a 1308 2.30565838181
 ~~~
 {: .output}
 
-We can see that the file consists of one row per word.
-Each row shows the word itself, the number of occurrences of that
-word, and the number of occurrences as a percentage of the total
-number of words in the text file.
+We can see that the file consists of one row per word. Each row shows the
+word itself, the number of occurrences of that word, and the number of
+occurrences as a percentage of the total number of words in the text file.
+The file is sorted by descending frequency, so the first 5 lines
+are the 5 most frequent words in the input text.
 
 We can do the same thing for a different book:
 
@@ -84,9 +105,8 @@ to 1515 2.38057825267
 ~~~
 {: .output}
 
-Let's visualize the results.
-The script `plotcount.py` reads in a data file and plots the 10 most
-frequently occurring words as a text-based bar plot:
+Let's visualize the results. The script `plotcount.py` reads in a data file
+and plots the 10 most frequently occurring words as a text-based bar plot:
 
 ~~~
 python plotcount.py isles.dat ascii
@@ -109,23 +129,26 @@ it    ###########
 
 `plotcount.py` can also show the plot graphically:
 
-~~~bash
+~~~
 python plotcount.py isles.dat show
 ~~~
+{: .language-bash}
 
 Close the window to exit the plot.
 
-`plotcount.py` can also create the plot as an image file (e.g. a PNG file):
+`plotcount.py` can also create the plot as an image file:
 
-~~~bash
+~~~
 python plotcount.py isles.dat isles.png
 ~~~
+{: .language-bash}
 
-Finally, let's test [Zipf's law][zipf] for these books:
+Finally, let's test [Zipf's law][zipf] for these two books:
 
 ~~~bash
 python zipf_test.py abyss.dat isles.dat
 ~~~
+{: .language-bash}
 
 ~~~
 Book	First	Second	Ratio
@@ -134,6 +157,12 @@ isles	3822	2460	1.55
 ~~~
 {: .output}
 
+> ## Zipf's Law
+>
+> Recall that Zipf's Law predicts that the most frequent word will
+> occur approximately twice as often as the second most frequent word.
+{: .callout}
+
 Together these scripts implement a common workflow:
 
 1. Read a data file.
@@ -141,7 +170,7 @@ Together these scripts implement a common workflow:
 3. Write the analysis results to a new file.
 4. Plot a graph of the analysis results.
 5. Save the graph as an image, so we can put it in a paper.
-6. Make a summary table of the analyses.
+6. Make a summary table of the analyses, which requires aggregation of all previous results.
 
 Running `wordcount.py` and `plotcount.py` at the shell prompt, as we have
 been doing, is fine for one or two files. If, however, we had 5 or 10 or 20
@@ -169,13 +198,15 @@ python plotcount.py abyss.dat abyss.png
 # Generate summary table
 python zipf_test.py abyss.dat isles.dat > results.txt
 ~~~
+{: .language-bash}
 
 Run the script and check that the output is the same as before:
 
-~~~bash
+~~~
 bash run_pipeline.sh
 cat results.txt
 ~~~
+{: .language-bash}
 
 This shell script solves several problems in computational reproducibility:
 
@@ -209,9 +240,7 @@ for book in abyss isles; do
     python plotcount.py $book.dat $book.png
 done
 ~~~
-
-With this approach, however, we don't get many of the benefits of having a
-shell script in the first place.
+{: .language-bash}
 
 Another popular option is to comment out a subset of the lines in
 `run_pipeline.sh`:
@@ -231,6 +260,7 @@ python plotcount.py abyss.dat abyss.png
 # This line is also commented out because it doesn't need to be rerun.
 python zipf_test.py abyss.dat isles.dat > results.txt
 ~~~
+{: .language-bash}
 
 Then, we would run our modified shell script using `bash run_pipeline.sh`.
 
@@ -243,6 +273,18 @@ What we really want is an executable _description_ of our pipeline that
 allows software to do the tricky part for us: figuring out what tasks need to
 be run where and when, then perform those tasks for us.
 
-{% include links.md %}
+## Snakemake to the Rescue
 
-[zipf]: https://en.wikipedia.org/wiki/Zipf%27s_law
+There are many different tools that researchers use to automate this type of
+work. Snakemake is a tool to create reproducible and scalable data analyses.
+Workflows are described via a human readable, Python based language.
+
+If you have used `make` before, then you will be familiar with much of how
+Snakemake works.
+
+The rest of these lessons aim to teach you how to use Snakemake by example.
+Our goal is to automate our example workflow, and have it do everything for
+us in parallel regardless of where and how it is run (and have it be
+reproducible!).
+
+{% include links.md %}

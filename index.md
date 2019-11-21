@@ -7,13 +7,13 @@ permalink: index.html  # Is the only page that doesn't follow the pattern /:path
 This lesson teaches the basics of modern workflow engines
 through [Snakemake](https://snakemake.readthedocs.io/en/stable/).
 
-The example workflow performs a frequency analysis of several public domain
-books sourced from [Project Gutenberg](https://www.gutenberg.org/), testing
-how closely each book conforms to [Zipf's
-Law](https://en.wikipedia.org/wiki/Zipf%27s_law). All code and data are
-provided. This example has been chosen over a more complex scientific
-workflow as the goal is to appeal to a wide audience and to focus on building
-the workflow without distraction from the underlying processing.
+zipfs-lawThe example workflow performs a frequency analysis of several public
+domain books sourced from [Project Gutenberg](https://www.gutenberg.org/),
+testing how closely each book conforms to [Zipf's Law][zipf]
+All code and data are provided. This example has been chosen over a more
+complex scientific workflow as the goal is to appeal to a wide audience and
+to focus on building the workflow without distraction from the underlying
+processing.
 
 At the end of this lesson, you will:
 
@@ -36,8 +36,13 @@ If you require a refresher or introductory course, then I suggest one or more of
 > Please follow the instructions in the [Setup page][lesson-setup].
 >
 > The files used in this lesson can be downloaded:
->  * [for Linux/Mac](files/workflow-engines-lesson.tar.gz)
->  * [for Windows](files/workflow-engines-lesson.zip)
+>
+> * [for Linux/Mac][linux_code_pack]
+> * [for Windows][win_code_pack]
 {: .prereq}
 
 {% include links.md %}
+
+[linux_code_pack]: {{ relative_root_path }}/files/workflow-engines-lesson.tar.gz
+[win_code_pack]: {{ relative_root_path }}/files/workflow-engines-lesson.zip
+[zipf]: {{ relative_root_path }}/reference#zipfs-law

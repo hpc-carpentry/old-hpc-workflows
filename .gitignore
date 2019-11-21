@@ -18,3 +18,4 @@ code/.snakemake/
 code/results/
 code/Pipfile.lock
 commands-local.mk
+code/*.dat
