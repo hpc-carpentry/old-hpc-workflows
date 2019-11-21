@@ -13,7 +13,7 @@ keypoints:
 
 Let's imagine that we're interested in understanding the frequency of words
 in various books, testing how closely each book conforms to [Zipf's
-Law](lesson-reference#zipfs-law)
+Law][zipf].
 
 We've compiled our raw data (the books we want to analyze) and have prepared
 several Python scripts that together make up our analysis pipeline.
@@ -288,3 +288,5 @@ us in parallel regardless of where and how it is run (and have it be
 reproducible!).
 
 {% include links.md %}
+
+[zipf]: {{ relative_root_path }}/reference#zipfs-law

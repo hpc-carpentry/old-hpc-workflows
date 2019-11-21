@@ -9,7 +9,7 @@ through [Snakemake](https://snakemake.readthedocs.io/en/stable/).
 
 zipfs-lawThe example workflow performs a frequency analysis of several public
 domain books sourced from [Project Gutenberg](https://www.gutenberg.org/),
-testing how closely each book conforms to [Zipf's Law][zipf]
+testing how closely each book conforms to [Zipf's Law][zipf].
 All code and data are provided. This example has been chosen over a more
 complex scientific workflow as the goal is to appeal to a wide audience and
 to focus on building the workflow without distraction from the underlying
