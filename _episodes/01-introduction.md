@@ -8,7 +8,6 @@ objectives:
 - "Understand our example problem."
 keypoints:
 - "Bash scripts are not an efficient way of defining a workflow."
-- "Snakemake is one method of managing a complex computational workflow."
 ---
 
 Let's imagine that we're interested in understanding the frequency of words
@@ -272,20 +271,6 @@ times, and then edit the result.
 What we really want is an executable _description_ of our pipeline that
 allows software to do the tricky part for us: figuring out what tasks need to
 be run where and when, then perform those tasks for us.
-
-## Snakemake to the Rescue
-
-There are many different tools that researchers use to automate this type of
-work. Snakemake is a tool to create reproducible and scalable data analyses.
-Workflows are described via a human readable, Python based language.
-
-If you have used `make` before, then you will be familiar with much of how
-Snakemake works.
-
-The rest of these lessons aim to teach you how to use Snakemake by example.
-Our goal is to automate our example workflow, and have it do everything for
-us in parallel regardless of where and how it is run (and have it be
-reproducible!).
 
 {% include links.md %}
 

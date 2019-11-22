@@ -8,10 +8,25 @@ objectives:
 - "Understand the components of a Snakefile: rules, inputs, outputs, and actions."
 - "Write a simple Snakefile."
 - "Run Snakemake from the shell."
+- "Perform a dry-run, to understand your workflow without executing anything."
 keypoints:
+- "Snakemake is one method of managing a complex computational workflow."
+- "If you have previously used `make`, then Snakemake will be familiar."
 - "Snakemake follows Python syntax"
 - "Rules can have an input and/or outputs, and a command to be run."
 ---
+
+There are many different tools that researchers use to automate this type of
+work. Snakemake is a tool to create reproducible and scalable data analyses.
+Workflows are described via a human readable, Python based language.
+
+If you have used `make` before, then you will be familiar with much of how
+Snakemake works.
+
+The rest of these lessons aim to teach you how to use Snakemake by example.
+Our goal is to automate our example workflow, and have it do everything for
+us in parallel regardless of where and how it is run (and have it be
+reproducible!).
 
 Create a file, called `Snakefile`, with the following content:
 
@@ -475,3 +490,5 @@ The following figure shows the dependencies embodied within our
 Makefile, involved in building the `results.txt` target:
 
 ![results.txt dependencies represented within the Makefile](../fig/02-challenge-dag.svg "results.txt dependencies represented within the Makefile")
+
+{% include links.md %}
