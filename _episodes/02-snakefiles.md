@@ -41,9 +41,8 @@ rule count_words:
 {: .language-python}
 
 This is a [build file][ref-build-file], which for Snakemake is called a
-[Snakefile][ref-snakefile] - a file executed by Snakemake. Note that aside
-from a few keyword additions like `rule`, it follows standard Python 3
-syntax.
+Snakefile - a file executed by Snakemake. Note that aside from a few keyword
+additions like `rule`, it follows standard Python 3 syntax.
 
 Let us go through each line in turn:
 
@@ -194,7 +193,8 @@ time' of both the target and its dependencies. If any dependency has been
 updated since the target, then the actions are re-run to update the target.
 Using this approach, Snakemake knows to only rebuild the files that, either
 directly or indirectly, depend on the file that changed. This is called an
-[incremental build][ref-incremental].
+[incremental build][ref-incremental]. Later on we will see how to
+recalculate outputs when the code also changes.
 
 > ## Incremental Builds Improve Efficiency
 >
@@ -506,7 +506,13 @@ involved in building the `results.txt` target:
 Snakefile](../fig/02-challenge-dag.svg "results.txt dependencies represented
 within the Snakefile")
 
-[ref-build-file]: "({{ page.root }}/reference/#build-file)"
-[ref-snakefile]: ""
+[ref-build-file]: {{ relative_root_path }}/reference#build-file
+[ref-target]: {{ relative_root_path }}/reference#target
+[ref-rule]: {{ relative_root_path }}/reference#rule
+[ref-incremental]: {{ relative_root_path }}/reference#incremental-builds
+[ref-dag]: {{ relative_root_path }}/reference#directed-acyclic-graph
+[ref-dependency]: {{ relative_root_path }}/reference#dependency
+[ref-default-target]: {{ relative_root_path }}/reference#default-target
+[ref-action]: {{ relative_root_path }}/reference#action
 
 {% include links.md %}
