@@ -1,1 +1,0 @@
-../../zipf_test.py

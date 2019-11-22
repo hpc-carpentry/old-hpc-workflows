@@ -4,21 +4,32 @@ root: .  # Is the only page that doesn't follow the pattern /:path/index.html
 permalink: index.html  # Is the only page that doesn't follow the pattern /:path/index.html
 ---
 
-This lesson teaches the basics of modern workflow engines
-through [Snakemake](https://snakemake.readthedocs.io/en/stable/).
+Learn to tame your unruly data processing workflow with
+[Snakemake](https://snakemake.readthedocs.io/en/stable/), a tool for creating
+reproducible and scalable data analyses. Workflows are described via a human
+readable, Python-based language. They can be seamlessly scaled to server,
+cluster, grid, and cloud environments, without the need to modify the
+workflow definition.
+
+Starting with some independent analysis tasks, you will explore the
+limitations of manual processing and shell scripting before building up a
+reproducible, automated, and efficient workflow step by step with Snakemake.
+Along the way, you will learn the benefits of modern workflow engines and how
+to apply them to your own work.
 
 The example workflow performs a frequency analysis of several public domain
 books sourced from [Project Gutenberg](https://www.gutenberg.org/), testing
-how closely each book conforms to [Zipf's
-Law](https://en.wikipedia.org/wiki/Zipf%27s_law). All code and data are
-provided. This example has been chosen over a more complex scientific
-workflow as the goal is to appeal to a wide audience and to focus on building
-the workflow without distraction from the underlying processing.
+how closely each book conforms to [Zipf's Law][zipf]. This example has been
+chosen over a more complex scientific workflow as the goal is to appeal to a
+wide audience and to focus on building the workflow without getting
+distracted by the underlying science domain.
 
 At the end of this lesson, you will:
 
 * Understand the benefits of workflow engines.
 * Be able to create reproducible analysis pipelines with Snakemake.
+
+All code and data are provided.
 
 ## Pre-requisites
 
@@ -36,8 +47,13 @@ If you require a refresher or introductory course, then I suggest one or more of
 > Please follow the instructions in the [Setup page][lesson-setup].
 >
 > The files used in this lesson can be downloaded:
->  * [for Linux/Mac](files/workflow-engines-lesson.tar.gz)
->  * [for Windows](files/workflow-engines-lesson.zip)
+>
+> * [for Linux/Mac][linux_code_pack]
+> * [for Windows][win_code_pack]
 {: .prereq}
 
 {% include links.md %}
+
+[linux_code_pack]: {{ relative_root_path }}/files/workflow-engines-lesson.tar.gz
+[win_code_pack]: {{ relative_root_path }}/files/workflow-engines-lesson.zip
+[zipf]: {{ relative_root_path }}/reference#zipfs-law

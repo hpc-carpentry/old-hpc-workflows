@@ -8,11 +8,10 @@
     3. running the wordcount script manually
     4. running plotcount
     5. testing for zipf's law
-    6. bash version of a workflow and discussion of limitations (FIXME: remove hands-on sections and just discuss to save time?)
+    6. bash version of a workflow and discussion of limitations
 
 ## Section 2: Snakemake
 
-2. Introduction to Snakemake
 3. Snakefiles
     1. count words
     2. running snakemake
@@ -32,7 +31,7 @@
    2. simplify dynamic handling of input files
 7. Adding remaining stages to pipeline
    1. Creating png plots
-   2. Creating an archive. FIXME: will this work on Windows?
+   2. Creating an archive.
    3. Adding more books
 8. Resources and parallelism
 9. Submitting to a SLURM cluster

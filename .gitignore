@@ -11,12 +11,11 @@ Pipfile.lock
 .Rproj.user
 .Rhistory
 .RData
+.vscode/
 
 # Artifacts from running the lesson sample code in-place
-code/snakemake/.snakemake/
-code/snakemake/results/
-code/nextflow/.nextflow/
-code/nextflow/.nextflow.log*
-code/nextflow/results/
-code/nextflow/work/
+code/.snakemake/
+code/results/
 code/Pipfile.lock
+commands-local.mk
+code/*.dat

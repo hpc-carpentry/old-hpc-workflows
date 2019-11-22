@@ -20,7 +20,7 @@ def save_word_counts(filename, counts):
     Save a list of [word, count, percentage] lists to a file, in the form
     "word count percentage", one tuple per line.
     """
-    with open(filename, 'w') as output:
+    with open(filename, "w") as output:
         for count in counts:
             output.write("%s\n" % " ".join(str(c) for c in count))
 
@@ -78,8 +78,9 @@ def word_count_dict_to_tuples(counts, decrease=True):
     count). The list is ordered by decreasing count, unless increase is
     True.
     """
-    return sorted(list(counts.items()), key=lambda key_value: key_value[1],
-                  reverse=decrease)
+    return sorted(
+        list(counts.items()), key=lambda key_value: key_value[1], reverse=decrease
+    )
 
 
 def filter_word_counts(counts, min_length=1):
@@ -103,8 +104,7 @@ def calculate_percentages(counts):
     total = 0
     for count in counts:
         total += count[1]
-    tuples = [(word, count, (float(count) / total) * 100.0)
-              for (word, count) in counts]
+    tuples = [(word, count, (float(count) / total) * 100.0) for (word, count) in counts]
     return tuples
 
 
@@ -122,7 +122,8 @@ def word_count(input_file, output_file, min_length=1):
     percentage_counts = calculate_percentages(sorted_counts)
     save_word_counts(output_file, percentage_counts)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     input_file = sys.argv[1]
     output_file = sys.argv[2]
     min_length = 1
