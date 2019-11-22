@@ -43,7 +43,7 @@ The example code also requires the `matplotlib` and `numpy` libraries. They
 are installed by default with Anaconda, but if you are using a different
 Python you may need to install them manually. Using `pip`, the command would be:
 
-~~~bash
+~~~
 pip install --user numpy matplotlib
 ~~~
 {: .language-bash}

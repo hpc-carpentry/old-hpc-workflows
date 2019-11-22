@@ -1,4 +1,8 @@
-# Lesson Outline
+---
+title: Lesson Plan
+---
+
+# Lesson Plan
 
 ## Section 1: Introduction
 
