@@ -5,13 +5,17 @@ exercises: 15
 questions:
 - "How can I abbreviate the rules in my pipeline?"
 objectives:
-- "Use snakemake wildcards to simplify our rules."
-- "Output files are a product not only of input files but of the scripts or code that created the output files."
+- "Use Snakemake wildcards to simplify our rules."
+- "Understand that outputs are a product not only of the input data files but
+also of the scripts or code that created the output files."
 keypoints:
 - "Use {output} to refer to the output of the current rule."
 - "Use {input} to refer to the dependencies of the current rule."
-- "You can use Python indexing to retrieve individual outputs and inputs (example: `{input[0]}`)"
+- "You can use Python indexing to retrieve individual outputs and inputs
+(example: `{input[0]}`)"
 - "Wildcards can be named (example: `{input.file1}`)."
+- "Naming the code or scripts used by a rule as inputs ensures that the rule
+is executed if the code or script changes."
 ---
 
 After the exercise at the end of the previous episode, our Snakefile looked like this:
@@ -106,7 +110,7 @@ rule zipf_test:
 {: .language-python}
 
 `{input}` is another wildcard which means 'all the dependencies
-of the current rule'. Again, when Make is run it will replace this
+of the current rule'. Again, when Snakemake is run it will replace this
 variable with the dependencies.
 
 Let's update our text files and re-run our rule:
@@ -341,10 +345,10 @@ Finished job 0.
 The whole pipeline is triggered, even the creation of the `results.txt` file!
 To understand this, note that according to the dependency figure,
 `results.txt` depends on the `.dat` files. The update of `wordcount.py`
-triggers an update of the `*.dat` files. Thus, `make` sees that the
+triggers an update of the `*.dat` files. Thus, `Snakemake` sees that the
 dependencies (the `.dat` files) are newer than the target file
 (`results.txt`) and thus it recreates `results.txt`. This is an example of
-the power of `make`: updating a subset of the files in the pipeline triggers
+the power of `Snakemake`: updating a subset of the files in the pipeline triggers
 rerunning the appropriate downstream steps.
 
 > ## Updating One Input File
@@ -353,7 +357,7 @@ rerunning the appropriate downstream steps.
 >
 > ~~~
 > touch books/last.txt
-> make results.txt
+> snakemake results.txt
 > ~~~
 > {: .language-bash}
 >
