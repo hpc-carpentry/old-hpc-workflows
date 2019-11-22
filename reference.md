@@ -47,6 +47,16 @@ In the context of Snakemake, it means that you cannot define any circular
 dependencies between rules. A rule cannot, directly or indirectly, depend on
 itself.
 
+Pattern Rule
+: A Snakemake rule that uses wildcard patterns to describe a general rule to
+make any output that matches the pattern.
+
+Wildcard
+: Wildcards are used in an input or output to indicate a pattern (e.g.: `{file}`).
+Snakemake matches each wildcard to the regular expression `.+`, although additional
+constraints can be specified. See [the documentation][docs-wildcard] for details.
+
 {% include links.md %}
 
 [zipf]: https://en.wikipedia.org/wiki/Zipf%27s_law
+[docs-wildcard]: https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#wildcards
