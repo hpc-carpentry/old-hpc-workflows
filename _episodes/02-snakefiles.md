@@ -30,13 +30,14 @@ reproducible!).
 
 Create a file, called `Snakefile`, with the following content:
 
-```python
+~~~
 # Count words.
 rule count_words:
     input: 'books/isles.txt'
     output: 'isles.dat'
     shell: 'python wordcount.py books/isles.txt isles.dat'
-```
+~~~
+{: .language-python}
 
 
 This is a [build file]({{ page.root }}/reference/#build-file), which for
@@ -71,21 +72,23 @@ requires `books/isles.txt` - is now made explicit by Snakemake's syntax.
 Let's first ensure we start from scratch and delete the `.dat` and `.png`
 files we created earlier:
 
-```bash
+~~~
 rm *.dat *.png
-```
+~~~
+{: .language-bash}
 
 
 By default, Snakemake looks for a file called `Snakefile`, and we can
 run Snakemake as follows:
 
-```bash
+~~~
 snakemake
-```
+~~~
+{: .language-bash}
 
 By default, Snakemake tells us what it's doing as it executes actions:
 
-```
+~~~
 Provided cores: 1
 Rules claiming more threads will be scaled down.
 Job counts:
@@ -100,7 +103,7 @@ rule count_words:
 
 Finished job 0.
 1 of 1 steps (100%) done
-```
+~~~
 {: .output}
 
 If we see an error, check your syntax.
@@ -108,9 +111,10 @@ Remember, aside from stuff like `rule` and `input`,
 Snakemake follows Python syntax.
 Let's see if we got what we expected:
 
-```bash
+~~~
 head -5 isles.dat
-```
+~~~
+{: .language-bash}
 
 
 The first 5 lines of `isles.dat` should look exactly like before.
@@ -121,17 +125,18 @@ The first 5 lines of `isles.dat` should look exactly like before.
 > something else we need to tell Make where to find it. This we can do
 > using `-s` flag. For example, if our Makefile is named `MyOtherSnakefile`:
 >
-> ```bash
+> ~~~
 > snakemake -s MyOtherMakefile
-> ```
+> ~~~
+>{: .language-bash}
 >
 {: .callout}
 
 When we re-run our Snakefile, Snakemake now informs us that:
 
-```
+~~~
 Nothing to be done.
-```
+~~~
 {: .output}
 
 This is because our target, `isles.dat`, has now been created, and
@@ -140,35 +145,38 @@ update one of the text files. Rather than opening the file in an
 editor, we can use the shell `touch` command to update its timestamp
 (which would happen if we did edit the file):
 
-```bash
+~~~
 touch books/isles.txt
-```
+~~~
+{: .language-bash}
 
 
 If we compare the timestamps of `books/isles.txt` and `isles.dat`,
 
-```bash
+~~~
 ls -l books/isles.txt isles.dat
-```
+~~~
+{: .language-bash}
 
 then we see that `isles.dat`, the target, is now older
 than`books/isles.txt`, its dependency:
 
-```
+~~~
 -rw-r--r--    1 mjj      Administ   323972 Jun 12 10:35 books/isles.txt
 -rw-r--r--    1 mjj      Administ   182273 Jun 12 09:58 isles.dat
-```
+~~~
 {: .output}
 
 If we run Make again,
 
-```bash
+~~~
 snakemake
-```
+~~~
+{: .language-bash}
 
 then it recreates `isles.dat`:
 
-```
+~~~
 Provided cores: 1
 Rules claiming more threads will be scaled down.
 Job counts:
@@ -183,7 +191,7 @@ rule count_words:
 
 Finished job 0.
 1 of 1 steps (100%) done
-```
+~~~
 {: .output}
 
 When it is asked to build a target, Snakemake checks the 'last modification
@@ -205,25 +213,27 @@ Let's add another rule to the end of `Snakefile`.
 Note that rules cannot have the same name,
 so we'll call this one `count_words_abyss`.
 
-```python
+~~~
 rule count_words_abyss:
 	input: 	'books/abyss.txt'
 	output: 'abyss.dat'
 	shell: 	'python wordcount.py books/abyss.txt abyss.dat'
-```
+~~~
+{: .language-python}
 
 
 If we run Snakemake,
 
-```bash
+~~~
 snakemake
-```
+~~~
+{: .language-bash}
 
 then we get:
 
-```
+~~~
 Nothing to be done.
-```
+~~~
 {: .output}
 
 Nothing happens because Snakemake attempts to build the first target it
@@ -232,13 +242,14 @@ target]({{ page.root }}/reference/#default-target), which is `isles.dat` which i
 already up-to-date. We need to explicitly tell Make we want to build
 `abyss.dat`:
 
-```bash
+~~~
 snakemake abyss.dat
-```
+~~~
+{: .language-bash}
 
 Now, we get:
 
-```
+~~~
 Provided cores: 1
 Rules claiming more threads will be scaled down.
 Job counts:
@@ -253,7 +264,7 @@ rule count_words_abyss:
 
 Finished job 0.
 1 of 1 steps (100%) doneat
-```
+~~~
 {: .output}
 
 > ## "Up to Date" Versus "Nothing to be Done"
@@ -261,23 +272,24 @@ Finished job 0.
 > If we ask Snakemake to build a file that already exists and is up to
 > date, then Snakemake informs us that:
 >
-> ```
+> ~~~
 > Nothing to be done
-> ```
+> ~~~
 > {: .output}
 >
 > If we ask Snakemake to build a file that exists but for which there is
 > no rule in our Snakefile, then we get message like:
 >
-> ```bash
+> ~~~
 > snakemake wordcount.py
-> ```
+> ~~~
+>{: .language-bash}
 >
 >
-> ```
+> ~~~
 > MissingRuleException:
 > No rule to produce wordcount.py (if you use input functions make sure that they don't raise unexpected exceptions).
-> ```
+> ~~~
 > {: .output}
 >
 > When we see this error, double-check that you have a rule to produce that file, and also that the filename has been specified correctly.
@@ -290,22 +302,24 @@ them all. We can introduce a new target, and associated rule, to do
 this. We will call it `clean`, as this is a common name for rules that
 delete auto-generated files, like our `.dat` files:
 
-```python
+~~~
 rule clean:
     shell: 'rm -f *.dat'
-```
+~~~
+{: .language-python}
 
 This is an example of a rule that has no inputs or outputs!. We just want to remove the data files whether or
 not they exist. If we run Make and specify this target,
 
-```bash
+~~~
 snakemake clean
-```
+~~~
+{: .language-bash}
 
 
 then we get:
 
-```
+~~~
 Provided cores: 1
 Rules claiming more threads will be scaled down.
 Job counts:
@@ -318,7 +332,7 @@ rule clean:
 
 Finished job 0.
 1 of 1 steps (100%) done
-```
+~~~
 {: .output}
 
 An `ls` of our current directory reveals that all of our troublesome output files are now gone (as planned)!
@@ -328,12 +342,13 @@ this at the top of our Snakefile so that it is the [default
 target]({{ page.root }}/reference/#default-target), which is executed by default
 if no target is given to the `snakemake` command:
 
-```python
+~~~
 rule dats:
      input:
          'isles.dat',
          'abyss.dat'
-```
+~~~
+{: .language-python}
 
 
 This is an example of a rule that has dependencies that are targets of
@@ -358,14 +373,15 @@ purely to trigger the build of its dependencies, if needed.
 
 If we run,
 
-```bash
+~~~
 snakemake dats
-```
+~~~
+{: .language-bash}
 
 
 then snakemake creates the data files:
 
-```
+~~~
 Provided cores: 1
 Rules claiming more threads will be scaled down.
 Job counts:
@@ -397,26 +413,27 @@ localrule dats:
 
 Finished job 0.
 3 of 3 steps (100%) done
-```
+~~~
 {: .output}
 
 If we run `dats` again, then snakemake will see that the dependencies (isles.dat
 and abyss.dat) are already up to date.
 Given the target `dats` has no actions, there is `nothing to be done`:
 
-```bash
+~~~
 snakemake dats
-```
+~~~
+{: .language-bash}
 
-```
+~~~
 Nothing to be done
-```
+~~~
 {: .output}
 
 
 Our Snakefile now looks like this:
 
-```python
+~~~
 rule dats:
      input:
          'isles.dat',
@@ -439,7 +456,8 @@ rule count_words_abyss:
     input: 	'books/abyss.txt'
     output: 'abyss.dat'
     shell: 	'python wordcount.py books/abyss.txt abyss.dat'
-```
+~~~
+{: .language-python}
 
 
 The following figure shows a graph of the dependencies embodied within
@@ -454,12 +472,13 @@ Additionally, we can also perform a dry run with `-n`.
 A dry run does nothing, and simply prints out commands instead of actually executing them.
 Very useful for debugging!
 
-```bash
+~~~
 snakemake clean
 snakemake -n -p isles.dat
-```
+~~~
+{: .language-bash}
 
-```
+~~~
 rule count_words:
     input: wordcount.py, books/isles.txt
     output: isles.dat
@@ -471,7 +490,7 @@ Job counts:
 	count	jobs
 	1	count_words
 	1
-```
+~~~
 {: .output}
 
 > ## Write Two New Rules
