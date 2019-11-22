@@ -145,7 +145,7 @@ python plotcount.py isles.dat isles.png
 
 Finally, let's test [Zipf's law][zipf] for these two books:
 
-~~~bash
+~~~
 python zipf_test.py abyss.dat isles.dat
 ~~~
 {: .language-bash}
@@ -184,7 +184,7 @@ a shell script that runs the whole pipeline from start to finish.
 Using your text editor of choice (e.g. nano), add the following to a new file named
 `run_pipeline.sh`.
 
-~~~bash
+~~~
 # USAGE: bash run_pipeline.sh
 # to produce plots for isles and abyss
 # and the summary table for the Zipf's law tests
@@ -235,7 +235,7 @@ Alternatively, we could manually rerun the plotting for each word-count file.
 (Experienced shell scripters can make this easier on themselves using a
 for-loop.)
 
-~~~bash
+~~~
 for book in abyss isles; do
     python plotcount.py $book.dat $book.png
 done
@@ -245,7 +245,7 @@ done
 Another popular option is to comment out a subset of the lines in
 `run_pipeline.sh`:
 
-~~~bash
+~~~
 # USAGE: bash run_pipeline.sh
 # to produce plots for isles and abyss
 # and the summary table
