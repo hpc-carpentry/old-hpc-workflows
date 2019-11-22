@@ -101,6 +101,7 @@ exclude:
   - bin/
   - .Rproj.user/
   - code/
+  - lesson-outline.md
 
 # Turn on built-in syntax highlighting.
 highlighter: rouge
