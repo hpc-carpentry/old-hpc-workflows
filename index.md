@@ -19,7 +19,7 @@ to apply them to your own work.
 
 The example workflow performs a frequency analysis of several public domain
 books sourced from [Project Gutenberg](https://www.gutenberg.org/), testing
-how closely each book conforms to [Zipf's Law][zipf]. This example has been
+how closely each book conforms to [Zipf's Law][ref-zipf]. This example has been
 chosen over a more complex scientific workflow as the goal is to appeal to a
 wide audience and to focus on building the workflow without getting
 distracted by the underlying science domain.
@@ -52,8 +52,8 @@ If you require a refresher or introductory course, then I suggest one or more of
 > * [for Windows][win_code_pack]
 {: .prereq}
 
-{% include links.md %}
-
 [linux_code_pack]: {{ relative_root_path }}/files/workflow-engines-lesson.tar.gz
 [win_code_pack]: {{ relative_root_path }}/files/workflow-engines-lesson.zip
-[zipf]: {{ relative_root_path }}/reference#zipfs-law
+[ref-zipf]: {{ relative_root_path }}/reference#zipfs-law
+
+{% include links.md %}

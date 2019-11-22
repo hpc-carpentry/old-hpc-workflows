@@ -12,7 +12,7 @@ keypoints:
 
 Let's imagine that we're interested in understanding the frequency of words
 in various books, testing how closely each book conforms to [Zipf's
-Law][zipf].
+Law][ref-zipf].
 
 We've compiled our raw data (the books we want to analyze) and have prepared
 several Python scripts that together make up our analysis pipeline.
@@ -272,7 +272,6 @@ What we really want is an executable _description_ of our pipeline that
 allows software to do the tricky part for us: figuring out what tasks need to
 be run where and when, then perform those tasks for us.
 
-[zipf]: {{ relative_root_path }}/reference#zipfs-law
+[ref-zipf]: {{ relative_root_path }}/reference#zipfs-law
 
 {% include links.md %}
-
