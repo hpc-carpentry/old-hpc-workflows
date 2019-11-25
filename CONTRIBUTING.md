@@ -42,6 +42,11 @@ and to meet some of our community members.
     you can submit a pull request (PR).
     Instructions for doing this are [included below](#using-github).
 
+Note that this project is using The Carpentries recommended issue labels. 
+Please refer to the
+[How to Label Issues](https://docs.carpentries.org/topic_folders/maintainers/github_labels.html)
+documentation for help with interpreting and choosing labels.
+
 ## Where to Contribute
 
 1. If you wish to change this lesson,
