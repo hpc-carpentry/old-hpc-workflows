@@ -31,7 +31,6 @@ For a full guide to the lesson template, see the
 
 Software Carpentry lessons are generally episodic, with one clear concept for each episode
 ([example](http://swcarpentry.github.io/r-novice-gapminder/)).
-We've got 2 major sections, each section should be broken up into several episodes.
 
 An episode is just a markdown file that lives under the `_episodes` folder.
 Here is a link to a [markdown cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) with most markdown syntax.
