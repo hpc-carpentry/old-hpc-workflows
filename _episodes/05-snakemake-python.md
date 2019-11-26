@@ -15,7 +15,8 @@ keypoints:
 ---
 
 Despite our efforts, our pipeline still has repeated content,
-for instance the names of output files/dependencies.
+for instance the names of input and output files
+([dependencies][ref-dependency] and [targets][ref-target]).
 Our `zipf_test` rule, for instance, is extremely clunky.
 What happens if we want to analyze `books/sierra.txt` as well?
 We'd have to update everything!
@@ -337,3 +338,9 @@ Finished job 0.
 > Note that creating this folder beforehand is unnecessary.
 > Snakemake automatically create any folders for you, as needed.
 {: .challenge}
+
+[ref-dependency]: {{ relative_root_path }}/reference#dependency
+[ref-target]: {{ relative_root_path }}/reference#target
+[ref-action]: {{ relative_root_path }}/reference#action
+
+{% include links.md %}
