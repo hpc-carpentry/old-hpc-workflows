@@ -29,7 +29,6 @@ rule zipf_test:
 ~~~
 {: .language-python}
 
-
 First, let's cut down on a little bit of the clunkiness of the "shell" rule.
 One thing you've probably noticed is that all of our rules are using Python strings.
 Other data structures work too - let's try a list:
@@ -44,12 +43,24 @@ rule zipf_test:
 ~~~
 {: .language-python}
 
-(`snakemake clean` and `snakemake -p` should show that the pipeline still works!)
+After updating your rule, run `snakemake clean` and `snakemake -p` to confirm
+that the pipeline still works.
 
-This illustrates a key feature of Snakemake.
-Snakefiles are just Python code.
-We can make our list into a variable to demonstrate this.
-Let's create the variable DATS and use it in our `zipf_test` and `dats` rules.
+> ## Named Dependencies
+>
+> Note that we also had to switch to using named dependencies.
+> This was required since the first input, `zipf_text.py`, should
+> not be in the list of input files.
+>
+> It is the author's opinion that in most cases, named dependencies
+> lead to Snakefiles that are easier to read and maintain.
+{: .callout}
+
+The use of a list for the input files illustrates a key feature of Snakemake:
+**Snakefiles are just Python code.**
+
+We can make our list into a variable to demonstrate this. Let's create the
+global variable DATS and use it in our `zipf_test` and `dats` rules:
 
 ~~~
 DATS=['abyss.dat', 'last.dat', 'isles.dat']
@@ -67,15 +78,14 @@ rule dats:
 ~~~
 {: .language-python}
 
-
-Try re-creating both the `dats` and `results.txt` targets
-(run `snakemake clean` in between).
+Try recreating both the `dats` and `results.txt` targets (run `snakemake
+clean` in between).
 
 ## When are Snakefiles executed?
 
-The last example illustrated that we can use arbitrary Python code in our Snakefile.
-It's important to understand when this code gets executed.
-Let's add a print statement to the top of our Snakefile.
+The last example illustrated that we can use arbitrary Python code in our Snakefile. It's
+important to understand when this code gets executed. Let's add a print
+statement to the top of our Snakefile:
 
 ~~~
 print('Snakefile is being executed!')
@@ -89,8 +99,7 @@ rule zipf_test:
 ~~~
 {: .language-python}
 
-
-Now let's clean up our workspace with `snakemake clean`
+Now let's clean up our workspace with `snakemake clean`:
 
 ~~~
 snakemake clean
@@ -181,57 +190,54 @@ Nothing to be done.
 ~~~
 {: .output}
 
-In every case, the `print()` statement ran before any of the actual
-pipeline code was run.
-What we can take away from this is that Snakemake excutes the entire Snakefile
-every time we run `snakemake` (regardless of if it's a dry run!).
-Because of this, we need to be careful,
-and only put tasks that do "real work" (changing files on disk) inside rules.
+In every case, the `print()` statement ran before any of the actual pipeline
+code. What we can take away from this is that Snakemake executes the
+entire Snakefile every time we run `snakemake`, even for a dry-run.
+Because of this we need to be careful and only put tasks that do
+"real work" (changing files on disk) inside rules.
+
+Common tasks, such as building lists of input files that will be reused in
+multiple rules are a good fit for Python code that lives outside the rules.
 
 ## Using functions in Snakefiles
 
-In our example here, we only have 4 books.
-But what if we had 700 books to be processed?
-It would be a massive effort to update our `DATS` variable to
-add the name of every single book's corresponding `.dat` filename.
+In our example here, we only have 4 books. But what if we had 700 books to be
+processed? It would be a massive effort to update our `DATS` variable to add
+the name of every single book's corresponding `.dat` filename.
 
 Fortunately, Snakemake ships with several functions that make working with
-large numbers of files much easier.
-The two most helpful ones are `glob_wildcards()` and `expand()`.
-Let's start an ipython session to see how they work:
+large numbers of files much easier. The two most helpful ones are
+`glob_wildcards()` and `expand()`. Let's start a Python session to see how
+they work.
 
-~~~
-ipython3
-~~~
-{: .language-bash}
+> ## This can be done in any Python environment
+>
+> You can use any Python environment for the following code exploring `expand()`
+> and `glob_wildcards()`. The standard Python interpreter, ipython, or
+> a Jupyter Notebook. It's up to personal preference and what you have installed.
+{: .callout}
 
-~~~
-Python 3.6.1 (default, Jun 27 2017, 14:35:15)
-Type "copyright", "credits" or "license" for more information.
+In this example, we will import these Snakemake functions directly in our
+Python session.
 
-IPython 5.3.0 -- An enhanced Interactive Python.
-?         -> Introduction and overview of IPython's features.
-%quickref -> Quick reference.
-help      -> Python's own help system.
-object?   -> Details about 'object', use 'object??' for extra details.
-~~~
-{: .output}
+> ## Importing is not required in a Snakefile
+>
+> You don't need to import the Snakemake utility functions within your Snakefile - they are
+> always imported for you.
+{: .callout}
 
-In this example, we will import these Snakemake functions directly in our ipython session.
-It is not necessary however, to import these functions within your Snakefile -
-these functions are always imported for you.
+So in your chosen Python environment, run the following:
 
 ~~~
 from snakemake.io import *
 ~~~
 {: .language-python}
 
-
 ### Generating file names with expand()
 
 The first function we'll use is `expand()`.
 `expand()` is used quite literally,
-to expand a snakemake wildcard(s) into a set of filenames.
+to expand snakemake wildcards into a set of filenames:
 
 ~~~
 expand('folder/{wildcard1}_{wildcard2}.txt', wildcard1=['a', 'b', 'c'], wildcard2=[1, 2, 3])
@@ -251,15 +257,16 @@ expand('folder/{wildcard1}_{wildcard2}.txt', wildcard1=['a', 'b', 'c'], wildcard
 ~~~
 {: .output}
 
-In this case, `expand()` created every possible combination of filenames from the two wildcards.
-Useful! Of course, this still leaves us needing somehow get the values for
-`wildcard1` and `wildcard2` in the first place.
+In this case, `expand()` created every possible combination of filenames from
+the two wildcards. Nice! Of course, this still leaves us needing somehow
+get the values for `wildcard1` and `wildcard2` in the first place.
 
 ### Get wildcard values with glob_wildcards()
 
 To get a set of wildcards from a list of files, we can use the
-`glob_wildcards()` function.
-Let's try grabbing all of the book titles in our `books` folder.
+`glob_wildcards()` function. It matches the given pattern against file names
+on the file system, returning a named tuple containing all the matches. Let's
+try grabbing all of the book titles in our `books` folder:
 
 ~~~
 glob_wildcards('books/{example}.txt')
@@ -271,10 +278,9 @@ Wildcards(example=['isles', 'last', 'abyss', 'sierra'])
 ~~~
 {: .output}
 
-glob_wildcards() returns a named tuple as output.
 In this case, there is only one wildcard, `{example}`.
 We can extract the values for name by getting the `example`
-property from the output of `glob_wildcards()`
+property from the output of `glob_wildcards()`:
 
 ~~~
 glob_wildcards('books/{example}.txt').example
@@ -291,15 +297,18 @@ glob_wildcards('books/{example}.txt').example
 > Using the `expand()` and `glob_wildcards()` functions,
 > modify the pipeline so that it automatically detects and analyzes
 > all the files in the `books/` folder.
+> > ## Solution
+> > FIXME: add solution code
+> {: .solution}
 {: .challenge}
 
 ## Using Python code as actions
 
 One very useful feature of Snakemake is the ability to execute Python code
-instead of just shell commands.
-Instead of `shell:` as an action, we can use `run:` instead.
+instead of just shell commands. Instead of `shell:` as an action, we can use
+`run:` instead.
 
-Add the following to our snakefile:
+Add the following to your snakefile:
 
 ~~~
 # at the top of the file
@@ -314,7 +323,6 @@ rule print_book_names:
             print(book)
 ~~~
 {: .language-python}
-
 
 Upon execution of the corresponding rule, Snakemake dutifully runs our Python code
 in the `run:` block:
@@ -352,6 +360,8 @@ Finished job 0.
 > Note that creating this folder beforehand is unnecessary.
 > Snakemake automatically create any folders for you, as needed.
 {: .challenge}
+
+FIXME: add reminder to episode sample snakefile
 
 [ref-dependency]: {{ relative_root_path }}/reference#dependency
 [ref-target]: {{ relative_root_path }}/reference#target
