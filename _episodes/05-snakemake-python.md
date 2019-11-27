@@ -29,9 +29,9 @@ rule zipf_test:
 ~~~
 {: .language-python}
 
-First, let's cut down on a little bit of the clunkiness of the "shell" rule.
-One thing you've probably noticed is that all of our rules are using Python strings.
-Other data structures work too - let's try a list:
+First, let's try to improve the "shell" rule. One thing you've probably
+noticed is that all of our rules are using Python strings. Other data
+structures work too - let's try a list:
 
 ~~~
 rule zipf_test:
@@ -51,10 +51,16 @@ that the pipeline still works.
 > Note that we also had to switch to using named dependencies.
 > This was required since the first input, `zipf_text.py`, should
 > not be in the list of input files.
->
-> It is the author's opinion that in most cases, named dependencies
-> lead to Snakefiles that are easier to read and maintain.
 {: .callout}
+
+> ## Inputs: named vs indexed?
+>
+> Having seen the use of both named and indexed dependencies, which
+> approach do you prefer?
+>
+> Which approach do you think leads to
+> Snakefiles that are easier to read and maintain?
+{: .discussion}
 
 The use of a list for the input files illustrates a key feature of Snakemake:
 **Snakefiles are just Python code.**
@@ -361,6 +367,7 @@ Finished job 0.
 > Snakemake automatically create any folders for you, as needed.
 > > ## Solution
 > > FIXME: add snippet of critical snakefile code
+> {: .solution}
 {: .challenge}
 
 FIXME: add reminder to episode sample snakefile
