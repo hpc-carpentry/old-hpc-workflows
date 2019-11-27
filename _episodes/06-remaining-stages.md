@@ -1,5 +1,5 @@
 ---
-title: "Snakefiles are Python code"
+title: "Completing the Pipeline"
 teaching: 0
 exercises: 20
 questions:
