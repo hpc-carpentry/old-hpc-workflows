@@ -359,6 +359,8 @@ Finished job 0.
 > their own `dats/` folder.
 > Note that creating this folder beforehand is unnecessary.
 > Snakemake automatically create any folders for you, as needed.
+> > ## Solution
+> > FIXME: add snippet of critical snakefile code
 {: .challenge}
 
 FIXME: add reminder to episode sample snakefile
