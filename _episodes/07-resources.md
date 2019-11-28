@@ -288,17 +288,16 @@ value of threads.
 
 ## Managing other types of resources
 
-Not all compute resources are CPUs.
-Examples might include limited amounts of RAM, number of GPUs, database locks,
-or perhaps we simply don't want multiple processes writing to the same file at once.
-All non-CPU resources are handled using the `resources` keyword.
+Not all compute resources are CPUs. Examples might include limited amounts of
+RAM, number of GPUs, database locks, or perhaps we simply don't want multiple
+processes writing to the same file at once. All non-CPU resources are handled
+using the `resources` keyword.
 
 For our example, let's pretend that creating a plot with `plotcount.py`
-requires dedicated access to a GPU (it doesn't),
-and only one GPU is available.
-How do we indicate this to Snakemake so that it knows to give dedicated access to a GPU
-for rules that need it?
-Let's modify the `make_plot` rule as an example:
+requires dedicated access to a GPU (it doesn't), and only one GPU is
+available. How do we indicate this to Snakemake so that it knows to give
+dedicated access to a GPU for rules that need it? Let's modify the
+`make_plot` rule as an example:
 
 ~~~
 # create a plot for each book
@@ -311,7 +310,6 @@ rule make_plot:
     shell:  'python {input.plotcount} {input.book} {output}'
 ~~~
 {:.language-python}
-
 
 We can execute our pipeline using the following (using 8 cores and 1 gpu):
 
@@ -329,13 +327,15 @@ Provided resources: gpu=1
 ~~~
 {: .output}
 
-Resources are entirely arbitrary - like wildcards, they can be named anything.
-Snakemake knows nothing about them aside from the fact that they have a name and a value.
-In this case `gpu` indicates simply that there is a resource called `gpu` used by `make_plot`.
-We provided 1 `gpu` to the workflow, and the `gpu` is considered in use as long as the rule is running.
-Once the `make_plot` rule completes, the `gpu` it consumed is added back to the pool of available `gpu`s.
-To be extra clear: `gpu` in this case does not actually represent a GPU,
-it is an arbitrary limit used to prevent multiple tasks that use a `gpu` from executing at the same time.
+Resources are entirely arbitrary - like wildcards, they can be named
+anything. Snakemake knows nothing about them aside from the fact that they
+have a name and a value. In this case `gpu` indicates simply that there is a
+resource called `gpu` used by `make_plot`. We provided 1 `gpu` to the
+workflow, and the `gpu` is considered in use as long as the rule is running.
+Once the `make_plot` rule completes, the `gpu` it consumed is added back to
+the pool of available `gpu`s. To be extra clear: `gpu` in this case does not
+actually represent a GPU, it is an arbitrary limit used to prevent multiple
+tasks that use a `gpu` from executing at the same time.
 
 But what happens if we run our pipeline without specifying the number of GPUs?
 
@@ -352,9 +352,21 @@ Unlimited resources: gpu
 ~~~
 {: .output}
 
-If you have specified that a rule needs a certain resource,
-but do not specify how many you have,
-Snakemake will assume that the resources in question are unlimited.
+If you have specified that a rule needs a certain resource, but do not
+specify how many you have, Snakemake will assume that the resources in
+question are unlimited.
+
+> ## What happens if Snakemake does not have enough resources
+>
+> Modify your Snakefile and the snakemake arguments to test what
+> happens when you have less resources available than the number
+> required by a rule.
+>
+> For example, you might set `gpu=2` in `make_plot`, and then
+> run `snakemake --resources gpu=1`.
+>
+> What do you think will happen? What actually happens?
+{:.challenge}
 
 > ## Other uses for `resources`
 >
