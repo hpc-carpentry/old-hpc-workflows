@@ -11,9 +11,10 @@ objectives:
 - "Add a rule to your Snakefile that generates PNG plots of word frequencies."
 - "Add a `clean` rule to your Snakefile."
 - "Add an `all` rule to your Snakefile."
+- "Make `all` the default rule."
 keypoints:
 - "It is common practice to have a `clean` rule that deletes all intermediate and generated files, taking your workflow back to a blank slate."
-- "A default rule is the rule that Snakemake runs if you don't specify a rule. It is simply the first rule in a Snakefile."
+- "A default rule is the rule that Snakemake runs if you don't specify a rule on the command line. It is simply the first rule in a Snakefile."
 - "Many Snakefiles define a default target called `all` as first target in the file. This runs by default and typically executes the entire workflow."
 ---
 
@@ -79,8 +80,8 @@ In this case, we will create an archive tar file.
 > ## Windows Note
 >
 > If you are using a Windows system, make sure you have followed the
-> setup instructions regarding using Git Bash. This should provide the
-> required environment for the tar command to work.
+> [setup instructions][lesson-setup] regarding the use of Git Bash.
+> This should provide the required environment for the `tar` command to work.
 {:.callout}
 
 > ## Creating an Archive
@@ -104,7 +105,7 @@ In this case, we will create an archive tar file.
 > {:.solution}
 {: .challenge}
 
-After these excercises our final workflow should look something like the following:
+After these exercises our final workflow should look something like the following:
 
 ![Final directed acyclic graph](../fig/05-final-dag.svg)
 
@@ -126,3 +127,4 @@ After these excercises our final workflow should look something like the followi
 > * check the results.txt file to see how this book compares to the others
 {: .challenge}
 
+{% include links.md %}
