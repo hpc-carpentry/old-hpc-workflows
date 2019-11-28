@@ -13,9 +13,10 @@ keypoints:
 - "The `&&` operator is a useful tool when chaining bash commands."
 ---
 
-After the excercises at the end of our last lesson, our Snakefile looks
+After the exercises at the end of our last lesson, our Snakefile looks
 something like this:
 
+FIXME: update this so it matches our end of episode 6 snakefile
 ~~~
 # our zipf analysis pipeline
 DATS = glob_wildcards('books/{book}.txt').book
@@ -67,15 +68,13 @@ rule make_archive:
 ~~~
 {:.language-python}
 
-
-At this point, we have a complete data analysis pipeline.
-Very cool.
-But how do we make it run as efficiently as possible?
+At this point, we have a complete data analysis pipeline. Very cool. But how
+do we make it run as efficiently as possible?
 
 ## Running in parallel
 
-Up to this point, Snakemake has printed out an interesting message
-whenever we run our pipeline.
+Up to this point, Snakemake has printed out an interesting message whenever
+we run our pipeline:
 
 ~~~
 Provided cores: 1
@@ -83,11 +82,14 @@ Rules claiming more threads will be scaled down.
 ~~~
 {: .output}
 
-So far, Snakemake has been run with one core.
-Let's scale up our pipeline to run in parallel.
-The only change we need to make is run Snakemake with the `-j` argument.
-`-j` is used to indicate number of CPU cores available,
-and on a cluster, maximum number of jobs (we'll get to that part later).
+So far, Snakemake has been run in single-threaded mode, using just one CPU
+core. This means that even when Snakemake can identify tasks that could run
+at the same time, such as counting words in different books, it still runs
+them one at a time. Let's see how to change that, and scale up our pipeline
+to run in parallel.
+
+The only change we need to make is run Snakemake with the `-j` argument. `-j`
+tells Snakemake the maximum number or CPU cores that it can use.
 
 ~~~
 snakemake clean
@@ -102,20 +104,23 @@ Rules claiming more threads will be scaled down.
 ~~~
 {: .output}
 
-Our pipeline ran in parallel and finished roughly 4 times as quickly!
-The takeaway here is that all we need to do to scale from a
-serial pipeline is run `snakemake` with the `-j` option.
+Our pipeline ran in parallel and finished roughly 4 times as quickly! The
+takeaway here is that all we need to do to scale from a serial pipeline is
+run `snakemake` with the `-j` option. By analysing the dependencies between
+rules, Snakemake automatically identifies which tasks can run at the same
+time. All you need to do is describe your workflow and Snakemake does the
+rest.
 
 > ## How many CPUs does your computer have?
 >
-> Now that we can have our pipeline use multiple CPUs,
-> how do we know how many CPUs to provide to the `-j` option?
-> Note that for all of these options, it's best to use CPU cores,
-> and not CPU threads.
+> Now that our pipeline can use multiple CPUs, how do we know how many CPUs
+> to provide to the `-j` option? Note that for all of these options, it's
+> best to use CPU cores, and not CPU threads.
 >
 > **Linux** - You can use the `lscpu` command.
 >
-> **All platforms** - Python's `psutil` module can be used to fetch the number of cores in your computer.
+> **All platforms** - Python's `psutil` module can be used to fetch
+> the number of cores in your computer.
 > Using `logical=False` returns the number of true CPU cores.
 > `logical=True` gives the number of CPU threads on your system.
 >
@@ -129,21 +134,26 @@ serial pipeline is run `snakemake` with the `-j` option.
 
 ## Managing CPUs
 
-Each rule has a number of optional keywords aside from the usual
-`input`, `output`, and `shell`/`run`.
-The `threads` keyword is used to specify how many CPU cores a rule
-needs while executing.
-Though in reality CPU threads are not quite the same as CPU cores,
-the two terms are interchangeable when working with Snakemake.
+Each rule has a number of optional keywords aside from the usual `input`,
+`output`, and `shell`/`run`. The `threads` keyword is used to specify how
+many CPU cores a rule needs while executing. Though in reality CPU threads
+are not the same as CPU cores, the two terms are interchangeable when working
+with Snakemake.
 
-Let's pretend that our `count_words` rule is actually very CPU-intensive.
-We'll say that it needs a whopping 4 CPUs per run.
-We can specify this with the `threads` keyword in our rule.
-We will also modify the rule to print out the number of threads it thinks it is using.
-Please note that just giving something 4 threads in Snakemake does not make it run in parallel!
-In this case `wordcount.py` is actually still running with 1 core,
-we are simply using it as a demonstration of how to go about
-running something with multiple cores.
+Let's pretend that our `count_words` rule is multithreaded and can run on 4
+CPU cores. We can specify this with the `threads` keyword in our rule. We
+will also modify the rule to print out the number of threads it thinks it is
+using.
+
+> ## Note
+> Please note that just giving something 4 threads in Snakemake does not
+> make it run in parallel! It just tells Snakemake to reserve that number
+> of cores from the total available (indicated by the value passed to `-j`).
+>
+> In this case `wordcount.py` is actually still running with 1 core, we
+> are simply using it as a demonstration of how to go about running
+> something with multiple cores.
+{:.callout}
 
 ~~~
 rule count_words:
@@ -160,11 +170,9 @@ rule count_words:
 ~~~
 {:.language-python}
 
-
-Now, when we run `snakemake -j 4`, the `count_words` rules are run one at a time,
-so as to give each execution the resources it needs.
-All of our other rules will still run in parallel.
-Unless otherwise specified with `{threads}`, rules will use 1 core by default.
+Now, when we run `snakemake -j 4`, the `count_words` rules are run one at a
+time. All of our other rules will still run in parallel. Unless otherwise
+specified with `{threads}`, rules will use 1 core by default.
 
 ~~~
 Provided cores: 4
@@ -193,9 +201,8 @@ Finished job 3.
 ~~~
 {:.output}
 
-
-What happens when we don't have 4 cores available?
-What if we tell Snakemake to run with 2 cores instead?
+What happens when we don't have 4 cores available? What if we tell Snakemake
+to run with 2 cores instead?
 
 ~~~
 snakemake -j 2
@@ -229,24 +236,36 @@ Finished job 6.
 ~~~
 {: .output}
 
-The key bit of output is `Rules claiming more threads will be scaled down.`.
-When Snakemake doesn't have enough cores to run a rule (as defined by `{threads}`),
-Snakemake will run that rule with the maximum available number of cores instead.
-After all, Snakemake's job is to get our workflow done.
-It automatically scales our workload to match the maximum number of cores available
-without us editing the Snakefile.
+The answer is given by `Rules claiming more threads will be scaled down.`.
+When Snakemake doesn't have enough cores to run a rule (as defined by
+`{threads}`), Snakemake will run that rule with the maximum available number
+of cores instead. After all, Snakemake's job is to get our workflow done. It
+automatically scales our workload to match the maximum number of cores
+available without us editing the Snakefile.
+
+> ## Tasks Still Need to Know How Many Cores are Available
+>
+> How the number of threads required by a rule matches the number of cores
+> allowed to Snakemake by the `-j N` argument determines how many instances
+> of that rule Snakemake will run at the same time. It does not mean that
+> the code being executed will magically know what the limits are.
+>
+> In the next section we will see how to get the current number of
+> cores allocated to the action so that it could be passed in as a
+> command-line argument or set to an environment variable.
+{:.callout}
 
 ## Chaining multiple commands
 
-Up until now, all of our commands have fit on one line.
-To execute multiple bash commands, the only modification we need to make
-is use a Python multiline string (begin and end with `'''`)
+Up until now, all of our commands have fit on one line. To execute multiple
+bash commands, the only modification we need to make is use a Python
+multiline string (begin and end with `"""`)
 
-One important addition we should be aware of is the `&&` operator.
-`&&` is a bash operator that runs commands as part of a chain.
-If the first command fails, the remaining steps are not run.
-This is more forgiving than bash's default "hit an error and keep going" behavior.
-After all, if the first command failed, it's unlikely the other steps will work.
+One important addition we should be aware of is the `&&` operator. `&&` is a
+bash operator that runs commands as part of a chain. If the first command
+fails, the remaining steps are not run. This is more forgiving than bash's
+default "hit an error and keep going" behavior. After all, if the first
+command failed, it's unlikely the other steps will work.
 
 ~~~
 # count words in one of our "books"
@@ -257,14 +276,15 @@ rule count_words:
     output: 'dats/{file}.dat'
     threads: 4
     shell:
-        '''
+        """
         echo "Running {input.wc} with {threads} cores on {input.book}." &&
             python {input.wc} {input.book} {output}
-        '''
+        """
 ~~~
 {:.language-python}
 
-
+Notice that we can use the `{threads}` wildcard in the action to access the current
+value of threads.
 
 ## Managing other types of resources
 
