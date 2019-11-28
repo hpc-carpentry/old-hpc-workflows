@@ -11,6 +11,10 @@ keypoints:
 - "Use `threads` to indicate the number of cores used by a rule."
 - "Resources are arbitrary and can be used for anything."
 - "The `&&` operator is a useful tool when chaining bash commands."
+- "While available resources will limit the total number of tasks that
+can execute in parallel, Snakemake will attempt to run at least one
+task even when sufficient resources are not available."
+- "It is up to you to tell code how many resources it should be using."
 ---
 
 After the exercises at the end of our last lesson, our Snakefile looks
@@ -366,6 +370,17 @@ question are unlimited.
 > run `snakemake --resources gpu=1`.
 >
 > What do you think will happen? What actually happens?
+>
+> > ## Solution
+> >
+> > Similar to the case where a rule specifies more threads than are
+> > available, the rule still runs.
+> >
+> > Resource constraints will limit the maximum number of rules that
+> > Snakemake will attempt to run at the same time, but where sufficient
+> > resources are not available, Snakemake will still run at least one
+> > task.
+> {:.solution}
 {:.challenge}
 
 > ## Other uses for `resources`
