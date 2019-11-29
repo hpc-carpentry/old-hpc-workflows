@@ -377,9 +377,9 @@ question are unlimited.
 > > available, the rule still runs.
 > >
 > > Resource constraints will limit the maximum number of rules that
-> > Snakemake will attempt to run at the same time, but where sufficient
-> > resources are not available, Snakemake will still run at least one
-> > task.
+> > Snakemake will attempt to run at the same time, but not the minimum.
+> > Where sufficient resources are not available, Snakemake will still
+> > run at least one task.
 > {:.solution}
 {:.challenge}
 
