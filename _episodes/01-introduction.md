@@ -126,15 +126,6 @@ it    ###########
 ~~~
 {: .output}
 
-`plotcount.py` can also show the plot graphically:
-
-~~~
-python plotcount.py isles.dat show
-~~~
-{: .language-bash}
-
-Close the window to exit the plot.
-
 `plotcount.py` can also create the plot as an image file:
 
 ~~~
@@ -142,7 +133,7 @@ python plotcount.py isles.dat isles.png
 ~~~
 {: .language-bash}
 
-Finally, let's test [Zipf's law][zipf] for these two books:
+Finally, let's test [Zipf's law][ref-zipf] for these two books:
 
 ~~~
 python zipf_test.py abyss.dat isles.dat
