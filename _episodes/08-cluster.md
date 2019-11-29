@@ -8,7 +8,7 @@ objectives:
 - "Understand the Snakemake cluster job submission workflow."
 keypoints:
 - "Snakemake generates and submits its own batch scripts for your scheduler."
-- "`localrules` defines rules that are executed on the Snakemake headnode."
+- "`localrules` defines rules that are executed locally, and never submitted to a cluster."
 - "`$PATH` must be passed to Snakemake rules."
 - "`nohup <command> &` prevents `<command>` from exiting when you log off."
 ---
@@ -211,52 +211,67 @@ localrules: all, clean, make_archive
 
 ## Running our workflow on the cluster
 
-Ok, time for the moment we've all been waiting for - let's run our workflow on the cluster.
-To run our Snakefile, we'll run the following command:
+Ok, time for the moment we've all been waiting for - let's run our workflow
+on the cluster. To run our Snakefile, we'll run the following command:
 
 ~~~
 snakemake -j 100 --cluster-config cluster.json --cluster "sbatch -A {cluster.account} --mem={cluster.mem} -t {cluster.time} -c {threads}"
 ~~~
 {:.language-bash}
 
+While things execute, you may wish to SSH to the cluster in another window so
+you can watch the pipeline's progress with `watch squeue -u $(whoami)`.
 
-While things execute, you may wish to SSH to the cluster in another window so you can watch the pipeline's progress
-with `watch squeue -u $(whoami)`.
+Now, let's dissect the command we just ran:
 
-In the meantime, let's dissect the command we just ran.
+* **`-j 100`** - `-j` no longer controls the number of cores when running on a
+cluster. Instead, it controls the maximum number of jobs that snakemake can
+have submitted at a time. This does not come into play here, but generally a
+sensible default is slightly below the maximum number of jobs you are allowed
+to have submitted at a time on your system.
 
-**`-j 100`** - `-j` no longer controls the number of cores when running on a cluster. Instead, it controls the maximum number of jobs that snakemake can have submitted at a time. This does not come into play here, but generally a sensible default is slightly above the maximum number of jobs you are allowed to have submitted at a time.
+* **`--cluster-config`** - This specifies the location of a JSON file to read
+cluster configuration values from. This should point to the `cluster.json`
+file we wrote earlier.
 
-**`--cluster-config`** - This specifies the location of a JSON file to read cluster configuration values from. This should point to the `cluster.json` file we wrote earlier.
-
-**`--cluster`** - This is the submission command that should be used for the scheduler. Note that command flags that normally are put in batch scripts are put here (most schedulers allow you to add submission flags like this when submitting a job). In this case, all of the values come from our `--cluster-config` file. You can access individual values with `{cluster.propertyName}`. Note that we can still use `{threads}` here.
+* **`--cluster`** - This is the submission command that should be used for the
+scheduler. Note that command flags that normally are put in batch scripts are
+put here (most schedulers allow you to add submission flags like this when
+submitting a job). In this case, all of the values come from our
+`--cluster-config` file. You can access individual values with
+`{cluster.propertyName}`. Note that we can still use `{threads}` here.
+When submitting jobs, Snakemake will use the current value of `threads` given
+in the Snakefile for each rule.
 
 > ## Notes on `$PATH`
 >
-> As with any cluster jobs, jobs started by Snakemake need to have the commands they are running on `$PATH`.
-> For some schedulers (SLURM), no modifications are necessary - variables are passed to the jobs by default.
-> Other schedulers (SGE) need to have this enabled through a command line flag when submitting jobs (`-V` for SGE).
-> If this is possible, just run the `module load` commands you need ahead of the job and run Snakemake as normal.
->
-> If this is not possible, you have several options:
->
-> * You can edit your `.bashrc` file to modify `$PATH` for all jobs and sessions you start on a cluster.
-> * Inserting `shell.prefix('some command')` in a Snakefile means that all rules run will be prefixed by `some_command`. You can use this to modify `$PATH`, eg. `shell.prefix('PATH=/extra/directory:$PATH ')`.
-> * You can modify rules directly to run the appropriate `module load` commands beforehand. This is not recommended, only if because it is more work than the other options available.
+> As with any cluster jobs, jobs started by Snakemake need to have the commands
+> they are running on `$PATH`. For some schedulers (SLURM), no modifications
+> are necessary - variables are passed to the jobs by default. You just need to
+> load all the required environment modules prior to running Snakemake.
+{:.callout}
 
 > ## Submitting a workflow with nohup
 >
-> `nohup some_command &` runs a command in the background and lets it keep running if you log off.
-> Try running the pipeline in cluster mode using `nohup` (run `snakemake clean` beforehand).
+> `nohup some_command &` runs a command in the background and lets it keep
+> running if you log off. Try running the pipeline in cluster mode using
+> `nohup` (run `snakemake clean` beforehand).
+>
 > Where does the Snakemake log go to?
+>
 > Why might this technique be useful?
-> Can we also submit the `snakemake --cluster` pipeline as a job?
-> Where does the Snakemake command run in each scenario?
 >
 > You can kill the running Snakemake process with `killall snakemake`.
 > Notice that if you try to run Snakemake again, it says the directory is locked.
 > You can unlock the directory with `snakemake --unlock`.
 {: .challenge}
+
+> ## Running Snakemake itself as a batch job
+>
+> Can we also submit the `snakemake --cluster` pipeline as a batch job?
+>
+> Is this a good idea? What are some problems of this approach?
+{:.discussion}
 
 [ref-hpc-cluster]: {{ relative_root_path }}/reference#hpc-cluster
 [ref-scheduler]: {{ relative_root_path }}/reference#scheduler
