@@ -51,7 +51,7 @@ current Snakefile is shown below:
 
 FIXME: update to match new sample code
 
-```python
+~~~
 # our zipf analysis pipeline
 DATS = glob_wildcards('books/{book}.txt').book
 
@@ -104,8 +104,8 @@ rule make_archive:
         'results.txt'
     output: 'zipf_analysis.tar.gz'
     shell: 'tar -czvf {output} {input}'
-```
-
+~~~
+{:.language-python}
 
 To run Snakemake on a cluster, we need to tell it how it to submit jobs.
 This is done using the `--cluster` argument.
@@ -122,14 +122,15 @@ The first step will be to transfer our files to the cluster and log on via SSH.
 Snakemake has a powerful archiving utility that we can use to bundle up our workflow and transfer it.
 
 
-```bash
+~~~
 snakemake clean
 tar -czvf pipeline.tar.gz .
 # transfer the pipeline via scp
 scp pipeline.tar.gz yourUsername@graham.computecanada.ca:
 # log on to the cluster
 ssh -X yourUsername@graham.computecanada.ca
-```
+~~~
+{:.language-bash}
 
 > ## `snakemake --archive` and Conda deployment
 >
@@ -149,24 +150,26 @@ ssh -X yourUsername@graham.computecanada.ca
 At this point we've archived our entire pipeline, sent it to the cluster, and logged on.
 Let's create a folder for our pipeline and unpack it there.
 
-```bash
+~~~
 mkdir pipeline
 mv pipeline.tar.gz pipeline
 cd pipeline
 tar -xvzf pipeline.tar.gz
-```
+~~~
+{:.language-bash}
 
 If Snakemake and Python are not already installed on your cluster,
 you can install them using the following commands:
 
-```bash
+~~~
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh -b
 echo 'export PATH=~/miniconda3/bin:~/.local/bin:$PATH' >> ~/.bashrc
 source ~/.bashrc
 conda install -y matplotlib numpy graphviz
 pip install --user snakemake
-```
+~~~
+{:.language-bash}
 
 Assuming you've transferred your files and everything is set to go,
 the command `snakemake -n` should work without errors.
@@ -178,7 +181,7 @@ An example (using SLURM) is shown below.
 You can check to see if your `cluster.json` is valid JSON syntax by pasting its contents into
 the box at [jsonlint.com](https://jsonlint.com).
 
-```
+~~~
 {
     "__default__":
     {
@@ -192,7 +195,8 @@ the box at [jsonlint.com](https://jsonlint.com).
         "mem": "2G"
     }
 }
-```
+~~~
+{:.language-json}
 
 This file has several components.
 The values under `__default__` represents a set of default configuration values
@@ -214,9 +218,10 @@ It would be a better idea to have these rules execute locally
 instead of as a job.
 Let's define `all`, `clean`, and `make_archive` as localrules near the top of our `Snakefile`.
 
-```
+~~~
 localrules: all, clean, make_archive
-```
+~~~
+{:.language-python}
 
 
 ## Running our workflow on the cluster
@@ -224,9 +229,10 @@ localrules: all, clean, make_archive
 Ok, time for the moment we've all been waiting for - let's run our workflow on the cluster.
 To run our Snakefile, we'll run the following command:
 
-```bash
+~~~
 snakemake -j 100 --cluster-config cluster.json --cluster "sbatch -A {cluster.account} --mem={cluster.mem} -t {cluster.time} -c {threads}"
-```
+~~~
+{:.language-bash}
 
 
 While things execute, you may wish to SSH to the cluster in another window so you can watch the pipeline's progress
