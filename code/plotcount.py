@@ -2,13 +2,13 @@
 
 import numpy as np
 import matplotlib
+matplotlib.use("AGG")
 import matplotlib.pyplot as plt
 import sys
 from collections import Sequence
 
 from wordcount import load_word_counts
 
-matplotlib.use("AGG")
 
 
 def plot_word_counts(counts, limit=10):
