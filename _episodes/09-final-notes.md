@@ -44,7 +44,7 @@ Two things before we start:
 * `&>` is a handy operator in bash that redirects both stdout and stderr to a file.
 * `&>>` does the same thing as `&>`, but appends to a file instead of overwriting it.
 
-```python
+~~~
 # count words in one of our "books"
 rule count_words:
     input:
@@ -58,19 +58,21 @@ rule count_words:
         echo "Running {input.wc} with {threads} cores on {input.book}." &> {log}
         python {input.wc} {input.book} {output} &>> {log}
         '''
-```
+~~~
+{:.language-python}
 
-
-```bash
+~~~
 snakemake clean
 snakemake -j 8
 cat dats/abyss.log
-```
+~~~
+{:.language-bash}
 
-```
+
+~~~
 # snakemake output omitted
 Running wordcount.py with 4 cores on books/abyss.txt.
-```
+~~~
 {: .output}
 
 Notice how the pipeline no longer prints to the pipeline's log,
@@ -93,7 +95,7 @@ A token file is simply an empty file that you can create with the touch command
 (`touch some_file.txt` creates an empty file called `some_file.txt`).
 An example rule using this technique is shown below:
 
-```python
+~~~
 rule token_example:
     input:  'some_file.txt'
     output: 'some_file.tkn'   # marks some_file.txt as modified
@@ -102,7 +104,8 @@ rule token_example:
         some_command --do-things {input} &&
             touch {output}
         '''
-```
+~~~
+{:.language-python}
 
 
 ## Directory locks
@@ -131,10 +134,11 @@ This creates a plot of your "directed acyclic graph"
 which you can view using any picture viewing program.
 In fact this was the tool used to create all of the diagrams in this lesson:
 
-```bash
+~~~
 snakemake --dag | dot -Tsvg > dag.svg
 eog dag.svg     # eog is an image viewer installed on many linux systems
-```
+~~~
+{:.language-bash}
 
 ![Example DAG plot](../fig/05-final-dag.svg)
 
@@ -145,9 +149,9 @@ no rules have been run yet.
 
 ## Viewing the GUI
 
-Snakemake has an experimental web browser GUI.
-I personally haven't used it for anything,
-but it's cool to know it's there and can be used to view your workflow on the fly.
+Snakemake has an experimental web browser GUI. I personally haven't used it
+for anything, but it's cool to know it's there and can be used to view your
+workflow on the fly.
 
 `snakemake --gui`
 
