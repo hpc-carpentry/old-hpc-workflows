@@ -18,7 +18,7 @@ keypoints:
 Now that we know how to write and scale a pipeline, here are some tips and
 tricks for making the process go more smoothly.
 
-## `snakemake -n` is your friend
+## dry-run is your friend
 
 Whenever you edit your Snakefile, you should perform a dry-run with
 `snakemake clean && snakemake -n` or `snakemake clean && snakemake --dry-run`
@@ -80,7 +80,7 @@ Running wordcount.py with 4 cores on books/abyss.txt.
 Notice how the pipeline no longer prints to the terminal output, and instead
 redirects to a logfile.
 
-> ## Choosing a good logfile location
+> ## Choosing a good log file location
 >
 > Though you can put a log anywhere (and name it anything),
 > it is often a good practice to put the log in the same directory
