@@ -14,8 +14,10 @@ frequent word, etc.: the rank-frequency distribution is an inverse relation
 (source: [Wikipedia][zipf]).
 
 Build File
-: A build file describes all the steps required to execute or build your code or data.
-The format of the build file depends on the build system being used. Snakemake build files are called Snakefiles, and use Python 3 as the definition language.
+: A build file describes all the steps required to execute or build your code
+or data. The format of the build file depends on the build system being used.
+Snakemake build files are called Snakefiles, and use Python 3 as the
+definition language.
 
 Dependency
 : A file that is needed to build a target. In Snakemake, dependencies are
@@ -26,8 +28,10 @@ Target
 
 Rule
 : Describes how to create outputs from inputs. Dependencies between rules are handled
-implicitly by matching filenames of inputs to outputs. A rule can also contain no inputs or outputs, in which case it simply specifies a command that can be run manually.
-Snakemake rules are composed of inputs, outputs, and an action.
+implicitly by matching filenames of inputs to outputs. A rule can also
+contain no inputs or outputs, in which case it simply specifies a command
+that can be run manually. Snakemake rules are composed of inputs, outputs,
+and an action.
 
 Default Target
 : The first rule in a Snakefile defines the *default target*. This is the target
@@ -56,7 +60,17 @@ Wildcard
 Snakemake matches each wildcard to the regular expression `.+`, although additional
 constraints can be specified. See [the documentation][docs-wildcard] for details.
 
+HPC Cluster
+: An HPC cluster is a collection of many separate servers (computers), called
+nodes, which are connected via a fast interconnect.
+
+Scheduler
+: A job scheduler is a computer application for controlling unattended
+background program execution of jobs.
+(source: [Wikipedia][wiki-scheduler]).
+
 {% include links.md %}
 
 [zipf]: https://en.wikipedia.org/wiki/Zipf%27s_law
+[wiki-scheduler]: https://en.wikipedia.org/wiki/Job_scheduler
 [docs-wildcard]: https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#wildcards

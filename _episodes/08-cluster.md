@@ -13,15 +13,15 @@ keypoints:
 - "`nohup <command> &` prevents `<command>` from exiting when you log off."
 ---
 
-Right now we have a reasonably effective pipeline that scales nicely on our local computer.
-However, for the sake of this course,
-we'll pretend that our workflow actually takes significant computational resources
-and needs to be run on a cluster.
+Right now we have a reasonably effective pipeline that scales nicely on our
+local computer. However, for the sake of this course, we'll pretend that our
+workflow actually takes significant computational resources and needs to be
+run on a [HPC cluster][ref-hpc-cluster].
 
 > ## HPC cluster architecture
 >
-> Most HPC clusters are run using a scheduler.
-> The scheduler is a piece of software that handles which compute jobs are run on which compute nodes and where.
+> Most HPC clusters are run using a [scheduler][ref-scheduler].
+> The scheduler is a piece of software that decides when a job will run, and on which nodes.
 > It allows a set of users to share a shared computing system as efficiently as possible.
 > In order to use it, users typically must write their commands to be run into a shell script
 > and then "submit" it to the scheduler.
@@ -32,20 +32,24 @@ and needs to be run on a cluster.
 > (# of students, time allotted, etc.).
 {: .callout}
 
-Normally, moving a workflow to be run by a cluster scheduler requires a lot of work.
-Batch scripts need to be written, and you'll need to monitor and babysit the status of each of your jobs.
-This is especially difficult if one batch job depends on the output from another.
-Even moving from one cluster to another (especially ones using a different scheduler)
-requires a large investment of time and effort - all the batch scripts from before need to be rewritten.
+Normally, moving a workflow to be run by a cluster scheduler requires a lot
+of work. Batch scripts need to be written, and you'll need to monitor and
+babysit the status of each of your jobs. This is especially difficult if one
+batch job depends on the output from another. Even moving from one cluster to
+another (especially ones using a different scheduler) requires a large
+investment of time and effort - all the batch scripts from before need to be
+rewritten.
 
-Snakemake does all of this for you.
-All details of running the pipeline through the cluster scheduler are handled by Snakemake -
-this includes writing batch scripts, submitting, and monitoring jobs.
-In this scenario, the role of the scheduler is limited to ensuring each Snakemake rule
-is executed with the resources it needs.
+Snakemake does all of this for you. All details of running the pipeline
+through the cluster scheduler are handled by Snakemake - this includes
+writing batch scripts, submitting, and monitoring jobs. In this scenario, the
+role of the scheduler is limited to ensuring each Snakemake rule is executed
+with the resources it needs.
 
-We'll explore how to port our example Snakemake pipeline by example
-Our current Snakefile is shown below:
+We'll explore how to port our example Snakemake pipeline by example. Our
+current Snakefile is shown below:
+
+FIXME: update to match new sample code
 
 ```python
 # our zipf analysis pipeline
@@ -262,5 +266,8 @@ In the meantime, let's dissect the command we just ran.
 > Notice that if you try to run Snakemake again, it says the directory is locked.
 > You can unlock the directory with `snakemake --unlock`.
 {: .challenge}
+
+[ref-hpc-cluster]: {{ relative_root_path }}/reference#hpc-cluster
+[ref-scheduler]: {{ relative_root_path }}/reference#scheduler
 
 {% include links.md %}
