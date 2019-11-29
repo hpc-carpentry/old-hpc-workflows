@@ -17,22 +17,23 @@ keypoints:
 - "Snakemake only executes rules when required."
 ---
 
-There are many different tools that researchers use to automate this type of
-work. Snakemake is a tool to create reproducible and scalable data analyses.
-Workflows are described via a human readable, Python based language.
+Snakemake is one of many tools to automate file-based data processing
+pipelines. It is a tool to create reproducible and scalable data analyses.
+Snakemake workflows are described via a human readable, Python based
+language.
 
 If you have used `make` before, then you will be familiar with much of how
 Snakemake works.
 
 The rest of these lessons aim to teach you how to use Snakemake by example.
-Our goal is to automate our example workflow, and have it do everything for
-us in parallel regardless of where and how it is run (and have it be
-reproducible!).
+Our goal is to automate the example workflow discussed in the previous
+episode, and have it do everything for us in parallel regardless of where and
+how it is run (and have it be reproducible!).
 
 Create a file, called `Snakefile`, with the following content:
 
 ~~~
-# Count words.
+# Count words in one of the books
 rule count_words:
     input: 'books/isles.txt'
     output: 'isles.dat'
@@ -49,19 +50,20 @@ Let us go through each line in turn:
 * `#` denotes a *comment*. Any text from `#` to the end of the line is
 ignored by Snakemake.
 * `isles.dat` is a [target][ref-target], a file to be
-created, or built. In Snakemake, these are also called "outputs".
+created, or built. In Snakemake, these are also called **outputs**.
 * `books/isles.txt` is a [dependency][ref-dependency], a
 file that is needed to build or update the target. Targets can have zero or
-more dependencies. Dependencies in Snakemake are called "inputs".
+more dependencies. Dependencies in Snakemake are called **inputs**.
 * `python wordcount.py books/isles.txt isles.dat` is an
-[action][ref-action], a command to run to build or update the target using
-the dependencies. In this case the action is a set of shell commands (in later episodes we see how to use Python code).
+[action][ref-action], a command that will build or update the target using
+the dependencies. In this case the action is a set of shell commands (in
+later episodes we see how to use Python code).
 * Like python, you can use either tabs or spaces for indentation (don't use both!).
 * Together, the target, dependencies, and actions form a
 [rule][ref-rule]. A rule is a recipe for how to make things.
 
-Our rule above describes how to build the target `isles.dat` using the action
-`python wordcount.py` and the dependency `books/isles.txt`.
+The rule we just created describes how to build the target `isles.dat` using
+the action `python wordcount.py` and the dependency `books/isles.txt`.
 
 Information that was implicit in our shell script - that we are generating a
 file called `isles.dat` and that creating this file requires
@@ -274,17 +276,12 @@ Finished job 0.
 > ~~~
 > {: .output}
 >
-> If we ask Snakemake to build a file that exists but for which there is
-> no rule in our Snakefile, then we get messages like:
->
+> If we ask Snakemake to build a file which does not have a
+> rule in our Snakefile, then we get messages like:
 > ~~~
-> snakemake wordcount.py
-> ~~~
->{: .language-bash}
->
-> ~~~
+> $ snakemake books/what.txt
 > MissingRuleException:
-> No rule to produce wordcount.py (if you use input functions make sure that they don't raise unexpected exceptions).
+> No rule to produce books/what.txt (if you use input functions make sure that they don't raise unexpected exceptions).
 > ~~~
 > {: .output}
 >
@@ -296,9 +293,11 @@ Finished job 0.
 We may want to remove all our data files so we can explicitly recreate them
 all. We can introduce a new target, and associated rule, to do this. We will
 call it `clean`, as this is a common name for rules that delete
-auto-generated files, like our `.dat` files:
+auto-generated files, like our `.dat` files. Add the following rule to the
+start of your Snakefile.
 
 ~~~
+# delete everything so we can re-run things
 rule clean:
     shell: 'rm -f *.dat'
 ~~~
@@ -433,18 +432,15 @@ rule dats:
          'isles.dat',
          'abyss.dat'
 
-
 # delete everything so we can re-run things
 rule clean:
     shell:  'rm -f *.dat'
 
-
-# count words in one of our "books"
+# Count words in one of the books
 rule count_words:
     input: 	'books/isles.txt'
     output: 'isles.dat'
     shell: 	'python wordcount.py books/isles.txt isles.dat'
-
 
 rule count_words_abyss:
     input: 	'books/abyss.txt'
@@ -473,17 +469,23 @@ snakemake -n -p isles.dat
 {: .language-bash}
 
 ~~~
+Building DAG of jobs...
+Job counts:
+	count	jobs
+	1	count_words
+	1
+
 rule count_words:
-    input: wordcount.py, books/isles.txt
+    input: books/isles.txt
     output: isles.dat
     jobid: 0
-    wildcards: file=isles
 
 python wordcount.py books/isles.txt isles.dat
 Job counts:
 	count	jobs
 	1	count_words
 	1
+This was a dry-run (flag -n). The order of jobs does not reflect the order of execution.
 ~~~
 {: .output}
 
@@ -514,5 +516,6 @@ within the Snakefile")
 [ref-dependency]: {{ relative_root_path }}/reference#dependency
 [ref-default-target]: {{ relative_root_path }}/reference#default-target
 [ref-action]: {{ relative_root_path }}/reference#action
+[snakemake]: https://snakemake.readthedocs.io/en/stable/
 
 {% include links.md %}
