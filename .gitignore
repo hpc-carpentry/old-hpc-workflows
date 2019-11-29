@@ -20,3 +20,4 @@ code/Pipfile.lock
 commands-local.mk
 code/*.dat
 code/*.png
+code/results.txt
