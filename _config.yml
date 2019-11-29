@@ -14,7 +14,7 @@ title: "Getting Started with Snakemake"
 
 # Life cycle stage of the lesson
 # possible values: "pre-alpha", "alpha", "beta", "stable"
-life_cycle: "pre-alpha"
+life_cycle: "alpha"
 
 # Lesson issues
 issues: "https://github.com/csiro-data-school/workflows/issues"
