@@ -491,14 +491,58 @@ This was a dry-run (flag -n). The order of jobs does not reflect the order of ex
 
 > ## Write Two New Rules
 >
-> 1. Write a new rule for `last.dat`, created from `books/last.txt`.
+> 1. Write a new rule for creating `last.dat` from `books/last.txt`. Call the rule
+> `count_words_last`.
 > 2. Update the `dats` rule with this target.
-> 3. Write a new rule for `results.txt`, which creates the summary
->    table. The rule needs to:
+> 3. Write a new rule called `zipf_test` to write the summary table to `results.txt`.
+> The rule needs to:
 >    * Depend upon each of the three `.dat` files.
 >    * Invoke the action `python zipf_test.py abyss.dat isles.dat last.dat > results.txt`.
-> 4. Put this rule at the top of the Snakefile so that it is the default target.
-> 5. Update `clean` so that it removes `results.txt`.
+>    * Be the default target.
+> 4. Update `clean` so that it removes `results.txt`.
+>
+> > ## Solution
+> >
+> > Here is one solution. You can also find this in the solutions directory
+> > as `.solutions/episode_02/Snakefile`.
+> >
+> > ~~~
+> > rule zipf_test:
+> >     input:
+> >         'isles.dat',
+> >         'abyss.dat',
+> >         'last.dat'
+> >     output: 'results.txt'
+> >     shell: 'python zipf_test.py abyss.dat isles.dat last.dat > results.txt'
+> >
+> > rule dats:
+> >     input:
+> >         'isles.dat',
+> >         'abyss.dat',
+> >         'last.dat'
+> >
+> > # delete everything so we can re-run things
+> > rule clean:
+> >     shell: 'rm -f *.dat results.txt'
+> >
+> > # Count words in one of the books
+> > rule count_words:
+> >     input: 'books/isles.txt'
+> >     output: 'isles.dat'
+> >     shell: 'python wordcount.py books/isles.txt isles.dat'
+> >
+> > rule count_words_abyss:
+> >     input: 'books/abyss.txt'
+> >     output: 'abyss.dat'
+> >     shell: 'python wordcount.py books/abyss.txt abyss.dat'
+> >
+> > rule count_words_last:
+> >     input: 'books/last.txt'
+> >     output: 'last.dat'
+> >     shell: 'python wordcount.py books/last.txt last.dat'
+> > ~~~
+> > {:.language-python}
+> {:.solution}
 {: .challenge}
 
 The following figure shows the dependencies embodied within our Snakefile,
