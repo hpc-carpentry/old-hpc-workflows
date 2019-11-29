@@ -107,20 +107,21 @@ rule make_archive:
 ~~~
 {:.language-python}
 
-To run Snakemake on a cluster, we need to tell it how it to submit jobs.
-This is done using the `--cluster` argument.
-In this configuration, Snakemake runs on the cluster headnode and submits jobs.
-Each cluster job executes a single rule and then exits.
-Snakemake detects the creation of output files,
-and submits new jobs (rules) once their dependencies are created.
+To run Snakemake on a cluster, we need to tell it how it to submit jobs. This
+is done using the `--cluster` argument. In this configuration, Snakemake runs
+on the cluster login node and submits jobs. Each cluster job executes a single
+rule and then exits. Snakemake detects the creation of output files, and
+submits new jobs (rules) once their dependencies are created.
 
 ## Transferring our workflow
 
-Let's port our workflow to Compute Canada's Graham cluster as an example
-(you will probably be using a different cluster, adapt these instructions to your cluster).
-The first step will be to transfer our files to the cluster and log on via SSH.
-Snakemake has a powerful archiving utility that we can use to bundle up our workflow and transfer it.
+FIXME: change to a CSIRO system (pearcey?)
 
+Let's port our workflow to Compute Canada's Graham cluster as an example (you
+will probably be using a different cluster, adapt these instructions to your
+cluster). The first step will be to transfer our files to the cluster and log
+on via SSH. Snakemake has a powerful archiving utility that we can use to
+bundle up our workflow and transfer it.
 
 ~~~
 snakemake clean
@@ -132,23 +133,8 @@ ssh -X yourUsername@graham.computecanada.ca
 ~~~
 {:.language-bash}
 
-> ## `snakemake --archive` and Conda deployment
->
-> Snakemake has a built-in method to archive all input files
-> and scripts under version control: `snakemake --archive`.
-> What's more, it also installs any required dependencies if they can be installed
-> using Anaconda's `conda` package manager.
-> You can use this feature for this tutorial
-> (I've already added all of the files to version control for you),
-> but if you want to use this feature in your own work,
-> you should familiarize yourself with a VCS tool like Git.
->
-> For more information on how to use this feature, see
-> [http://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html](http://snakemake.readthedocs.io/en/stable/snakefiles/deployment.html)
-{: .callout}
-
-At this point we've archived our entire pipeline, sent it to the cluster, and logged on.
-Let's create a folder for our pipeline and unpack it there.
+At this point we've archived our entire pipeline, sent it to the cluster, and
+logged on. Let's create a folder for our pipeline and unpack it there.
 
 ~~~
 mkdir pipeline
@@ -158,8 +144,10 @@ tar -xvzf pipeline.tar.gz
 ~~~
 {:.language-bash}
 
-If Snakemake and Python are not already installed on your cluster,
-you can install them using the following commands:
+FIXME: for pearcey, snakemake is installed, so direct to the appropriate module
+
+If Snakemake and Python are not already installed on your cluster, you can
+install them using the following commands:
 
 ~~~
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
@@ -171,24 +159,23 @@ pip install --user snakemake
 ~~~
 {:.language-bash}
 
-Assuming you've transferred your files and everything is set to go,
-the command `snakemake -n` should work without errors.
+Assuming you've transferred your files and everything is set to go, the
+command `snakemake -n` should work without errors.
 
 ## Cluster configuration with `cluster.json`
 
-Snakemake uses a JSON-formatted configuration file to retrieve cluster submission parameters.
-An example (using SLURM) is shown below.
-You can check to see if your `cluster.json` is valid JSON syntax by pasting its contents into
-the box at [jsonlint.com](https://jsonlint.com).
+Snakemake uses a JSON-formatted configuration file to retrieve cluster
+submission parameters. An example (using SLURM) is shown below. You can check
+to see if your `cluster.json` is valid JSON syntax by pasting its contents
+into the box at [jsonlint.com](https://jsonlint.com).
 
 ~~~
 {
     "__default__":
     {
-        "account": "a_slurm_submission_account",
-        "mem": "1G",
-        "time": "0:5:0"
-    },
+        "time": "0:5:0",
+        "mem": "1G"
+	},
     "count_words":
     {
         "time": "0:10:0",
@@ -198,31 +185,29 @@ the box at [jsonlint.com](https://jsonlint.com).
 ~~~
 {:.language-json}
 
-This file has several components.
-The values under `__default__` represents a set of default configuration values
-that will be used for all rules.
-The defaults won't always be perfect, however -
-chances are some rules may need to run with non-default amounts of memory or time limits.
-We are using the `count_words` rule as an example of this.
-In this case, `count_words` has its own custom values for `time` and `mem` (just as an example).
-`{rule}` and `{wildcards}` are special wildcards that you can use here that
-correspond to the rule name and rule's wildcards, respectively
-(if you choose to use `{wildcards}`, make sure it has a value!).
+This file has several components. The values under `__default__` represent a
+set of default configuration values that will be used for all rules. The
+defaults won't always be perfect, however - chances are some rules may need
+to run with non-default amounts of memory, cores, or time limits. We are
+using the `count_words` rule as an example of this.
+
+This is sufficient configuration for these exercises. For more information,
+please consult the [Cluster Configuration][cluster-config-docs] documentation.
 
 ## Local rule execution
 
-Some Snakemake rules perform trivial tasks where job submission might be overkill
-(i.e. less than 1 minute worth of compute time).
-It would be a better idea to have these rules execute locally
-(i.e. where the `snakemake` command is run)
-instead of as a job.
-Let's define `all`, `clean`, and `make_archive` as localrules near the top of our `Snakefile`.
+Some Snakemake rules perform trivial tasks where job submission might be
+overkill (i.e. less than 1 minute worth of compute time). It would be a
+better idea to have these rules execute locally (i.e. where the `snakemake`
+command is run) instead of as a job. Snakemake lets you indicate which rules
+should run always run locally with the `localrules` keyword. Let's define
+`all`, `clean`, and `make_archive` as local rules near the top of our
+`Snakefile`.
 
 ~~~
 localrules: all, clean, make_archive
 ~~~
 {:.language-python}
-
 
 ## Running our workflow on the cluster
 
@@ -275,5 +260,6 @@ In the meantime, let's dissect the command we just ran.
 
 [ref-hpc-cluster]: {{ relative_root_path }}/reference#hpc-cluster
 [ref-scheduler]: {{ relative_root_path }}/reference#scheduler
+[cluster-config-docs]: https://snakemake.readthedocs.io/en/stable/snakefiles/configuration.html#cluster-configuration
 
 {% include links.md %}
