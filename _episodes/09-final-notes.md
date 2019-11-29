@@ -5,38 +5,39 @@ exercises: 15
 questions:
 - "What are some tips and tricks I can use to make this easier?"
 objectives:
-- "Understand how to make a DAG graph."
+- "Understand how to visualise your workflow."
 keypoints:
 - "Token files can be used to take the place of output files if none are created."
 - "`snakemake --dag | dot -Tsvg > dag.svg` creates a graphic of your workflow."
 - "`snakemake --gui` opens a browser window with your workflow."
 ---
 
-Now that we know how to write and scale a pipeline,
-here are some tips and tricks for making the process go more smoothly.
+Now that we know how to write and scale a pipeline, here are some tips and
+tricks for making the process go more smoothly.
 
 ## `snakemake -n` is your friend
 
-Whenever you edit your Snakefile, run `snakemake -n` immediately afterwards.
-This will check for errors and make sure that the pipeline is able to run.
+Whenever you edit your Snakefile, you should perform a dry-run with
+`snakemake clean && snakemake -n` or `snakemake clean && snakemake --dry-run`
+immediately afterwards. This will check for errors and make sure that the
+pipeline is able to run. The clean is required to force the dry run to test
+the entire pipeline.
 
-The most common source of errors is a mismatch in filenames
-(Snakemake doesn't know how to produce a particular output file) -
-`snakemake -n` will catch this as long as the troublesome output files haven't already been made.
+The most common source of errors is a mismatch in filenames (Snakemake
+doesn't know how to produce a particular output file) - `snakemake -n` will
+catch this as long as the troublesome output files haven't already been made.
 
 ## Configuring logging
 
 By default, Snakemake prints all output from stderr and stdout from rules.
-This is useful, but if a failure occurs (or we otherwise need to inspect the logs)
-it can be extremely difficult to determine what happened
-or which rule had an issue,
-especially when running in parallel.
+This is useful, but if a failure occurs (or we otherwise need to inspect the
+logs) it can be extremely difficult to determine what happened or which rule
+had an issue, especially when running in parallel.
 
-The solution to this issue is to redirect the output from each rule/
-set of inputs to a dedicated logfile.
-We can do this using the `log` keyword.
-Let's modify our `count_words` rule to be slighly more verbose and redirect
-this output to a dedicated logfile.
+The solution to this issue is to redirect the output from each rule/ set of
+inputs to a dedicated logfile. We can do this using the `log` keyword. Let's
+modify our `count_words` rule to be slighly more verbose and redirect this
+output to a dedicated logfile.
 
 Two things before we start:
 
