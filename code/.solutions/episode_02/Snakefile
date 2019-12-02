@@ -1,3 +1,4 @@
+# Generate summary table
 rule zipf_test:
     input:
         'isles.dat',

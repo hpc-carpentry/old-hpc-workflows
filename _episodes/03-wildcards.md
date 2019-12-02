@@ -21,34 +21,40 @@ is executed if the code or script changes."
 After the exercise at the end of the previous episode, our Snakefile looked like this:
 
 ~~~
-# generate summary table
+# Generate summary table
 rule zipf_test:
-    input:  'abyss.dat', 'last.dat', 'isles.dat'
+    input:
+        'isles.dat',
+        'abyss.dat',
+        'last.dat'
     output: 'results.txt'
-    shell:  'python zipf_test.py abyss.dat isles.dat last.dat > results.txt'
+    shell: 'python zipf_test.py abyss.dat isles.dat last.dat > results.txt'
 
 rule dats:
-     input: 'isles.dat', 'abyss.dat', 'last.dat'
+    input:
+        'isles.dat',
+        'abyss.dat',
+        'last.dat'
 
 # delete everything so we can re-run things
 rule clean:
-    shell:  'rm -f *.dat results.txt'
+    shell: 'rm -f *.dat results.txt'
 
-# count words in one of our "books"
+# Count words in one of the books
 rule count_words:
-    input: 	'books/isles.txt'
+    input: 'books/isles.txt'
     output: 'isles.dat'
-    shell: 	'python wordcount.py books/isles.txt isles.dat'
+    shell: 'python wordcount.py books/isles.txt isles.dat'
 
 rule count_words_abyss:
-    input: 	'books/abyss.txt'
+    input: 'books/abyss.txt'
     output: 'abyss.dat'
-    shell: 	'python wordcount.py books/abyss.txt abyss.dat'
+    shell: 'python wordcount.py books/abyss.txt abyss.dat'
 
 rule count_words_last:
-    input: 	'books/last.txt'
+    input: 'books/last.txt'
     output: 'last.dat'
-    shell: 	'python wordcount.py books/last.txt last.dat'
+    shell: 'python wordcount.py books/last.txt last.dat'
 ~~~
 {: .language-python}
 
@@ -62,8 +68,8 @@ Snakefile but forget to rename it elsewhere).
 >
 > In many programming languages, the bulk of the language features are
 > there to allow the programmer to describe long-winded computational
-> routines as short, expressive, beautiful code.  Features in Python
-> or R or Java, such as user-defined variables and functions are useful in
+> routines as short, expressive, beautiful code.  Features in Python,
+> R, or Java, such as user-defined variables and functions are useful in
 > part because they mean we don't have to write out (or think about)
 > all of the details over and over again.  This good habit of writing
 > things out only once is known as the "Don't Repeat Yourself"
@@ -77,11 +83,11 @@ name of the results file name:
 ~~~
 rule zipf_test:
     input:
-            'abyss.dat',
-            'last.dat',
-            'isles.dat'
+        'isles.dat',
+        'abyss.dat',
+        'last.dat'
     output: 'results.txt'
-    shell:  'python zipf_test.py abyss.dat isles.dat last.dat > results.txt'
+    shell: 'python zipf_test.py abyss.dat isles.dat last.dat > results.txt'
 ~~~
 {: .language-python}
 
@@ -96,8 +102,8 @@ rule zipf_test:
 ~~~
 {: .language-python}
 
-`{output}` is a Snakemake [wildcard]({{ page.root }}/reference/#automatic-variable)
-which is equivalent to the value we specified for the rule output.
+`{output}` is a Snakemake [wildcard][ref-wildcard] which is equivalent to the
+value we specified for the rule output.
 
 We can replace the dependencies in the action with `{input}`:
 
@@ -396,5 +402,7 @@ triggers rerunning the appropriate downstream steps.
 > > FIXME: Add solution snakefile for this stage.
 > {: .solution}
 {: .challenge}
+
+[ref-wildcard]: {{ relative_root_path }}/reference#wildcard
 
 {% include links.md %}
