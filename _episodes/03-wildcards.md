@@ -82,10 +82,7 @@ name of the results file name:
 
 ~~~
 rule zipf_test:
-    input:
-        'isles.dat',
-        'abyss.dat',
-        'last.dat'
+    input:  'abyss.dat', 'last.dat', 'isles.dat'
     output: 'results.txt'
     shell: 'python zipf_test.py abyss.dat isles.dat last.dat > results.txt'
 ~~~
@@ -213,6 +210,9 @@ As we saw, `{input}` means 'all the dependencies of the current rule'. This
 works well for `results.txt` as its action treats all the dependencies the
 same - as the input for the `zipf_test.py` script.
 
+Time for you to update all the rules that build a `.dat` file to use the
+`{input}` and `{output}` wildcards.
+
 > ## Rewrite `.dat` rules to use wildcards
 >
 > Rewrite each `.dat` rule to use the `{input}` and `{output}` wildcards.
@@ -230,26 +230,23 @@ same - as the input for the `zipf_test.py` script.
 
 ## Handling dependencies differently
 
-For many rules, we may want to treat some dependencies differently. For
+For many rules, we will need to make finer distinctions between inputs. It is
+not always appropriate to pass all inputs as a lump to your action. For
 example, our rules for `.dat` use their first (and only) dependency
 specifically as the input file to `wordcount.py`. If we add additional
 dependencies (as we will soon do) then we don't want these being passed as
-input files to `wordcount.py` as it expects just one input file.
+input files to `wordcount.py`: it expects just one input file.
 
-Snakemake provides several solutions to this. Depending on what we want to
-do, it's possible to both index and name our wildcards. You should select
-whichever method leads to the clearest code.
-
-We need to add `wordcount.py` as a dependency of each of our data files so
-that the rules will be executed if the script changes. In this case, we can
-use `{input[0]}` to refer to the first dependency, and `{input[1]}` to refer
-to the second.
+Let's see this in action. We need to add `wordcount.py` as a dependency of
+each of our data files so that the rules will be executed if the script
+changes. In this case, we can use `{input[0]}` to refer to the first
+dependency, and `{input[1]}` to refer to the second.
 
 ~~~
 rule count_words:
-    input: 	'wordcount.py', 'books/isles.txt'
+    input: 'wordcount.py', 'books/isles.txt'
     output: 'isles.dat'
-    shell: 	'python {input[0]} {input[1]} {output}'
+    shell: 'python {input[0]} {input[1]} {output}'
 ~~~
 {: .language-python}
 
@@ -258,14 +255,14 @@ Alternatively, we can name our dependencies.
 ~~~
 rule count_words_abyss:
     input:
-        wc='wordcount.py',
+        cmd='wordcount.py',
         book='books/abyss.txt'
     output: 'abyss.dat'
-    shell: 	'python {input.wc} {input.book} {output}'
+    shell: 'python {input.cmd} {input.book} {output}'
 ~~~
 {: .language-python}
 
-Let's mark `wordcount.py` as updated, and re-run the pipeline.
+Let's mark `wordcount.py` as updated, and re-run the pipeline:
 
 ~~~
 touch wordcount.py
@@ -313,7 +310,7 @@ Notice how `last.dat` (which does not depend on `wordcount.py`) is not
 rebuilt.
 
 Intuitively, we should also add `wordcount.py` as dependency for
-`results.txt`, as the final table should be rebuilt as we remake the `.dat`
+`results.txt`, as the final table should be rebuilt if we remake the `.dat`
 files. However, it turns out we don't have to! Let's see what happens to
 `results.txt` when we update `wordcount.py`:
 
