@@ -1,19 +1,20 @@
 ---
 title: "Pattern Rules"
 teaching: 15
-exercises: 0
+exercises: 5
 questions:
 - "How can I define rules to operate on similar files?"
 objectives:
 - "Write Snakemake pattern rules."
 keypoints:
-- "Use any named wildcard (`{some_name}`) as a placeholder in targets and dependencies."
+- "Use any named wildcard (`{some_name}`) as a placeholder in targets and dependencies.
+Snakemake will apply the pattern rule to all matching files."
 ---
 
 Our Snakefile still has a ton of repeated content. The rules for each `.dat`
 file all follow a consistent pattern. We can replace these rules with a
-single [pattern rule][ref-pattern-rule] which can be
-used to build any `.dat` file from a `.txt` file in `books/`:
+single [pattern rule][ref-pattern-rule] which can be used to build any `.dat`
+file from a `.txt` file in `books/`:
 
 ~~~
 rule count_words:
@@ -21,7 +22,7 @@ rule count_words:
         wc='wordcount.py',
         book='books/{file}.txt'
     output: '{file}.dat'
-    shell: 	'python {input.wc} {input.book} {output}'
+    shell: 'python {input.wc} {input.book} {output}'
 ~~~
 {: .language-python}
 
@@ -88,17 +89,16 @@ Our Snakefile is now much shorter and cleaner:
 ~~~
 # generate summary table
 rule zipf_test:
-    input:  'zipf_test.py', 'abyss.dat', 'last.dat', 'isles.dat'
+    input: 'zipf_test.py', 'abyss.dat', 'last.dat', 'isles.dat'
     output: 'results.txt'
-    shell:  'python {input[0]} {input[1]} {input[2]} {input[3]} > {output}'
+    shell: 'python {input[0]} {input[1]} {input[2]} {input[3]} > {output}'
 
 rule dats:
-     input:
-         'isles.dat', 'abyss.dat', 'last.dat'
+     input: 'isles.dat', 'abyss.dat', 'last.dat'
 
 # delete everything so we can re-run things
 rule clean:
-    shell:  'rm -f *.dat results.txt'
+    shell: 'rm -f *.dat results.txt'
 
 # count words in one of our "books"
 rule count_words:
@@ -106,9 +106,15 @@ rule count_words:
         wc='wordcount.py',
         book='books/{file}.txt'
     output: '{file}.dat'
-    shell: 	'python {input.wc} {input.book} {output}'
+    shell: 'python {input.wc} {input.book} {output}'
 ~~~
 {: .language-python}
+
+> ## Please update your Snakefile
+>
+> If you haven't already done so, please update your Snakefile
+> to use the single pattern rule `count_words`.
+{:.challenge}
 
 [ref-pattern-rule]: {{ relative_root_path }}/reference#pattern-rule
 [ref-wildcard]: {{ relative_root_path }}/reference#wildcard
