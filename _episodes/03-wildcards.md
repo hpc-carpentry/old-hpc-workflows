@@ -220,9 +220,9 @@ Time for you to update all the rules that build a `.dat` file to use the
 > > Only one rule is shown here, the others follow the same pattern:
 > > ~~~
 > > rule count_words:
-> >     input: 	'books/isles.txt'
+> >     input: 'books/isles.txt'
 > >     output: 'isles.dat'
-> >     shell: 	'python wordcount.py {input} {output}'
+> >     shell: 'python wordcount.py {input} {output}'
 > > ~~~
 > > {: .language-python}
 > {: .solution}
@@ -388,15 +388,28 @@ triggers rerunning the appropriate downstream steps.
 > {: .solution}
 {: .challenge}
 
-> ## More dependencies
+> ## Update `count_words_last` to depend on `wordcount.py`
 >
-> Add zipf_test.py as a dependency of `results.txt`
-> Which method do you prefer here, indexing or named input files?
+> Use either indexed or named inputs.
+{: .challenge}
+
+> ## Updating `zipf_test` rule
+>
+> Add `zipf_test.py` as a dependency of `results.txt`
+> We haven't yet covered the techniques required to do this with named wildcards
+> so you will have to use indexing.
 > Yes, this will be clunky, but we'll fix that part later!
 > Remember that you can do a dry run with `snakemake -n -p`!
 >
 > > ## Solution
-> > FIXME: Add solution snakefile for this stage.
+> >
+> >~~~
+> > rule zipf_test:
+> >     input:  'zipf_test.py', 'isles.dat', 'abyss.dat', 'last.dat'
+> >     output: 'results.txt'
+> >     shell:  'python {input[0]} {input[1]} {input[2]} {input[3]} > {output}'
+> >~~~
+> >{:.language-python}
 > {: .solution}
 {: .challenge}
 

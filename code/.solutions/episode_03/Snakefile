@@ -1,0 +1,32 @@
+# Generate summary table
+rule zipf_test:
+    input:  'zipf_test.py', 'isles.dat', 'abyss.dat', 'last.dat'
+    output: 'results.txt'
+    shell:  'python {input[0]} {input[1]} {input[2]} {input[3]} > {output}'
+
+rule dats:
+    input: 'isles.dat', 'abyss.dat', 'last.dat'
+
+# delete everything so we can re-run things
+rule clean:
+    shell: 'rm -f *.dat results.txt'
+
+# Count words in one of the books
+rule count_words:
+    input: 'wordcount.py', 'books/isles.txt'
+    output: 'isles.dat'
+    shell: 'python {input[0]} {input[1]} {output}'
+
+rule count_words_abyss:
+    input:
+        cmd='wordcount.py',
+        book='books/abyss.txt'
+    output: 'abyss.dat'
+    shell: 'python {input.cmd} {input.book} {output}'
+
+rule count_words_last:
+    input:
+        cmd='wordcount.py',
+        book='books/last.txt'
+    output: 'last.dat'
+    shell: 'python {input.cmd} {input.book} {output}'
