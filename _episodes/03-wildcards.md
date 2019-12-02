@@ -1,7 +1,7 @@
 ---
 title: "Wildcards"
 teaching: 30
-exercises: 15
+exercises: 20
 questions:
 - "How can I abbreviate the rules in my pipeline?"
 objectives:
