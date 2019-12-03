@@ -37,9 +37,9 @@ try a list:
 rule zipf_test:
     input:
         cmd='zipf_test.py',
-        books=['abyss.dat', 'last.dat', 'isles.dat']
+        dats=['abyss.dat', 'last.dat', 'isles.dat']
     output: 'results.txt'
-    shell: 'python {input.cmd} {input.books} > {output}'
+    shell: 'python {input.cmd} {input.dats} > {output}'
 ~~~
 {: .language-python}
 
@@ -75,9 +75,9 @@ DATS=['abyss.dat', 'last.dat', 'isles.dat']
 rule zipf_test:
     input:
         cmd='zipf_test.py',
-        books=DATS
+        dats=DATS
     output: 'results.txt'
-    shell: 'python {input.cmd} {input.books} > {output}'
+    shell: 'python {input.cmd} {input.dats} > {output}'
 
 rule dats:
     input: DATS
