@@ -215,7 +215,7 @@ multiple rules are a good fit for Python code that lives outside the rules.
 
 ## Using functions in Snakefiles
 
-In our example here, we only have 4 books, and just 3 are being processed.
+In our example here, we only have 4 books (and just 3 are being processed).
 But what if we had 700 books to be processed? It would be a massive effort to
 update our `DATS` variable to add the name of every single book's
 corresponding `.dat` filename.
@@ -311,8 +311,17 @@ glob_wildcards('books/{example}.txt').example
 > Using the `expand()` and `glob_wildcards()` functions,
 > modify the pipeline so that it automatically detects and analyzes
 > all the files in the `books/` folder.
+>
+> > ## Hint
+> > Use `expand()` and `glob_wildcards()` together to create the value of `DATS`.
+> {:.solution}
+>
 > > ## Solution
-> > FIXME: add solution code
+> >
+> >~~~
+> >DATS = expand('{file}.dat', file=glob_wildcards('./books/{book}.txt').book)
+> >~~~
+> >{:.language-python}
 > {: .solution}
 {: .challenge}
 
