@@ -1,7 +1,7 @@
 ---
 title: "Snakefiles are Python code"
 teaching: 30
-exercises: 15
+exercises: 25
 questions:
 - "How can I automatically manage dependencies and outputs?"
 - "How can I use Python code to add features to my pipeline?"
@@ -29,17 +29,17 @@ rule zipf_test:
 ~~~
 {: .language-python}
 
-First, let's try to improve the "shell" rule. One thing you've probably
-noticed is that all of our rules are using Python strings. Other data
-structures work too - let's try a list:
+Let's try to improve this rule. One thing you've probably noticed is that all
+of our rules are using Python strings. Other data structures work too - let's
+try a list:
 
 ~~~
 rule zipf_test:
     input:
-        zipf='zipf_test.py',
+        cmd='zipf_test.py',
         books=['abyss.dat', 'last.dat', 'isles.dat']
     output: 'results.txt'
-    shell:  'python {input.zipf} {input.books} > {output}'
+    shell: 'python {input.cmd} {input.books} > {output}'
 ~~~
 {: .language-python}
 
@@ -74,18 +74,26 @@ DATS=['abyss.dat', 'last.dat', 'isles.dat']
 # generate summary table
 rule zipf_test:
     input:
-        zipf='zipf_test.py',
+        cmd='zipf_test.py',
         books=DATS
     output: 'results.txt'
-    shell:  'python {input.zipf} {input.books} > {output}'
+    shell: 'python {input.cmd} {input.books} > {output}'
 
 rule dats:
     input: DATS
 ~~~
 {: .language-python}
 
-Try recreating both the `dats` and `results.txt` targets (run `snakemake
-clean` in between).
+Great! One more step towards reducing code duplication. Now there is just
+one place to update the list of files to process.
+
+> ## Update your Snakefile
+>
+> Update your Snakefile with the `DATS` global variable.
+>
+> Try recreating both the `dats` and `results.txt` targets
+> (run `snakemake clean` in between).
+{:.challenge}
 
 ## When are Snakefiles executed?
 
@@ -197,19 +205,20 @@ Nothing to be done.
 {: .output}
 
 In every case, the `print()` statement ran before any of the actual pipeline
-code. What we can take away from this is that Snakemake executes the
-entire Snakefile every time we run `snakemake`, even for a dry-run.
-Because of this we need to be careful and only put tasks that do
-"real work" (changing files on disk) inside rules.
+code. What we can take away from this is that Snakemake executes the entire
+Snakefile every time we run `snakemake`, even for a dry-run. Because of this
+we need to be careful and only put tasks that do "real work" (changing files
+on disk) inside rules.
 
 Common tasks, such as building lists of input files that will be reused in
 multiple rules are a good fit for Python code that lives outside the rules.
 
 ## Using functions in Snakefiles
 
-In our example here, we only have 4 books. But what if we had 700 books to be
-processed? It would be a massive effort to update our `DATS` variable to add
-the name of every single book's corresponding `.dat` filename.
+In our example here, we only have 4 books, and just 3 are being processed.
+But what if we had 700 books to be processed? It would be a massive effort to
+update our `DATS` variable to add the name of every single book's
+corresponding `.dat` filename.
 
 Fortunately, Snakemake ships with several functions that make working with
 large numbers of files much easier. The two most helpful ones are
@@ -241,9 +250,8 @@ from snakemake.io import *
 
 ### Generating file names with expand()
 
-The first function we'll use is `expand()`.
-`expand()` is used quite literally,
-to expand snakemake wildcards into a set of filenames:
+The first function we'll use is `expand()`. `expand()` is used quite
+literally, to expand snakemake wildcards into a set of filenames:
 
 ~~~
 expand('folder/{wildcard1}_{wildcard2}.txt', wildcard1=['a', 'b', 'c'], wildcard2=[1, 2, 3])
@@ -264,13 +272,13 @@ expand('folder/{wildcard1}_{wildcard2}.txt', wildcard1=['a', 'b', 'c'], wildcard
 {: .output}
 
 In this case, `expand()` created every possible combination of filenames from
-the two wildcards. Nice! Of course, this still leaves us needing somehow
-get the values for `wildcard1` and `wildcard2` in the first place.
+the two wildcards. Nice! Of course, this still leaves us needing to get the
+values for `wildcard1` and `wildcard2` in the first place.
 
 ### Get wildcard values with glob_wildcards()
 
 To get a set of wildcards from a list of files, we can use the
-`glob_wildcards()` function. It matches the given pattern against file names
+`glob_wildcards()` function. It matches the given pattern against files
 on the file system, returning a named tuple containing all the matches. Let's
 try grabbing all of the book titles in our `books` folder:
 
