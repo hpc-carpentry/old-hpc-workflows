@@ -451,9 +451,7 @@ rule count_words_abyss:
 
 The following figure shows a graph of the dependencies embodied within our
 Snakefile, involved in building the `dats` target:
-
-![Dependencies represented within the Snakefile](../fig/02-dats-dag.svg
-"Dependencies represented within the Snakefile")
+![Dependencies represented within the Snakefile][fig-dats]
 
 At this point, it becomes important to see what snakemake is doing behind the
 scenes. What commands is snakemake actually running? Snakemake has a special
@@ -547,10 +545,7 @@ This was a dry-run (flag -n). The order of jobs does not reflect the order of ex
 
 The following figure shows the dependencies embodied within our Snakefile,
 involved in building the `results.txt` target:
-
-![results.txt dependencies represented within the
-Snakefile](../fig/02-challenge-dag.svg "results.txt dependencies represented
-within the Snakefile")
+![Dependencies represented within the Snakefile][fig-challenge]
 
 [ref-build-file]: {{ relative_root_path }}/reference#build-file
 [ref-target]: {{ relative_root_path }}/reference#target
@@ -561,5 +556,7 @@ within the Snakefile")
 [ref-default-target]: {{ relative_root_path }}/reference#default-target
 [ref-action]: {{ relative_root_path }}/reference#action
 [snakemake]: https://snakemake.readthedocs.io/en/stable/
+[fig-challenge]: {{ relative_root_path }}/fig/02-challenge-dag.svg
+[fig-dats]: {{ relative_root_path }}/fig/02-dats-dag.svg
 
 {% include links.md %}
