@@ -17,4 +17,4 @@ rule count_words:
         cmd='wordcount.py',
         book='books/{file}.txt'
     output: '{file}.dat'
-    shell: 'python {input.wc} {input.book} {output}'
+    shell: 'python {input.cmd} {input.book} {output}'
