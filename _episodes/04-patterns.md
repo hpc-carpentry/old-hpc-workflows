@@ -119,7 +119,7 @@ rule count_words:
 If we look at a graph of our workflow now, you can see that Snakemake has
 identified all three inputs to the `count_words` rule, and the value of the
 `{file}` wildcard is displayed:
-![Dependencies represented within the Snakefile when using a pattern rule] [fig-pattern-rule]
+![Dependencies represented within the Snakefile when using a pattern rule][fig-pattern-rule]
 
 [ref-pattern-rule]: {{ relative_root_path }}/reference#pattern-rule
 [ref-wildcard]: {{ relative_root_path }}/reference#wildcard
