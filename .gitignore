@@ -21,3 +21,4 @@ commands-local.mk
 code/*.dat
 code/*.png
 code/results.txt
+code/Snakemake
