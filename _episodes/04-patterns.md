@@ -103,10 +103,10 @@ rule clean:
 # count words in one of our "books"
 rule count_words:
     input:
-        wc='wordcount.py',
+        cmd='wordcount.py',
         book='books/{file}.txt'
     output: '{file}.dat'
-    shell: 'python {input.wc} {input.book} {output}'
+    shell: 'python {input.cmd} {input.book} {output}'
 ~~~
 {: .language-python}
 
@@ -115,6 +115,9 @@ rule count_words:
 > If you haven't already done so, please update your Snakefile
 > to use the single pattern rule `count_words`.
 {:.challenge}
+
+If we look at a graph of our workflow now, you can see that Snakemake has
+identified all three inputs to the `count_words` rule:
 
 [ref-pattern-rule]: {{ relative_root_path }}/reference#pattern-rule
 [ref-wildcard]: {{ relative_root_path }}/reference#wildcard
