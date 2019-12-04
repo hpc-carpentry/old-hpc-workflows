@@ -1,7 +1,7 @@
 ---
 title: "Snakefiles are Python code"
 teaching: 30
-exercises: 25
+exercises: 30
 questions:
 - "How can I automatically manage dependencies and outputs?"
 - "How can I use Python code to add features to my pipeline?"
@@ -422,6 +422,13 @@ Finished job 0.
 > >        book='books/{file}.txt'
 > >    output: 'dats/{file}.dat'
 > >    shell: 'python {input.cmd} {input.book} {output}'
+> >~~~
+> >{:.language-python}
+> >
+> > Finally, update the `clean` rule to remove the `dats` directory:
+> >~~~
+> > rule clean:
+> >     shell: 'rm -rf dats/ *.dat results.txt'
 > >~~~
 > >{:.language-python}
 > >
