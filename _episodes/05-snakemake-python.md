@@ -447,6 +447,8 @@ Finished job 0.
 
 ## Using Python Variables Alongside Snakemake Wildcards
 
+FIXME: inputs work differently. Need to use other string formatting options.
+
 Part of the solution to the last challenge defines a global variable for the
 `.dat` files. This variable then needs to be used alongside Snakemake
 wildcards to build a string. The syntax for doing so when defining an input,

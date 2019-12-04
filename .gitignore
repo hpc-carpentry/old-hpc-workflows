@@ -23,3 +23,4 @@ code/*.png
 code/results.txt
 code/Snakefile
 code/dats/
+code/plots/
