@@ -12,6 +12,8 @@ keypoints:
 - "Snakefiles are Python code."
 - "The entire Snakefile is executed whenever you run `snakemake`."
 - "All actual work should be done by rules."
+- "A `shell` action executes a command-line instruction."
+- "A `run` action executes Python code."
 ---
 
 Despite our efforts, our pipeline still has repeated content,
@@ -93,6 +95,12 @@ one place to update the list of files to process.
 >
 > Try recreating both the `dats` and `results.txt` targets
 > (run `snakemake clean` in between).
+>
+> > ## Solution
+> >
+> > See `.solutions/episode_05/Snakefile_dats_list` for a full Snakefile.
+> > Otherwise, just refer to the code extracts above and modify your own file.
+>{:.solution}
 {:.challenge}
 
 ## When are Snakefiles executed?
@@ -313,15 +321,22 @@ glob_wildcards('books/{example}.txt').example
 > all the files in the `books/` folder.
 >
 > > ## Hint
+> >
 > > Use `expand()` and `glob_wildcards()` together to create the value of `DATS`.
 > {:.solution}
 >
 > > ## Solution
 > >
+> > The critical change is to the assignment of `DATS`, building it dynamically from
+> > the input `*.txt` file names.
+> >
 > >~~~
 > >DATS = expand('{file}.dat', file=glob_wildcards('./books/{book}.txt').book)
 > >~~~
 > >{:.language-python}
+> >
+> > See `.solutions/episode_05/Snakefile_glob_dats` for a full Snakefile using
+> > this approach.
 > {: .solution}
 {: .challenge}
 
