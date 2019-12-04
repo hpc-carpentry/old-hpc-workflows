@@ -476,10 +476,30 @@ the global variable `DATS_DIR` and the Snakemake wildcard `{file}` using
 Python f-string syntax. This works correctly only when the `f` prefix is
 ommitted.
 
-If you add the prefix, so the output definition becomes
-`output: f'{DATS_DIR}/{file}.dat'` then the rule will fail to handle
-the `{file}` wildcard correctly.
+If you add the prefix, so `count_words` becomes:
 
+~~~
+rule count_words:
+    input:
+        cmd='wordcount.py',
+        book='books/{file}.txt'
+    output: f'{DATS_DIR}/{file}.dat'
+    shell: 'python {input.cmd} {input.book} {output}'
+~~~
+{:.language-python}
+
+Then Snakemake will fail:
+
+~~~
+snakemake
+~~~
+{: .language-bash}
+
+~~~
+NameError in line 29 of Snakefile:
+name 'file' is not defined
+~~~
+{:.language-output}
 [ref-dependency]: {{ relative_root_path }}/reference#dependency
 [ref-target]: {{ relative_root_path }}/reference#target
 [ref-action]: {{ relative_root_path }}/reference#action
