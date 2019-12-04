@@ -8,12 +8,17 @@ questions:
 objectives:
 - "Use variables, functions, and imports in a Snakefile."
 - "Learn to use the `run` action to execute Python code as an action."
+- "Learn to mix Python variables and Snakemake wildcards when building strings."
 keypoints:
 - "Snakefiles are Python code."
 - "The entire Snakefile is executed whenever you run `snakemake`."
 - "All actual work should be done by rules."
 - "A `shell` action executes a command-line instruction."
 - "A `run` action executes Python code."
+- "The strings used to specify inputs, outputs, and shell actions for a rule can mix
+Python variables and Snakemake wildcards. Use the same syntax as Python f-strings,
+but omit the `f` prefix on the string so that Snakemake will handle wildcards
+correctly."
 ---
 
 Despite our efforts, our pipeline still has repeated content,
@@ -440,8 +445,44 @@ Finished job 0.
 > {: .solution}
 {: .challenge}
 
+## Using Python Variables Alongside Snakemake Wildcards
+
+Part of the solution to the last challenge defines a global variable for the
+`.dat` files. This variable then needs to be used alongside Snakemake
+wildcards to build a string. The syntax for doing so when defining an input,
+output, or shell string for a rule looks like [Python
+f-strings][python-f-strings], but you cannot use the `f` prefix. Just treat
+the variable name in the same way you use a Snakemake wildcard. Snakemake is
+smart enough to build the string correctly using the variable value. But if
+you add the `f` prefix, Snakemake will no longer handle wildcards correctly
+and your rule will fail.
+
+Consider this extract from the solution:
+~~~
+DATS_DIR = 'dats'
+
+rule count_words:
+    input:
+        cmd='wordcount.py',
+        book='books/{file}.txt'
+    output: '{DATS_DIR}/{file}.dat'
+    shell: 'python {input.cmd} {input.book} {output}'
+~~~
+{:.language-python}
+
+`DATS_DIR` is a plain old Python string variable. The output definition of
+the `count_words` rule is `output: '{DATS_DIR}/{file}.dat'`. It references
+the global variable `DATS_DIR` and the Snakemake wildcard `{file}` using
+Python f-string syntax. This works correctly only when the `f` prefix is
+ommitted.
+
+If you add the prefix, so the output definition becomes
+`output: f'{DATS_DIR}/{file}.dat'` then the rule will fail to handle
+the `{file}` wildcard correctly.
+
 [ref-dependency]: {{ relative_root_path }}/reference#dependency
 [ref-target]: {{ relative_root_path }}/reference#target
 [ref-action]: {{ relative_root_path }}/reference#action
+[python-f-strings]: https://docs.python.org/3/reference/lexical_analysis.html#f-strings
 
 {% include links.md %}
