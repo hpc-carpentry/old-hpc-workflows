@@ -22,3 +22,4 @@ code/*.dat
 code/*.png
 code/results.txt
 code/Snakefile
+code/dats/

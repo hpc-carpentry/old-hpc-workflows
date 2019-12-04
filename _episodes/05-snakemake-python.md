@@ -350,10 +350,10 @@ Add the following to your snakefile:
 
 ~~~
 # at the top of the file
-import os
 import glob
+import os
 
-# add this wherever
+# add as the last rule (we don't want it to be the default)
 rule print_book_names:
     run:
         print('These are all the book names:')
@@ -366,7 +366,7 @@ Upon execution of the corresponding rule, Snakemake dutifully runs our Python co
 in the `run:` block:
 
 ~~~
-snakemake print_book_names
+snakemake --quiet print_book_names
 ~~~
 {: .language-bash}
 
@@ -391,18 +391,47 @@ Finished job 0.
 ~~~
 {: .output}
 
+> ## Note the `--quiet` option
+>
+> `--quiet` or `-q` suppresses a lot of the rule progress output from Snakemake.
+> This can be useful when you just want to see the output.
+{:.callout}
+
 > ## Moving output locations
 >
 > Alter the rules in your Snakefile so that the `.dat` files are created in
 > their own `dats/` folder.
 > Note that creating this folder beforehand is unnecessary.
 > Snakemake automatically create any folders for you, as needed.
+>
 > > ## Solution
-> > FIXME: add snippet of critical snakefile code
+> >
+> > There are two approaches here, depending on how much duplication you can tolerate.
+> >
+> > The first is to update the `DATS` variable:
+> >~~~
+> >DATS = expand('dats/{file}.dat', file=glob_wildcards('./books/{book}.txt').book)
+> >~~~
+> >{:.language-python}
+> >
+> > And then update `count_words` so the dat files get created in the same place:
+> >~~~
+> >rule count_words:
+> >    input:
+> >        cmd='wordcount.py',
+> >        book='books/{file}.txt'
+> >    output: 'dats/{file}.dat'
+> >    shell: 'python {input.cmd} {input.book} {output}'
+> >~~~
+> >{:.language-python}
+> >
+> > The second approach is a modification of the first.
+> > It introduces a new global variable `DATS_DIR` that defines the dats directory
+> > just once. This value is then used when assigning `DATS` and the output location
+> > for `count_words`. See `.solution/episode_05/Snakefile` for an example of this
+> > approach.
 > {: .solution}
 {: .challenge}
-
-FIXME: add reminder to episode sample snakefile
 
 [ref-dependency]: {{ relative_root_path }}/reference#dependency
 [ref-target]: {{ relative_root_path }}/reference#target
