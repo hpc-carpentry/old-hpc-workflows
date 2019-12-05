@@ -2,8 +2,7 @@ import glob
 import os
 
 
-DATS_DIR = 'dats'
-DATS = expand('{dir}/{file}.dat', dir=DATS_DIR, file=glob_wildcards('./books/{book}.txt').book)
+DATS = expand('dats/{file}.dat', file=glob_wildcards('./books/{book}.txt').book)
 
 
 # Generate summary table
@@ -19,14 +18,14 @@ rule dats:
 
 # delete everything so we can re-run things
 rule clean:
-    shell: 'rm -rf {DATS_DIR} *.dat results.txt'
+    shell: 'rm -rf dats/ *.dat results.txt'
 
 # Count words in one of the books
 rule count_words:
     input:
         cmd='wordcount.py',
         book='books/{file}.txt'
-    output: '{DATS_DIR}/{file}.dat'
+    output: 'dats/{file}.dat'
     shell: 'python {input.cmd} {input.book} {output}'
 
 rule print_book_names:

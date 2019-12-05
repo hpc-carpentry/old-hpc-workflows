@@ -15,10 +15,6 @@ keypoints:
 - "All actual work should be done by rules."
 - "A `shell` action executes a command-line instruction."
 - "A `run` action executes Python code."
-- "The strings used to specify inputs, outputs, and shell actions for a rule can mix
-Python variables and Snakemake wildcards. Use the same syntax as Python f-strings,
-but omit the `f` prefix on the string so that Snakemake will handle wildcards
-correctly."
 ---
 
 Despite our efforts, our pipeline still has repeated content,
@@ -411,15 +407,13 @@ Finished job 0.
 >
 > > ## Solution
 > >
-> > There are two approaches here, depending on how much duplication you can tolerate.
-> >
-> > The first is to update the `DATS` variable:
+> > First update the `DATS` variable with the `dats` directory:
 > >~~~
 > >DATS = expand('dats/{file}.dat', file=glob_wildcards('./books/{book}.txt').book)
 > >~~~
 > >{:.language-python}
 > >
-> > And then update `count_words` so the dat files get created in the same place:
+> > Then update `count_words` so the dat files get created in the same place:
 > >~~~
 > >rule count_words:
 > >    input:
@@ -437,74 +431,12 @@ Finished job 0.
 > >~~~
 > >{:.language-python}
 > >
-> > The second approach is a modification of the first.
-> > It introduces a new global variable `DATS_DIR` that defines the dats directory
-> > just once. This value is then used when assigning `DATS` and the output location
-> > for `count_words`. See `.solution/episode_05/Snakefile` for an example of this
-> > approach.
+> > See `.solutions/episode_05/Snakefile` for a ready-made implementation.
 > {: .solution}
 {: .challenge}
 
-## Using Python Variables Alongside Snakemake Wildcards
-
-FIXME: inputs work differently. Need to use other string formatting options.
-
-Part of the solution to the last challenge defines a global variable for the
-`.dat` files. This variable then needs to be used alongside Snakemake
-wildcards to build a string. The syntax for doing so when defining an input,
-output, or shell string for a rule looks like [Python
-f-strings][python-f-strings], but you cannot use the `f` prefix. Just treat
-the variable name in the same way you use a Snakemake wildcard. Snakemake is
-smart enough to build the string correctly using the variable value. But if
-you add the `f` prefix, Snakemake will no longer handle wildcards correctly
-and your rule will fail.
-
-Consider this extract from the solution:
-~~~
-DATS_DIR = 'dats'
-
-rule count_words:
-    input:
-        cmd='wordcount.py',
-        book='books/{file}.txt'
-    output: '{DATS_DIR}/{file}.dat'
-    shell: 'python {input.cmd} {input.book} {output}'
-~~~
-{:.language-python}
-
-`DATS_DIR` is a plain old Python string variable. The output definition of
-the `count_words` rule is `output: '{DATS_DIR}/{file}.dat'`. It references
-the global variable `DATS_DIR` and the Snakemake wildcard `{file}` using
-Python f-string syntax. This works correctly only when the `f` prefix is
-ommitted.
-
-If you add the prefix, so `count_words` becomes:
-
-~~~
-rule count_words:
-    input:
-        cmd='wordcount.py',
-        book='books/{file}.txt'
-    output: f'{DATS_DIR}/{file}.dat'
-    shell: 'python {input.cmd} {input.book} {output}'
-~~~
-{:.language-python}
-
-Then Snakemake will fail:
-
-~~~
-snakemake
-~~~
-{: .language-bash}
-
-~~~
-NameError in line 29 of Snakefile:
-name 'file' is not defined
-~~~
-{:.language-output}
 [ref-dependency]: {{ relative_root_path }}/reference#dependency
 [ref-target]: {{ relative_root_path }}/reference#target
 [ref-action]: {{ relative_root_path }}/reference#action
-[python-f-strings]: https://docs.python.org/3/reference/lexical_analysis.html#f-strings
 
 {% include links.md %}
