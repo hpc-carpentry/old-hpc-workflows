@@ -9,7 +9,6 @@ questions:
 - "What is a default rule?"
 objectives:
 - "Add a rule to your Snakefile that generates PNG plots of word frequencies."
-- "Add a `clean` rule to your Snakefile."
 - "Add an `all` rule to your Snakefile."
 - "Make `all` the default rule."
 keypoints:
@@ -27,6 +26,10 @@ keypoints:
 >
 > As well as a new rule you may also need to update existing rules.
 >
+> Remember that when testing a pattern rule, you can't just ask Snakemake to
+> execute the rule by name. You need to ask Snakemake to build a specific file.
+> So instead of `snakemake count_words` you need something like `snakemake dats/last.dat`.
+>
 > > ## Solution
 > >
 > > FIXME: add plot rule
@@ -38,16 +41,8 @@ keypoints:
 It is common practice to have a `clean` rule that deletes all intermediate
 and generated files, taking your workflow back to a blank slate.
 
-> ## Cleaning Up
->
-> Add a new rule called `clean` to remove all auto-generated files (`.dat`, `.png`,
-> `results.txt`).
->
-> > ## Solution
-> >
-> > FIXME: add clean rule
-> {: .solution}
-{: .challenge}
+We already have a `clean` rule, so now is a good time to check that it
+removes all intermediate and output files.
 
 ## Default Rules
 
