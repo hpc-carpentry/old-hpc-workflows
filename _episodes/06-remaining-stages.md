@@ -24,6 +24,9 @@ keypoints:
 > Your challenge is to update your Snakefile so that it can create `.png`
 > files from `.dat` files using `plotcount.py`.
 >
+> * The new rule should be called `make_plot`.
+> * All `.png` files should be created in a directory called `plots`.
+>
 > As well as a new rule you may also need to update existing rules.
 >
 > Remember that when testing a pattern rule, you can't just ask Snakemake to
@@ -32,7 +35,21 @@ keypoints:
 >
 > > ## Solution
 > >
-> > FIXME: add plot rule
+> > We have modified the `clean` rule and added a new pattern rule:
+> > ~~~
+> > # delete everything so we can re-run things
+> > rule clean:
+> >     shell: 'rm -rf dats/ plots/ *.dat results.txt'
+> >
+> > # plot one word count dat file
+> > rule make_plot:
+> >     input:
+> >         cmd='plotcount.py',
+> >         dat='dats/{file}.dat'
+> >     output: 'plots/{file}.png'
+> >     shell: 'python {input.cmd} {input.dat} {output}'
+> > ~~~
+> > {:.language-python}
 > {: .solution}
 {: .challenge}
 
