@@ -1,7 +1,7 @@
 ---
 title: "Wildcards"
 teaching: 30
-exercises: 15
+exercises: 20
 questions:
 - "How can I abbreviate the rules in my pipeline?"
 objectives:
@@ -21,34 +21,40 @@ is executed if the code or script changes."
 After the exercise at the end of the previous episode, our Snakefile looked like this:
 
 ~~~
-# generate summary table
+# Generate summary table
 rule zipf_test:
-    input:  'abyss.dat', 'last.dat', 'isles.dat'
+    input:
+        'isles.dat',
+        'abyss.dat',
+        'last.dat'
     output: 'results.txt'
-    shell:  'python zipf_test.py abyss.dat isles.dat last.dat > results.txt'
+    shell: 'python zipf_test.py abyss.dat isles.dat last.dat > results.txt'
 
 rule dats:
-     input: 'isles.dat', 'abyss.dat', 'last.dat'
+    input:
+        'isles.dat',
+        'abyss.dat',
+        'last.dat'
 
 # delete everything so we can re-run things
 rule clean:
-    shell:  'rm -f *.dat results.txt'
+    shell: 'rm -f *.dat results.txt'
 
-# count words in one of our "books"
+# Count words in one of the books
 rule count_words:
-    input: 	'books/isles.txt'
+    input: 'books/isles.txt'
     output: 'isles.dat'
-    shell: 	'python wordcount.py books/isles.txt isles.dat'
+    shell: 'python wordcount.py books/isles.txt isles.dat'
 
 rule count_words_abyss:
-    input: 	'books/abyss.txt'
+    input: 'books/abyss.txt'
     output: 'abyss.dat'
-    shell: 	'python wordcount.py books/abyss.txt abyss.dat'
+    shell: 'python wordcount.py books/abyss.txt abyss.dat'
 
 rule count_words_last:
-    input: 	'books/last.txt'
+    input: 'books/last.txt'
     output: 'last.dat'
-    shell: 	'python wordcount.py books/last.txt last.dat'
+    shell: 'python wordcount.py books/last.txt last.dat'
 ~~~
 {: .language-python}
 
@@ -62,8 +68,8 @@ Snakefile but forget to rename it elsewhere).
 >
 > In many programming languages, the bulk of the language features are
 > there to allow the programmer to describe long-winded computational
-> routines as short, expressive, beautiful code.  Features in Python
-> or R or Java, such as user-defined variables and functions are useful in
+> routines as short, expressive, beautiful code.  Features in Python,
+> R, or Java, such as user-defined variables and functions are useful in
 > part because they mean we don't have to write out (or think about)
 > all of the details over and over again.  This good habit of writing
 > things out only once is known as the "Don't Repeat Yourself"
@@ -76,12 +82,9 @@ name of the results file name:
 
 ~~~
 rule zipf_test:
-    input:
-            'abyss.dat',
-            'last.dat',
-            'isles.dat'
+    input:  'abyss.dat', 'last.dat', 'isles.dat'
     output: 'results.txt'
-    shell:  'python zipf_test.py abyss.dat isles.dat last.dat > results.txt'
+    shell: 'python zipf_test.py abyss.dat isles.dat last.dat > results.txt'
 ~~~
 {: .language-python}
 
@@ -96,8 +99,8 @@ rule zipf_test:
 ~~~
 {: .language-python}
 
-`{output}` is a Snakemake [wildcard]({{ page.root }}/reference/#automatic-variable)
-which is equivalent to the value we specified for the rule output.
+`{output}` is a Snakemake [wildcard][ref-wildcard] which is equivalent to the
+value we specified for the rule output.
 
 We can replace the dependencies in the action with `{input}`:
 
@@ -207,6 +210,9 @@ As we saw, `{input}` means 'all the dependencies of the current rule'. This
 works well for `results.txt` as its action treats all the dependencies the
 same - as the input for the `zipf_test.py` script.
 
+Time for you to update all the rules that build a `.dat` file to use the
+`{input}` and `{output}` wildcards.
+
 > ## Rewrite `.dat` rules to use wildcards
 >
 > Rewrite each `.dat` rule to use the `{input}` and `{output}` wildcards.
@@ -214,9 +220,9 @@ same - as the input for the `zipf_test.py` script.
 > > Only one rule is shown here, the others follow the same pattern:
 > > ~~~
 > > rule count_words:
-> >     input: 	'books/isles.txt'
+> >     input: 'books/isles.txt'
 > >     output: 'isles.dat'
-> >     shell: 	'python wordcount.py {input} {output}'
+> >     shell: 'python wordcount.py {input} {output}'
 > > ~~~
 > > {: .language-python}
 > {: .solution}
@@ -224,26 +230,23 @@ same - as the input for the `zipf_test.py` script.
 
 ## Handling dependencies differently
 
-For many rules, we may want to treat some dependencies differently. For
+For many rules, we will need to make finer distinctions between inputs. It is
+not always appropriate to pass all inputs as a lump to your action. For
 example, our rules for `.dat` use their first (and only) dependency
 specifically as the input file to `wordcount.py`. If we add additional
 dependencies (as we will soon do) then we don't want these being passed as
-input files to `wordcount.py` as it expects just one input file.
+input files to `wordcount.py`: it expects just one input file.
 
-Snakemake provides several solutions to this. Depending on what we want to
-do, it's possible to both index and name our wildcards. You should select
-whichever method leads to the clearest code.
-
-We need to add `wordcount.py` as a dependency of each of our data files so
-that the rules will be executed if the script changes. In this case, we can
-use `{input[0]}` to refer to the first dependency, and `{input[1]}` to refer
-to the second.
+Let's see this in action. We need to add `wordcount.py` as a dependency of
+each of our data files so that the rules will be executed if the script
+changes. In this case, we can use `{input[0]}` to refer to the first
+dependency, and `{input[1]}` to refer to the second.
 
 ~~~
 rule count_words:
-    input: 	'wordcount.py', 'books/isles.txt'
+    input: 'wordcount.py', 'books/isles.txt'
     output: 'isles.dat'
-    shell: 	'python {input[0]} {input[1]} {output}'
+    shell: 'python {input[0]} {input[1]} {output}'
 ~~~
 {: .language-python}
 
@@ -252,14 +255,14 @@ Alternatively, we can name our dependencies.
 ~~~
 rule count_words_abyss:
     input:
-        wc='wordcount.py',
+        cmd='wordcount.py',
         book='books/abyss.txt'
     output: 'abyss.dat'
-    shell: 	'python {input.wc} {input.book} {output}'
+    shell: 'python {input.cmd} {input.book} {output}'
 ~~~
 {: .language-python}
 
-Let's mark `wordcount.py` as updated, and re-run the pipeline.
+Let's mark `wordcount.py` as updated, and re-run the pipeline:
 
 ~~~
 touch wordcount.py
@@ -307,7 +310,7 @@ Notice how `last.dat` (which does not depend on `wordcount.py`) is not
 rebuilt.
 
 Intuitively, we should also add `wordcount.py` as dependency for
-`results.txt`, as the final table should be rebuilt as we remake the `.dat`
+`results.txt`, as the final table should be rebuilt if we remake the `.dat`
 files. However, it turns out we don't have to! Let's see what happens to
 `results.txt` when we update `wordcount.py`:
 
@@ -385,16 +388,31 @@ triggers rerunning the appropriate downstream steps.
 > {: .solution}
 {: .challenge}
 
-> ## More dependencies
+> ## Update `count_words_last` to depend on `wordcount.py`
 >
-> Add zipf_test.py as a dependency of `results.txt`
-> Which method do you prefer here, indexing or named input files?
+> Use either indexed or named inputs.
+{: .challenge}
+
+> ## Updating `zipf_test` rule
+>
+> Add `zipf_test.py` as a dependency of `results.txt`
+> We haven't yet covered the techniques required to do this with named wildcards
+> so you will have to use indexing.
 > Yes, this will be clunky, but we'll fix that part later!
 > Remember that you can do a dry run with `snakemake -n -p`!
 >
 > > ## Solution
-> > FIXME: Add solution snakefile for this stage.
+> >
+> >~~~
+> > rule zipf_test:
+> >     input:  'zipf_test.py', 'isles.dat', 'abyss.dat', 'last.dat'
+> >     output: 'results.txt'
+> >     shell:  'python {input[0]} {input[1]} {input[2]} {input[3]} > {output}'
+> >~~~
+> >{:.language-python}
 > {: .solution}
 {: .challenge}
+
+[ref-wildcard]: {{ relative_root_path }}/reference#wildcard
 
 {% include links.md %}

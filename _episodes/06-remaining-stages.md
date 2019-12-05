@@ -106,8 +106,7 @@ In this case, we will create an archive tar file.
 {: .challenge}
 
 After these exercises our final workflow should look something like the following:
-
-![Final directed acyclic graph](../fig/05-final-dag.svg)
+![Final directed acyclic graph][fig-final-dag]
 
 > ## Adding more books
 >
@@ -126,5 +125,7 @@ After these exercises our final workflow should look something like the followin
 > * run `snakemake` and check that the correct commands are run
 > * check the results.txt file to see how this book compares to the others
 {: .challenge}
+
+[fig-final-dag]: {{ relative_root_path }}/fig/06-final-dag.svg
 
 {% include links.md %}

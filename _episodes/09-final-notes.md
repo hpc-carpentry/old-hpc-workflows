@@ -143,7 +143,7 @@ eog dag.svg     # eog is an image viewer installed on many linux systems
 ~~~
 {:.language-bash}
 
-![Example DAG plot](../fig/05-final-dag.svg)
+![Example DAG plot](../fig/06-final-dag.svg)
 
 Rules that have yet to be completed are indicated with solid outlines.
 Already completed tasks will be indicated with dashed outlines. In this case,
