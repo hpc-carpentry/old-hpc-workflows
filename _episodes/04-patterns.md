@@ -79,9 +79,29 @@ Finished job 0.
 > ## Using wildcards
 >
 > Our arbitrary wildcards like `{file}` can only be used in
-> `input:` and `output:` fields. They cannot be used in directly in actions.
+> `input:` and `output:` fields. They cannot be used directly in actions.
 > If you need to refer to the current value of a wildcard in an action you
 > need to qualify it with `wildcards.`. For example: `{wildcards.file}`.
+{: .callout}
+
+> ## Running Pattern Rules
+>
+> Note that although Snakemake lets you execute a non-pattern rule by name,
+> such as `snakemake clean`, you cannot execute a pattern rule this way:
+>
+> ~~~
+> snakemake count_words
+> ~~~
+> {:.language-bash}
+> ~~~
+> Building DAG of jobs...
+> WorkflowError:
+> Target rules may not contain wildcards. Please specify concrete files or a rule without wildcards.
+> ~~~
+> {:.language-output}
+>
+> As the error message indicates, you need to ask for specific files. For example, `snakemake last.dat`.
+>
 {: .callout}
 
 Our Snakefile is now much shorter and cleaner:
