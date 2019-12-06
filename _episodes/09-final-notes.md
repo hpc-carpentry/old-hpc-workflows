@@ -8,6 +8,7 @@ objectives:
 - "Understand how to perform a dry-run of your workflow."
 - "Understand how to configure logging so that each rule generates a separate log."
 - "Understand how to visualise your workflow."
+- "Learn a pattern to reduce duplication and improve maintainability of Snakefiles."
 keypoints:
 - "`snakemake -n` performs a dry-run."
 - "Token files can be used to take the place of output files if none are created."
@@ -17,6 +18,14 @@ keypoints:
 
 Now that we know how to write and scale a pipeline, here are some tips and
 tricks for making the process go more smoothly.
+
+## A Pattern for Reducing Duplication
+
+FIXME: TODO
+
+* how to mix f-strings with wildcards
+* the problem of repeated strings - filenames, patterns etc
+* The suggested pattern
 
 ## dry-run is your friend
 
