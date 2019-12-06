@@ -78,9 +78,37 @@ rule can be anything you like, it is common practice to call the default rule
 > It is suffient to make them depend on all the final outputs from other rules.
 > In this case, the outputs are `results.txt` and all the PNG files.
 >
+> > ## Hint
+> >
+> > It is easiest to use `glob_wildcards` and `expand` to build the list of
+> > all expected `.png` files.
+> {:.solution}
 > > ## Solution
 > >
-> > FIXME: add all rule
+> > First, we modify the existing code that builds `DATS` to first extract the
+> > list of book names, and then to build `DATS` and a new global variable
+> > listing all plots:
+> > ~~~
+> > # Build the list of book names. We need to use it multiple times when building
+> > # the lists of files that will be built in the workflow
+> > BOOK_NAMES = glob_wildcards('./books/{book}.txt').book
+> >
+> > # The list of all dat files
+> > DATS = expand('dats/{file}.dat', file=BOOK_NAMES)
+> >
+> > # The list of all plot files
+> > PLOTS = expand('plots/{file}.png', file=BOOK_NAMES)
+> > ~~~
+> > {:.language-python}
+> >
+> > Now we can define the `all` rule:
+> > ~~~
+> > # pseudo-rule that tries to build everything.
+> > # Just add all the final outputs that you want built.
+> > rule all:
+> >     input: 'results.txt', PLOTS
+> > ~~~
+> > {:.language-python}
 > {:.solution}
 {:.challenge}
 
