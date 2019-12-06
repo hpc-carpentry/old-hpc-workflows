@@ -35,7 +35,7 @@ keypoints:
 >
 > > ## Solution
 > >
-> > We have modified the `clean` rule and added a new pattern rule:
+> > Modify the `clean` rule and add a new pattern rule `make_plot`:
 > > ~~~
 > > # delete everything so we can re-run things
 > > rule clean:
