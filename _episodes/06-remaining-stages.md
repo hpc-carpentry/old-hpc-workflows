@@ -128,7 +128,8 @@ In this case, we will create an archive tar file.
 >
 > Update your pipeline to:
 >
-> * Create an archive file to hold all our `.dat` files, plots, and the
+> * Create an archive file called `zipf_analysis.tar.gz`
+> * The archive should contain all `.dat` files, plots, and the
 > Zipf summary table (`results.txt`).
 > * Update `all` to expect `zipf_analysis.tar.gz` as input.
 > * Remove the archive when `snakemake clean` is called.
@@ -141,7 +142,35 @@ In this case, we will create an archive tar file.
 >
 > > ## Solution
 > >
-> > FIXME: add archive rule and changes to other rules
+> > First the `create_archive` rule:
+> > ~~~
+> > # create an archive with all results
+> > rule create_archive:
+> >     input: 'results.txt', DATS, PLOTS
+> >     output: 'zipf_analysis.tar.gz'
+> >     shell: 'tar -czvf {output} {input}'
+> > ~~~
+> > {:.language-python}
+> >
+> > Then the update to the `clean target`:
+> > ~~~
+> > # delete everything so we can re-run things
+> > rule clean:
+> >     shell: 'rm -rf dats/ plots/ *.dat results.txt zipf_analysis.tar.gz'
+> > ~~~
+> > {:.language-python}
+> >
+> > Then the change to `all`. The workflow would still be correct without this
+> > step, but since `create_archive` requires building everything, it is simpler
+> > to just get `all` to depend on `create_archive`. This means we have just one
+> > rule to maintain if we add new outputs later on.
+> > ~~~
+> > # pseudo-rule that tries to build everything.
+> > # Just add all the final outputs that you want built.
+> > rule all:
+> >     input: 'zipf_analysis.tar.gz'
+> > ~~~
+> > {:.language-python}
 > {:.solution}
 {: .challenge}
 
