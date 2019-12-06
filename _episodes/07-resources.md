@@ -18,55 +18,56 @@ task even when sufficient resources are not available."
 ---
 
 After the exercises at the end of our last lesson, our Snakefile looks
-something like this:
+something like this (note the `dats` and `print_book_names` rules are no
+longer required so they have been removed):
 
-FIXME: update this so it matches our end of episode 6 snakefile
 ~~~
-# our zipf analysis pipeline
-DATS = glob_wildcards('books/{book}.txt').book
+# Build the list of book names. We need to use it multiple times when building
+# the lists of files that will be built in the workflow
+BOOK_NAMES = glob_wildcards('./books/{book}.txt').book
 
+# The list of all dat files
+DATS = expand('dats/{file}.dat', file=BOOK_NAMES)
+
+# The list of all plot files
+PLOTS = expand('plots/{file}.png', file=BOOK_NAMES)
+
+# pseudo-rule that tries to build everything.
+# Just add all the final outputs that you want built.
 rule all:
+    input: 'zipf_analysis.tar.gz'
+
+# Generate summary table
+rule zipf_test:
     input:
-        'zipf_analysis.tar.gz'
+        cmd='zipf_test.py',
+        dats=DATS
+    output: 'results.txt'
+    shell:  'python {input.cmd} {input.dats} > {output}'
 
 # delete everything so we can re-run things
 rule clean:
-    shell:
-        '''
-        rm -rf results dats plots
-        rm -f results.txt zipf_analysis.tar.gz
-        '''
+    shell: 'rm -rf dats/ plots/ *.dat results.txt zipf_analysis.tar.gz'
 
-# count words in one of our "books"
+# Count words in one of the books
 rule count_words:
     input:
-        wc='wordcount.py',
+        cmd='wordcount.py',
         book='books/{file}.txt'
     output: 'dats/{file}.dat'
-    shell: 	'python {input.wc} {input.book} {output}'
+    shell: 'python {input.cmd} {input.book} {output}'
 
-# create a plot for each book
+# plot one word count dat file
 rule make_plot:
     input:
-        plotcount='plotcount.py',
-        book='dats/{file}.dat'
+        cmd='plotcount.py',
+        dat='dats/{file}.dat'
     output: 'plots/{file}.png'
-    shell:  'python {input.plotcount} {input.book} {output}'
+    shell: 'python {input.cmd} {input.dat} {output}'
 
-# generate summary table
-rule zipf_test:
-    input:
-        zipf='zipf_test.py',
-        books=expand('dats/{book}.dat', book=DATS)
-    output: 'results.txt'
-    shell:  'python {input.zipf} {input.books} > {output}'
-
-# create an archive with all of our results
-rule make_archive:
-    input:
-        expand('plots/{book}.png', book=DATS),
-        expand('dats/{book}.dat', book=DATS),
-        'results.txt'
+# create an archive with all results
+rule create_archive:
+    input: 'results.txt', DATS, PLOTS
     output: 'zipf_analysis.tar.gz'
     shell: 'tar -czvf {output} {input}'
 ~~~
