@@ -309,27 +309,26 @@ dedicated access to a GPU for rules that need it? Let's modify the
 `make_plot` rule as an example:
 
 ~~~
-# create a plot for each book
 rule make_plot:
     input:
-        plotcount='plotcount.py',
-        book='dats/{file}.dat'
+        cmd='plotcount.py',
+        dat='dats/{file}.dat'
     output: 'plots/{file}.png'
     resources: gpu=1
-    shell:  'python {input.plotcount} {input.book} {output}'
+    shell: 'python {input.cmd} {input.dat} {output}'
 ~~~
 {:.language-python}
 
-We can execute our pipeline using the following (using 8 cores and 1 gpu):
+We can execute our pipeline using the following (using 4 cores and 1 gpu):
 
 ~~~
 snakemake clean
-snakemake -j 8 --resources gpu=1
+snakemake -j 4 --resources gpu=1
 ~~~
 {:.language-bash}
 
 ~~~
-Provided cores: 8
+Provided cores: 4
 Rules claiming more threads will be scaled down.
 Provided resources: gpu=1
 # other output removed for brevity
@@ -350,12 +349,12 @@ But what happens if we run our pipeline without specifying the number of GPUs?
 
 ~~~
 snakemake clean
-snakemake -j 8
+snakemake -j 4
 ~~~
 {:.language-bash}
 
 ~~~
-Provided cores: 8
+Provided cores: 4
 Rules claiming more threads will be scaled down.
 Unlimited resources: gpu
 ~~~
@@ -365,7 +364,7 @@ If you have specified that a rule needs a certain resource, but do not
 specify how many you have, Snakemake will assume that the resources in
 question are unlimited.
 
-> ## What happens if Snakemake does not have enough resources
+> ## What happens if Snakemake does not have enough resources?
 >
 > Modify your Snakefile and the snakemake arguments to test what
 > happens when you have less resources available than the number
@@ -385,6 +384,9 @@ question are unlimited.
 > > Snakemake will attempt to run at the same time, but not the minimum.
 > > Where sufficient resources are not available, Snakemake will still
 > > run at least one task.
+> >
+> > Once again, it is up to the code being run by the rule to check that
+> > sufficient resources are actually available.
 > {:.solution}
 {:.challenge}
 
