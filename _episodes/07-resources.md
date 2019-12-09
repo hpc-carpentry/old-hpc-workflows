@@ -116,13 +116,16 @@ rules, Snakemake automatically identifies which tasks can run at the same
 time. All you need to do is describe your workflow and Snakemake does the
 rest.
 
+Note you can also use `snakemake --cores 4` or `snakemake --jobs 4`. The
+`-j`, `--cores` and `--jobs` arguments all mean the same thing.
+
 > ## How many CPUs does your computer have?
 >
 > Now that our pipeline can use multiple CPUs, how do we know how many CPUs
 > to provide to the `-j` option? Note that for all of these options, it's
 > best to use CPU cores, and not CPU threads.
 >
-> **Linux** - You can use the `lscpu` command.
+> **Linux** - You can use the `lscpu` command. Look for the number listed alongside `CPU(s):`.
 >
 > **All platforms** - Python's `psutil` module can be used to fetch
 > the number of cores in your computer.
