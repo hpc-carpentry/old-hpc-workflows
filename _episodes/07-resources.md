@@ -8,7 +8,9 @@ questions:
 objectives:
 - "Modify your pipeline to run in parallel."
 keypoints:
-- "Use `threads` to indicate the number of cores used by a rule."
+- "Use `threads` to indicate the number of cores required by a rule."
+- "Use the `-j` argument to Snakemake to indicate how many CPU cores can be used
+for parallel tasks."
 - "Resources are arbitrary and can be used for anything."
 - "The `&&` operator is a useful tool when chaining bash commands."
 - "While available resources will limit the total number of tasks that
@@ -116,13 +118,16 @@ rules, Snakemake automatically identifies which tasks can run at the same
 time. All you need to do is describe your workflow and Snakemake does the
 rest.
 
+Note you can also use `snakemake --cores 4` or `snakemake --jobs 4`. The
+`-j`, `--cores` and `--jobs` arguments all mean the same thing.
+
 > ## How many CPUs does your computer have?
 >
 > Now that our pipeline can use multiple CPUs, how do we know how many CPUs
 > to provide to the `-j` option? Note that for all of these options, it's
 > best to use CPU cores, and not CPU threads.
 >
-> **Linux** - You can use the `lscpu` command.
+> **Linux** - You can use the `lscpu` command. Look for the number listed alongside `CPU(s):`.
 >
 > **All platforms** - Python's `psutil` module can be used to fetch
 > the number of cores in your computer.
@@ -163,14 +168,14 @@ using.
 ~~~
 rule count_words:
     input:
-        wc='wordcount.py',
+        cmd='wordcount.py',
         book='books/{file}.txt'
     output: 'dats/{file}.dat'
     threads: 4
     shell:
         '''
-        echo "Running {input.wc} with {threads} cores."
-        python {input.wc} {input.book} {output}
+        echo "Running {input.cmd} with {threads} cores."
+        python {input.cmd} {input.book} {output}
         '''
 ~~~
 {:.language-python}
@@ -255,16 +260,17 @@ available without us editing the Snakefile.
 > of that rule Snakemake will run at the same time. It does not mean that
 > the code being executed will magically know what the limits are.
 >
-> In the next section we will see how to get the current number of
-> cores allocated to the action so that it could be passed in as a
-> command-line argument or set to an environment variable.
+> The previous code example showed how the `{threads}` wildcard can be used
+> to get the actual number of cores allocated to an action.
+> This value can be passed in as a command-line argument or set to an
+> environment variable.
 {:.callout}
 
 ## Chaining multiple commands
 
 Up until now, all of our commands have fit on one line. To execute multiple
 bash commands, the only modification we need to make is use a Python
-multiline string (begin and end with `"""`)
+multiline string (begin and end with `"""` or `'''`).
 
 One important addition we should be aware of is the `&&` operator. `&&` is a
 bash operator that runs commands as part of a chain. If the first command
@@ -272,24 +278,24 @@ fails, the remaining steps are not run. This is more forgiving than bash's
 default "hit an error and keep going" behavior. After all, if the first
 command failed, it's unlikely the other steps will work.
 
+Let's modify `count_words` to chain the `echo` and `python` commands:
 ~~~
-# count words in one of our "books"
 rule count_words:
     input:
-        wc='wordcount.py',
+        cmd='wordcount.py',
         book='books/{file}.txt'
     output: 'dats/{file}.dat'
     threads: 4
     shell:
-        """
-        echo "Running {input.wc} with {threads} cores on {input.book}." &&
-            python {input.wc} {input.book} {output}
-        """
+        '''
+        echo "Running {input.cmd} with {threads} cores." &&
+        python {input.cmd} {input.book} {output}
+        '''
 ~~~
 {:.language-python}
 
-Notice that we can use the `{threads}` wildcard in the action to access the current
-value of threads.
+Notice the use of the `{threads}` wildcard in the action to access the current
+number of CPU cores allocated to the rule.
 
 ## Managing other types of resources
 
@@ -305,27 +311,26 @@ dedicated access to a GPU for rules that need it? Let's modify the
 `make_plot` rule as an example:
 
 ~~~
-# create a plot for each book
 rule make_plot:
     input:
-        plotcount='plotcount.py',
-        book='dats/{file}.dat'
+        cmd='plotcount.py',
+        dat='dats/{file}.dat'
     output: 'plots/{file}.png'
     resources: gpu=1
-    shell:  'python {input.plotcount} {input.book} {output}'
+    shell: 'python {input.cmd} {input.dat} {output}'
 ~~~
 {:.language-python}
 
-We can execute our pipeline using the following (using 8 cores and 1 gpu):
+We can execute our pipeline using the following (using 4 cores and 1 gpu):
 
 ~~~
 snakemake clean
-snakemake -j 8 --resources gpu=1
+snakemake -j 4 --resources gpu=1
 ~~~
 {:.language-bash}
 
 ~~~
-Provided cores: 8
+Provided cores: 4
 Rules claiming more threads will be scaled down.
 Provided resources: gpu=1
 # other output removed for brevity
@@ -346,12 +351,12 @@ But what happens if we run our pipeline without specifying the number of GPUs?
 
 ~~~
 snakemake clean
-snakemake -j 8
+snakemake -j 4
 ~~~
 {:.language-bash}
 
 ~~~
-Provided cores: 8
+Provided cores: 4
 Rules claiming more threads will be scaled down.
 Unlimited resources: gpu
 ~~~
@@ -361,7 +366,7 @@ If you have specified that a rule needs a certain resource, but do not
 specify how many you have, Snakemake will assume that the resources in
 question are unlimited.
 
-> ## What happens if Snakemake does not have enough resources
+> ## What happens if Snakemake does not have enough resources?
 >
 > Modify your Snakefile and the snakemake arguments to test what
 > happens when you have less resources available than the number
@@ -381,6 +386,9 @@ question are unlimited.
 > > Snakemake will attempt to run at the same time, but not the minimum.
 > > Where sufficient resources are not available, Snakemake will still
 > > run at least one task.
+> >
+> > Once again, it is up to the code being run by the rule to check that
+> > sufficient resources are actually available.
 > {:.solution}
 {:.challenge}
 
@@ -391,7 +399,8 @@ question are unlimited.
 > and it's best if only a limited number of these jobs run at a time.
 > Or maybe a type of rule uses a lot of network bandwidth as it downloads data.
 > In all of these cases, `resources` can be used to constrain access
-> to arbitrary compute resources so that each rule can run at it's most efficient.
+> to arbitrary compute resources so that each rule can run efficiently.
+>
 > Snakemake will run your rules in such a way as to maximize throughput given your
 > resource constraints.
 {: .callout}
