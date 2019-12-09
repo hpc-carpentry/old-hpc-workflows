@@ -397,7 +397,8 @@ question are unlimited.
 > and it's best if only a limited number of these jobs run at a time.
 > Or maybe a type of rule uses a lot of network bandwidth as it downloads data.
 > In all of these cases, `resources` can be used to constrain access
-> to arbitrary compute resources so that each rule can run at it's most efficient.
+> to arbitrary compute resources so that each rule can run efficiently.
+>
 > Snakemake will run your rules in such a way as to maximize throughput given your
 > resource constraints.
 {: .callout}
