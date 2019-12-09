@@ -21,11 +21,64 @@ tricks for making the process go more smoothly.
 
 ## A Pattern for Reducing Duplication
 
-FIXME: TODO
+Even though we devoted a lot of time to reducing duplication in your Snakefiles,
+there is still a lot of duplication remaining. For example, have a look at
+how often the directory names are mentioned (`dats`, `plots` etc).
 
-* how to mix f-strings with wildcards
-* the problem of repeated strings - filenames, patterns etc
-* The suggested pattern
+One way to reduce this is to increase the use of global variables at the
+start of the Snakefile to define all the configurable parts of your workflow.
+However, this requires some extra care when combining the global variables
+and Snakemake wildcards in your rule definitions. Let's see it in action
+first. In this extract from our workflow we introduce a global variable for
+the input directory and then use string formatting to define the
+`count_words` rule:
+
+{% raw %}
+~~~
+INPUT_DIR = 'books/'
+
+rule count_words:
+    input:
+        cmd='wordcount.py',
+        book=f'{INPUT_DIR}{{book}}.txt'
+    output: 'dats/{book}.dat'
+    shell: 'python {input.cmd} {input.book} {output}'
+~~~
+{:.language-python}
+
+The key points are:
+* The input directory is only specified in a single place.
+* When wildcards and global variables are combined in a single string (`input.book`),
+a Python f-string is used, and the wildcard is surrounded by double braces
+(`{{book}}`).
+* When you are just using wildcards (the `shell` section), you can use the standard
+Snakemake notation.
+{% endraw %}
+
+This can be taken further by moving the hardcoded value for `INPUT_DIR` into a
+configuration file. For example:
+
+**config.yml**:
+~~~
+input_dir: books/
+~~~
+{:.language-json}
+
+In the Snakefile, a config is loaded with `configfile` and then values are accessed
+from the `config` dictionary:
+~~~
+configfile: 'config.yml'
+
+INPUT_DIR = config['input_dir']
+~~~
+{:.language-python}
+
+This is particularly useful when sharing a workflow with others, or running in different
+environments where file locations or other parameters may not be the same.
+
+A full example of the entire workflow with no duplication and all configurable values moved
+into a configuration file can be viewed in the `.solutions/episode_09` directory of the
+downloaded code package.
 
 ## dry-run is your friend
 
