@@ -166,14 +166,14 @@ using.
 ~~~
 rule count_words:
     input:
-        wc='wordcount.py',
+        cmd='wordcount.py',
         book='books/{file}.txt'
     output: 'dats/{file}.dat'
     threads: 4
     shell:
         '''
-        echo "Running {input.wc} with {threads} cores."
-        python {input.wc} {input.book} {output}
+        echo "Running {input.cmd} with {threads} cores."
+        python {input.cmd} {input.book} {output}
         '''
 ~~~
 {:.language-python}
@@ -258,16 +258,17 @@ available without us editing the Snakefile.
 > of that rule Snakemake will run at the same time. It does not mean that
 > the code being executed will magically know what the limits are.
 >
-> In the next section we will see how to get the current number of
-> cores allocated to the action so that it could be passed in as a
-> command-line argument or set to an environment variable.
+> The previous code example showed how the `{threads}` wildcard can be used
+> to get the actual number of cores allocated to an action.
+> This value can be passed in as a command-line argument or set to an
+> environment variable.
 {:.callout}
 
 ## Chaining multiple commands
 
 Up until now, all of our commands have fit on one line. To execute multiple
 bash commands, the only modification we need to make is use a Python
-multiline string (begin and end with `"""`)
+multiline string (begin and end with `"""` or `'''`).
 
 One important addition we should be aware of is the `&&` operator. `&&` is a
 bash operator that runs commands as part of a chain. If the first command
@@ -275,24 +276,24 @@ fails, the remaining steps are not run. This is more forgiving than bash's
 default "hit an error and keep going" behavior. After all, if the first
 command failed, it's unlikely the other steps will work.
 
+Let's modify `count_words` to chain the `echo` and `python` commands:
 ~~~
-# count words in one of our "books"
 rule count_words:
     input:
-        wc='wordcount.py',
+        cmd='wordcount.py',
         book='books/{file}.txt'
     output: 'dats/{file}.dat'
     threads: 4
     shell:
-        """
-        echo "Running {input.wc} with {threads} cores on {input.book}." &&
-            python {input.wc} {input.book} {output}
-        """
+        '''
+        echo "Running {input.cmd} with {threads} cores." &&
+        python {input.cmd} {input.book} {output}
+        '''
 ~~~
 {:.language-python}
 
-Notice that we can use the `{threads}` wildcard in the action to access the current
-value of threads.
+Notice the use of the `{threads}` wildcard in the action to access the current
+number of CPU cores allocated to the rule.
 
 ## Managing other types of resources
 
