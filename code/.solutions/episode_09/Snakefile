@@ -1,5 +1,5 @@
 #------------------------------------------------------------
-# First load the configuration
+# load the configuration
 configfile: 'config.yaml'
 
 INPUT_DIR = config['input_dir']
@@ -9,7 +9,7 @@ RESULTS_FILE = config['results_file']
 ARCHIVE_FILE = config['archive_file']
 
 #------------------------------------------------------------
-# Snakemake patterns
+# Single file patterns
 #
 # Now define all the wildcard patterns that either depend on
 # directory and file configuration, or are used more than once.

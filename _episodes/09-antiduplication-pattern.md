@@ -1,7 +1,7 @@
 ---
 title: "Make your workflow portable and reduce duplication"
 teaching: 15
-exercises: 15
+exercises: 20
 questions:
 - "How can I eliminate duplicated file names and paths in my workflows?"
 - "How can I make my workflows portable and easily shared?"
@@ -11,6 +11,11 @@ objectives:
 - "Learn to use configuration files, global variables, and wildcards in a
 systematic way to reduce duplication and make your workflows less error-prone."
 keypoints:
+- "Careful use of global variables can eliminate duplication of file names
+and patterns in your Snakefiles"
+- "Consistent naming conventions help keep your code readable."
+- "Configuration files can make your workflow portable."
+-
 ---
 
 Duplication in file names, paths, and pattern strings is a common source of
@@ -234,84 +239,96 @@ name patterns are not confusing things.
 > You can of course use your own conventions. Consistency is the key.
 {:.callout}
 
-## -----------------------------------------------
+## Improving Portability
 
-The first step in this pattern is to move all values that need to be
-configurable into a configuration file alongside the Snakefile. While Snakemake
-supports `json` and `yaml` formats, we use `yaml` here as it is easier to edit and
-read.
+Imagine that we now want to share this workflow with a colleague, but they
+have their input files in a different location. Additionally, they require a
+different directory layout for the results, and a different results file
+name.
+
+In other words, they think our workflow is great, but they want to customise
+and configure it.
+
+Of course, they can just modify the Snakefile, but this can get annoying when
+the Snakefile is shared (such as through a shared directory or via Git).
+
+A better approach is to use configuration files. Snakemake supports `json`
+and `yaml` formats, we use `yaml` here as it is easier to edit and read.
+
+First, move all values that need to be configurable into a configuration file
+alongside the Snakefile. Here we show the input file directory that has been
+added to `config.yaml`:
 
 ~~~
-# Use a trailing slash on directories so that an empty string will work to indicate
-# the current working directory
 input_dir: books/
-plot_dir: plots/
-dat_dir: dats/
-results_file: results.txt
-archive_file: zipf_analysis.tar.gz
 ~~~
 {:.language-yaml}
 
-One way to reduce this is to increase the use of global variables at the
-start of the Snakefile to define all the configurable parts of your workflow.
-However, this requires some extra care when combining the global variables
-and Snakemake wildcards in your rule definitions. Let's see it in action
-first. In this extract from our workflow we introduce a global variable for
-the input directory and then use string formatting to define the
-`count_words` rule:
+In the Snakefile we first load the configuration with the `configfile` keyword:
 
-{% raw %}
 ~~~
-INPUT_DIR = 'books/'
-
-rule count_words:
-    input:
-        cmd='wordcount.py',
-        book=f'{INPUT_DIR}{{book}}.txt'
-    output: 'dats/{book}.dat'
-    shell: 'python {input.cmd} {input.book} {output}'
+configfile: 'config.yaml'
 ~~~
 {:.language-python}
 
-The key points are:
-* The input directory is only specified in a single place.
-* When wildcards and global variables are combined in a single string (`input.book`),
-a Python f-string is used, and the wildcard is surrounded by double braces
-(`{{book}}`).
-* When you are just using wildcards (the `shell` section), you can use the standard
-Snakemake notation.
-{% endraw %}
+Once that has been done, the configuration is accessed through the `config` dictionary created by Snakemake:
 
-This can be taken further by moving the hardcoded value for `INPUT_DIR` into a
-configuration file. For example:
-
-**config.yaml**:
 ~~~
-input_dir: books/
-~~~
-{:.language-json}
-
-In the Snakefile, a config is loaded with `configfile` and then values are accessed
-from the `config` dictionary:
-~~~
-configfile: 'config.yaml'
-
 INPUT_DIR = config['input_dir']
 ~~~
 {:.language-python}
 
-This is particularly useful when sharing a workflow with others, or running in different
-environments where file locations or other parameters may not be the same.
+Finally, we use Python string formatting to build `BOOK_FILE`. Note that the
+we need to escape the wildcard in double curly braces. This ensures the
+formatted string contains `{book}`. Failure to do this will cause an
+exception since the string formatting code will be expecting a token called
+`book`.
 
-> ## Full Example
+{% raw %}
+~~~
+BOOK_FILE = f'{INPUT_DIR}{{book}}.txt'
+~~~
+{:.language-python}
+{% endraw %}
+
+> ## Combining global variables and wildcards in formatted strings
 >
-> A full example of the entire workflow with no duplication and all configurable values moved
-> into a configuration file can be viewed in the `.solutions/episode_09` directory of the
-> downloaded code package.
+> The safest way to mix global variables and wildcards in a formatted string
+> is to remember the following:
 >
-> Note that the example uses [f-strings][f-string], which are only available from Python 3.6.
-> If you must use an older version of Python then you can use the older string formatting
-> methods, although the results will be less concise.
+> * Global variables are surrounded in single curly braces (e.g. `{INPUT_DIR}`).
+> * Wildcards are surrounded with double curly braces (`{{book}}`).
+> * Use upper-case for globals and lower-case for wildcards.
+{:.callout}
+
+> ## Make your workflow configurable
+>
+> Move all other configurable values into `config.yaml` and adjust the Snakefile.
+>
+> Remember to test your workflow as you go.
+>
+> > ## Solution
+> >
+> > No example code is given here. By this stage you should be able to trust your
+> > own judgement.
+> >
+> > If you really need it, a full example of the entire workflow with no
+> > duplication and all configurable values moved into a configuration file
+> > is in `.solutions/episode_09/Snakefile` and
+> > `.solutions/episode_09/config.yaml` in the downloaded code package.
+> >
+> > Note that the example uses [f-strings][f-string], which are only available from Python 3.6.
+> > If you must use an older version of Python then you can use the older string formatting
+> > methods, although the results will be less concise.
+> {:.solution}
+{:.challenge}
+
+> ## Don't put your configuration file in source control
+>
+> Instead:
+> * create a sample configuration with a different name such as `config_template.yaml`.
+> * instruct users to copy the template to the real configuration file (`config.yaml`).
+> * make sure the configuration file name is in the `.gitignore` file (or equivalent).
 {:.callout}
 
 {% include links.md %}

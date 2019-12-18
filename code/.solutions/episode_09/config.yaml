@@ -1,0 +1,7 @@
+# Use a trailing slash on directories so that an empty string will work to indicate
+# the current working directory
+input_dir: books/
+plot_dir: plots/
+dat_dir: dats/
+results_file: results.txt
+archive_file: zipf_analysis.tar.gz
