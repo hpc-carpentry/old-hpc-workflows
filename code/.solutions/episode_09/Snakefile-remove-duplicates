@@ -1,48 +1,59 @@
-# Build the list of book names. We need to use it multiple times when building
-# the lists of files that will be built in the workflow
-BOOK_NAMES = glob_wildcards('books/{book}.txt').book
+RESULTS_FILE = 'results.txt'
+ARCHIVE_FILE = 'zipf_analysis.tar.gz'
+
+# a single plot file
+PLOT_FILE = 'plots/{book}.png'
+
+# a single dat file
+DAT_FILE = 'dats/{book}.dat'
+
+# a single input book
+BOOK_FILE = 'books/{book}.txt'
+
+# Build the list of book names.
+BOOK_NAMES = glob_wildcards(BOOK_FILE).book
 
 # The list of all dat files
-DATS = expand('dats/{file}.dat', file=BOOK_NAMES)
+DATS = expand(DAT_FILE, book=BOOK_NAMES)
 
 # The list of all plot files
-PLOTS = expand('plots/{file}.png', file=BOOK_NAMES)
+PLOTS = expand(PLOT_FILE, book=BOOK_NAMES)
 
 # pseudo-rule that tries to build everything.
 # Just add all the final outputs that you want built.
 rule all:
-    input: 'zipf_analysis.tar.gz'
+    input: ARCHIVE_FILE
 
 # Generate summary table
 rule zipf_test:
     input:
         cmd='zipf_test.py',
         dats=DATS
-    output: 'results.txt'
+    output: RESULTS_FILE
     shell:  'python {input.cmd} {input.dats} > {output}'
 
 # delete everything so we can re-run things
 rule clean:
-    shell: 'rm -rf dats/ plots/ *.dat results.txt zipf_analysis.tar.gz'
+    shell: f'rm -rf dats/ plots/ {RESULTS_FILE} {ARCHIVE_FILE}'
 
 # Count words in one of the books
 rule count_words:
     input:
         cmd='wordcount.py',
-        book='books/{file}.txt'
-    output: 'dats/{file}.dat'
+        book=BOOK_FILE
+    output: DAT_FILE
     shell: 'python {input.cmd} {input.book} {output}'
 
 # plot one word count dat file
 rule make_plot:
     input:
         cmd='plotcount.py',
-        dat='dats/{file}.dat'
-    output: 'plots/{file}.png'
+        dat=DAT_FILE
+    output: PLOT_FILE
     shell: 'python {input.cmd} {input.dat} {output}'
 
 # create an archive with all results
 rule create_archive:
-    input: 'results.txt', DATS, PLOTS
-    output: 'zipf_analysis.tar.gz'
+    input: RESULTS_FILE, DATS, PLOTS
+    output: ARCHIVE_FILE
     shell: 'tar -czvf {output} {input}'

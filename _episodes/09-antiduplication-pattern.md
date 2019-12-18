@@ -27,7 +27,175 @@ from the end of the previous episode, or else use the example Snakefile
 `.solutions/episode_09/Snakefile-start`. Copy it to your working directory
 and rename to `Snakefile`.
 
-## Use Configuration Files
+## Identify Duplicated Paths
+
+First, examine the Snakefile to identify duplicated file names, paths, and patterns.
+Move each one to a common global variable at the top of the Snakefile.
+
+For example, we currently refer to single input books in two locations:
+
+~~~
+BOOK_NAMES = glob_wildcards('books/{book}.txt').book
+~~~
+{:.language-python}
+
+~~~
+rule count_words:
+    input:
+        cmd='wordcount.py',
+        book='books/{file}.txt'
+~~~
+{:.language-python}
+
+The different wildcard names (`{book}, {file}`) are a distraction. Both
+patterns refer to an input file.
+
+Similarly, the strings that identify a single plot and a single dat file
+are duplicated.
+
+> ## Identify Duplication
+> How many times does the dat file pattern occur?
+> > ## Solution
+> >
+> > Three times.
+> > ~~~
+> > DATS = expand('dats/{file}.dat', file=BOOK_NAMES)
+> > ~~~
+> > {:.language-python}
+> > ~~~
+> > rule count_words:
+> >     input:
+> >         cmd='wordcount.py',
+> >         book='books/{file}.txt'
+> >     output: 'dats/{file}.dat'
+> >     shell: 'python {input.cmd} {input.book} {output}'
+> > ~~~
+> > {:.language-python}
+> > ~~~
+> > rule make_plot:
+> >     input:
+> >         cmd='plotcount.py',
+> >         dat='dats/{file}.dat'
+> >     output: 'plots/{file}.png'
+> >     shell: 'python {input.cmd} {input.dat} {output}'
+> > ~~~
+> > {:.language-python}
+> {:.solution}
+{:.challenge}
+
+Once duplicated file patterns have been identified, they can be moved to
+global variables at the start of the Snakefile and then just refered to by
+name.
+
+Here is what the changes for input files might look like:
+
+~~~
+# a single input book
+BOOK_FILE = 'books/{book}.txt'
+
+# Build the list of book names.
+BOOK_NAMES = glob_wildcards(BOOK_FILE).book
+
+rule count_words:
+    input:
+        cmd='wordcount.py',
+        book=BOOK_FILE
+    output: 'dats/{book}.dat'
+    shell: 'python {input.cmd} {input.book} {output}'
+~~~
+{:.language-python}
+
+Note that we have adopted `{book}` as the wildcard name, rather than the
+inconsistent use of `{book}` and `{file}`.
+
+> ## Global variables also work for `glob_wildcards` and `expand`
+>
+> Another point to note is the previous code used `BOOK_FILE` for a rule input
+> and for a call to `glob_wildcards`. Remember this when updating the calls to
+> `expand` in the next challenge.
+{:.callout}
+
+> ## Replace all other duplicated strings with global variables
+>
+> You will need to update:
+> * the string for `dat` files (`dats/{file}.dat`)
+> * the string for plot files (`plots/{file}.png`)
+> * the archive file `zipf_analysis.tar.gz`
+> * the results file `results.txt`
+>
+> > ## Solution
+> >
+> > This solution is also available as `.solutions/episode_09/Snakefile-remove-duplicates`.
+> > Possibly the only tricky part is in the `clean` rule where we use
+> > a formatted Python string to build the global variables into the shell
+> > command. We used f-string notation, but `string.format` would also work.
+> >
+> > ~~~
+> > RESULTS_FILE = 'results.txt'
+> > ARCHIVE_FILE = 'zipf_analysis.tar.gz'
+> >
+> > # a single plot file
+> > PLOT_FILE = 'plots/{book}.png'
+> >
+> > # a single dat file
+> > DAT_FILE = 'dats/{book}.dat'
+> >
+> > # a single input book
+> > BOOK_FILE = 'books/{book}.txt'
+> >
+> > # Build the list of book names.
+> > BOOK_NAMES = glob_wildcards(BOOK_FILE).book
+> >
+> > # The list of all dat files
+> > DATS = expand(DAT_FILE, book=BOOK_NAMES)
+> >
+> > # The list of all plot files
+> > PLOTS = expand(PLOT_FILE, book=BOOK_NAMES)
+> >
+> > # pseudo-rule that tries to build everything.
+> > # Just add all the final outputs that you want built.
+> > rule all:
+> >     input: ARCHIVE_FILE
+> >
+> > # Generate summary table
+> > rule zipf_test:
+> >     input:
+> >         cmd='zipf_test.py',
+> >         dats=DATS
+> >     output: RESULTS_FILE
+> >     shell:  'python {input.cmd} {input.dats} > {output}'
+> >
+> > # delete everything so we can re-run things
+> > rule clean:
+> >     shell: f'rm -rf dats/ plots/ {RESULTS_FILE} {ARCHIVE_FILE}'
+> >
+> > # Count words in one of the books
+> > rule count_words:
+> >     input:
+> >         cmd='wordcount.py',
+> >         book=BOOK_FILE
+> >     output: DAT_FILE
+> >     shell: 'python {input.cmd} {input.book} {output}'
+> >
+> > # plot one word count dat file
+> > rule make_plot:
+> >     input:
+> >         cmd='plotcount.py',
+> >         dat=DAT_FILE
+> >     output: PLOT_FILE
+> >     shell: 'python {input.cmd} {input.dat} {output}'
+> >
+> > # create an archive with all results
+> > rule create_archive:
+> >     input: RESULTS_FILE, DATS, PLOTS
+> >     output: ARCHIVE_FILE
+> >     shell: 'tar -czvf {output} {input}'
+> > ~~~
+> > {:.language-python}
+> {:.solution}
+{:.challenge}
+
+## -----------------------------------------------
 
 The first step in this pattern is to move all values that need to be
 configurable into a configuration file alongside the Snakefile. While Snakemake
@@ -106,165 +274,6 @@ environments where file locations or other parameters may not be the same.
 > If you must use an older version of Python then you can use the older string formatting
 > methods, although the results will be less concise.
 {:.callout}
-
-## dry-run is your friend
-
-Whenever you edit your Snakefile, you should perform a dry-run with
-`snakemake clean && snakemake -n` or `snakemake clean && snakemake --dry-run`
-immediately afterwards. This will check for errors and make sure that the
-pipeline is able to run. The clean is required to force the dry run to test
-the entire pipeline.
-
-The most common source of errors is a mismatch in filenames (Snakemake
-doesn't know how to produce a particular output file) - `snakemake -n` will
-catch this as long as the troublesome output files haven't already been made,
-and the `snakemake clean` should take care of that.
-
-## Configuring logging
-
-By default, Snakemake prints all output from stderr and stdout from rules.
-This is useful, but if a failure occurs (or we otherwise need to inspect the
-logs) it can be extremely difficult to determine what happened or which rule
-had an issue, especially when running in parallel.
-
-The solution to this issue is to redirect the output from each rule/ set of
-inputs to a dedicated logfile. We can do this using the `log` keyword. Let's
-modify our `count_words` rule to be slighly more verbose and redirect this
-output to a dedicated logfile.
-
-Two things before we start:
-
-* `&>` is a handy operator in bash that redirects both stdout and stderr to a file.
-* `&>>` does the same thing as `&>`, but appends to a file instead of overwriting it.
-
-~~~
-# count words in one of our "books"
-rule count_words:
-    input:
-        wc='wordcount.py',
-        book='books/{file}.txt'
-    output: 'dats/{file}.dat'
-    threads: 4
-    log: 'dats/{file}.log'
-    shell:
-        '''
-        echo "Running {input.wc} with {threads} cores on {input.book}." &> {log}
-        python {input.wc} {input.book} {output} &>> {log}
-        '''
-~~~
-{:.language-python}
-
-~~~
-snakemake clean
-snakemake -j 8
-cat dats/abyss.log
-~~~
-{:.language-bash}
-
-~~~
-# snakemake output omitted
-Running wordcount.py with 4 cores on books/abyss.txt.
-~~~
-{: .output}
-
-Notice how the pipeline no longer prints to the terminal output, and instead
-redirects to a logfile.
-
-> ## Choosing a good log file location
->
-> Though you can put a log anywhere (and name it anything),
-> it is often a good practice to put the log in the same directory
-> where the rule's output will be created.
-> If you need to investigate the output for a rule and associated logfiles,
-> this means that you only have to check one location!
-{: .callout}
-
-## Token files
-
-Often, a rule does not generate a unique output, and merely modifies a file.
-In these cases it is often worthwhile to create a placeholder, or "token
-file" as output. A token file is simply an empty file that you can create
-with the touch command (`touch some_file.txt` creates an empty file called
-`some_file.txt`).
-
-You can then use the token file as an input to other rules that shouldn't run
-until after the rule that generates the token.
-
-An example rule using this technique is shown below:
-
-~~~
-rule token_example:
-    input:  'some_file.txt'
-    output: 'some_file.tkn'   # marks some_file.txt as modified
-    shell:
-        '''
-        some_command --do-things {input} &&
-            touch {output}
-        '''
-~~~
-{:.language-python}
-
-## Directory locks
-
-Only one instance of Snakemake can run in a directory at a time. If a
-Snakemake run fails without unlocking the directory (if you killed the
-process, for instance), you can run `snakemake --unlock` to unlock it.
-
-## Python as a fallback
-
-Remember, you can use Python imports and functions anywhere in a Snakefile.
-If something seems a little tricky to implement - Python can do it. The `os`,
-`shutil`, and `subprocess` packages are useful tools for using Python to
-execute command line actions. In particular, `os.system('some command')` will
-run a command on the command-line and block until execution is complete.
-
-## Creating a workflow diagram
-
-Assuming graphviz is installed (`conda install graphviz`), you can create a
-diagram of your workflow with the command: `snakemake --dag | dot -Tsvg >
-dag.svg`. This creates a plot of your "directed acyclic graph" (a plot of all
-of the rules Snakemake thinks it needs to complete), which you can view using
-any picture viewing program. In fact this was the tool used to create all of
-the diagrams in this lesson:
-
-~~~
-snakemake --dag | dot -Tsvg > dag.svg
-eog dag.svg     # eog is an image viewer installed on many linux systems
-~~~
-{:.language-bash}
-
-![Example DAG plot](../fig/06-final-dag.svg)
-
-Rules that have yet to be completed are indicated with solid outlines.
-Already completed tasks will be indicated with dashed outlines. In this case,
-I ran `snakemake clean`, just before creating the diagram - no rules have
-been run yet.
-
-> ## CSIRO Clusters
->
-> On CSIRO clusters, you can load the `imagemagick` module to view the
-> diagrams:
-> ~~~
-> module load imagemagick
-> snakemake --dag | dot -Tpng | display
-> ~~~
-> {:.language-bash}
-{:.callout}
-
-## Viewing the GUI
-
-Snakemake has an experimental web browser GUI. I personally haven't used it
-for anything, but it's cool to know it's there and can be used to view your
-workflow on the fly.
-
-`snakemake --gui`
-
-Note that this requires the installation of additional Python packages.
-
-## Where to go for documentation / help
-
-The Snakemake documentation is located at
-[snakemake.readthedocs.io](http://snakemake.readthedocs.io)
 
 {% include links.md %}
 
