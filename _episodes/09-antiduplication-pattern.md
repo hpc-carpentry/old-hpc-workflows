@@ -28,7 +28,27 @@ tricks for making the process go more smoothly.
 
 Duplication in file names, paths, and pattern strings is a common source of
 errors in snakefiles. For example, have a look at how often the directory
-names are mentioned (`dats`, `plots` etc) in the examples from this workshop.
+nmore robust ames are mentioned (`dats`, `plots` etc) in the examples from this workshop.
+
+This episode presents a pattern for reducing file name duplication and making
+your workflows less error-prone. In addition, this approach makes your
+workflows more portable by moving all configurable items into a separate
+configuration file.
+
+First, move all configurable values into a configuration file alongside the
+Snakefile. Snakemake supports `json` and `yaml` formats, here is a `yaml`
+version:
+
+~~~
+# Use a trailing slash on directories so that an empty string will work to indicate
+# the current working directory
+input_dir: books/
+plot_dir: plots/
+dat_dir: dats/
+results_file: results.txt
+archive_file: zipf_analysis.tar.gz
+~~~
+{:.language-yaml}
 
 One way to reduce this is to increase the use of global variables at the
 start of the Snakefile to define all the configurable parts of your workflow.
