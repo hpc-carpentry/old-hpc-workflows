@@ -27,7 +27,7 @@ from the end of the previous episode, or else use the example Snakefile
 `.solutions/episode_09/Snakefile-start`. Copy it to your working directory
 and rename to `Snakefile`.
 
-## Identify Duplicated Paths
+## Removing Duplication
 
 First, examine the Snakefile to identify duplicated file names, paths, and patterns.
 Move each one to a common global variable at the top of the Snakefile.
@@ -123,6 +123,13 @@ inconsistent use of `{book}` and `{file}`.
 > * the archive file `zipf_analysis.tar.gz`
 > * the results file `results.txt`
 >
+> > ## Hint
+> >
+> > * A formatted string can be used to get the global variables into the `clean`
+> > shell command.
+> > * If you have inconsistent wildcard names, make them the same.
+> {:.solution}
+>
 > > ## Solution
 > >
 > > This solution is also available as `.solutions/episode_09/Snakefile-remove-duplicates`.
@@ -147,10 +154,10 @@ inconsistent use of `{book}` and `{file}`.
 > > BOOK_NAMES = glob_wildcards(BOOK_FILE).book
 > >
 > > # The list of all dat files
-> > DATS = expand(DAT_FILE, book=BOOK_NAMES)
+> > ALL_DATS = expand(DAT_FILE, book=BOOK_NAMES)
 > >
 > > # The list of all plot files
-> > PLOTS = expand(PLOT_FILE, book=BOOK_NAMES)
+> > ALL_PLOTS = expand(PLOT_FILE, book=BOOK_NAMES)
 > >
 > > # pseudo-rule that tries to build everything.
 > > # Just add all the final outputs that you want built.
@@ -161,7 +168,7 @@ inconsistent use of `{book}` and `{file}`.
 > > rule zipf_test:
 > >     input:
 > >         cmd='zipf_test.py',
-> >         dats=DATS
+> >         dats=ALL_DATS
 > >     output: RESULTS_FILE
 > >     shell:  'python {input.cmd} {input.dats} > {output}'
 > >
@@ -187,13 +194,45 @@ inconsistent use of `{book}` and `{file}`.
 > >
 > > # create an archive with all results
 > > rule create_archive:
-> >     input: RESULTS_FILE, DATS, PLOTS
+> >     input: RESULTS_FILE, ALL_DATS, ALL_PLOTS
 > >     output: ARCHIVE_FILE
 > >     shell: 'tar -czvf {output} {input}'
 > > ~~~
 > > {:.language-python}
 > {:.solution}
 {:.challenge}
+
+## The Benefits So Far
+
+These changes bring a lot of benefits to Snakefiles, and most of these
+benefits increase as your Snakefiles become more complex. Defining each file
+pattern just once reduces the chance of error, and makes changing patterns
+easier. Having all the file patterns and lists defined at the start of the
+file also makes things easier to read. Finally, using the global variable
+names elsewhere in the file tends to make rules easier to read. Instead of
+trying to remember what the right pattern is, or what a given pattern means,
+the extra level of abstraction should improve readability. For example, the `create_archive` rule now looks something like this:
+
+~~~
+rule create_archive:
+    input: RESULTS_FILE, ALL_DATS, ALL_PLOTS
+    output: ARCHIVE_FILE
+    shell: 'tar -czvf {output} {input}'
+~~~
+{:.language-python}
+
+The intent of the rule should be clear, and the intricacies of paths and file
+name patterns are not confusing things.
+
+> ## Use Consistent Naming Conventions
+>
+> I suggest the following global variable naming conventions:
+>
+> * `*_FILE` for single files or wildcard patterns
+> * `ALL_*` for lists of files (frequently build using `expand`)
+>
+> You can of course use your own conventions. Consistency is the key.
+{:.callout}
 
 ## -----------------------------------------------
 
