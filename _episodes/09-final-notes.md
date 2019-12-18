@@ -81,9 +81,16 @@ INPUT_DIR = config['input_dir']
 This is particularly useful when sharing a workflow with others, or running in different
 environments where file locations or other parameters may not be the same.
 
-A full example of the entire workflow with no duplication and all configurable values moved
-into a configuration file can be viewed in the `.solutions/episode_09` directory of the
-downloaded code package.
+> ## Full Example
+>
+> A full example of the entire workflow with no duplication and all configurable values moved
+> into a configuration file can be viewed in the `.solutions/episode_09` directory of the
+> downloaded code package.
+>
+> Note that the example uses [f-strings][f-string], which are only available from Python 3.6.
+> If you must use an older version of Python then you can use the older string formatting
+> methods, although the results will be less concise.
+{:.callout}
 
 ## dry-run is your friend
 
@@ -245,3 +252,5 @@ The Snakemake documentation is located at
 [snakemake.readthedocs.io](http://snakemake.readthedocs.io)
 
 {% include links.md %}
+
+[f-string]: https://docs.python.org/3/reference/lexical_analysis.html#f-strings

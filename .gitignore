@@ -25,3 +25,4 @@ code/Snakefile
 code/dats/
 code/plots/
 code/zipf_analysis.tar.gz
+code/config.yaml
