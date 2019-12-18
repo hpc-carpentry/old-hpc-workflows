@@ -5,18 +5,112 @@ exercises: 15
 questions:
 - "What are some tips and tricks I can use to make this easier?"
 objectives:
+- "Learn a pattern to reduce duplication and improve maintainability of Snakefiles."
 - "Understand how to perform a dry-run of your workflow."
 - "Understand how to configure logging so that each rule generates a separate log."
 - "Understand how to visualise your workflow."
 keypoints:
+- "Duplication in file names and patterns can be reduced by careful and systematic
+use of configuration files, formatted strings, and global variables."
 - "`snakemake -n` performs a dry-run."
+- "Using log files can make your workflow easier to debug."
+- "Put log files in the same location as the rule outputs."
 - "Token files can be used to take the place of output files if none are created."
+- "`snakemake --unlock` can unlock a directory if snakemake crashes."
 - "`snakemake --dag | dot -Tsvg > dag.svg` creates a graphic of your workflow."
 - "`snakemake --gui` opens a browser window with your workflow."
 ---
 
 Now that we know how to write and scale a pipeline, here are some tips and
 tricks for making the process go more smoothly.
+
+## A Pattern for Reducing Duplication in File Names and Paths
+
+Duplication in file names, paths, and pattern strings is a common source of
+errors in snakefiles. For example, have a look at how often the directory
+nmore robust ames are mentioned (`dats`, `plots` etc) in the examples from this workshop.
+
+This episode presents a pattern for reducing file name duplication and making
+your workflows less error-prone. In addition, this approach makes your
+workflows more portable by moving all configurable items into a separate
+configuration file.
+
+First, move all configurable values into a configuration file alongside the
+Snakefile. Snakemake supports `json` and `yaml` formats, here is a `yaml`
+version:
+
+~~~
+# Use a trailing slash on directories so that an empty string will work to indicate
+# the current working directory
+input_dir: books/
+plot_dir: plots/
+dat_dir: dats/
+results_file: results.txt
+archive_file: zipf_analysis.tar.gz
+~~~
+{:.language-yaml}
+
+One way to reduce this is to increase the use of global variables at the
+start of the Snakefile to define all the configurable parts of your workflow.
+However, this requires some extra care when combining the global variables
+and Snakemake wildcards in your rule definitions. Let's see it in action
+first. In this extract from our workflow we introduce a global variable for
+the input directory and then use string formatting to define the
+`count_words` rule:
+
+{% raw %}
+~~~
+INPUT_DIR = 'books/'
+
+rule count_words:
+    input:
+        cmd='wordcount.py',
+        book=f'{INPUT_DIR}{{book}}.txt'
+    output: 'dats/{book}.dat'
+    shell: 'python {input.cmd} {input.book} {output}'
+~~~
+{:.language-python}
+
+The key points are:
+* The input directory is only specified in a single place.
+* When wildcards and global variables are combined in a single string (`input.book`),
+a Python f-string is used, and the wildcard is surrounded by double braces
+(`{{book}}`).
+* When you are just using wildcards (the `shell` section), you can use the standard
+Snakemake notation.
+{% endraw %}
+
+This can be taken further by moving the hardcoded value for `INPUT_DIR` into a
+configuration file. For example:
+
+**config.yaml**:
+~~~
+input_dir: books/
+~~~
+{:.language-json}
+
+In the Snakefile, a config is loaded with `configfile` and then values are accessed
+from the `config` dictionary:
+~~~
+configfile: 'config.yaml'
+
+INPUT_DIR = config['input_dir']
+~~~
+{:.language-python}
+
+This is particularly useful when sharing a workflow with others, or running in different
+environments where file locations or other parameters may not be the same.
+
+> ## Full Example
+>
+> A full example of the entire workflow with no duplication and all configurable values moved
+> into a configuration file can be viewed in the `.solutions/episode_09` directory of the
+> downloaded code package.
+>
+> Note that the example uses [f-strings][f-string], which are only available from Python 3.6.
+> If you must use an older version of Python then you can use the older string formatting
+> methods, although the results will be less concise.
+{:.callout}
 
 ## dry-run is your friend
 
@@ -28,7 +122,8 @@ the entire pipeline.
 
 The most common source of errors is a mismatch in filenames (Snakemake
 doesn't know how to produce a particular output file) - `snakemake -n` will
-catch this as long as the troublesome output files haven't already been made.
+catch this as long as the troublesome output files haven't already been made,
+and the `snakemake clean` should take care of that.
 
 ## Configuring logging
 
@@ -150,7 +245,16 @@ Already completed tasks will be indicated with dashed outlines. In this case,
 I ran `snakemake clean`, just before creating the diagram - no rules have
 been run yet.
 
-FIXME: add callout giving CSIRO cluster specific instructions
+> ## CSIRO Clusters
+>
+> On CSIRO clusters, you can load the `imagemagick` module to view the
+> diagrams:
+> ~~~
+> module load imagemagick
+> snakemake --dag | dot -Tpng | display
+> ~~~
+> {:.language-bash}
+{:.callout}
 
 ## Viewing the GUI
 
@@ -160,9 +264,13 @@ workflow on the fly.
 
 `snakemake --gui`
 
+Note that this requires the installation of additional Python packages.
+
 ## Where to go for documentation / help
 
 The Snakemake documentation is located at
 [snakemake.readthedocs.io](http://snakemake.readthedocs.io)
 
 {% include links.md %}
+
+[f-string]: https://docs.python.org/3/reference/lexical_analysis.html#f-strings

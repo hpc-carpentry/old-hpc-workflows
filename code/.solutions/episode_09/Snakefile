@@ -1,0 +1,82 @@
+#------------------------------------------------------------
+# Directory configuration
+# Use a trailing slash so that an empty string will work to indicate
+# the current working directory
+INPUT_DIR = 'books/'
+PLOT_DIR = 'plots/'
+DAT_DIR = 'dats/'
+
+#------------------------------------------------------------
+# Configurable file names
+RESULTS_FILE = 'results.txt'
+ARCHIVE_FILE = 'zipf_analysis.tar.gz'
+
+#------------------------------------------------------------
+# Snakemake patterns
+# Wildcard patterns that either depend on directory and file
+# configuration, or are used more than once.
+
+# The filename pattern used for a single plot file
+# Created here to reduce duplication.
+PLOT_FILE_PATTERN = f'{PLOT_DIR}{{book}}.png'
+
+# The filename pattern used for a single dat file
+DAT_FILE_PATTERN = f'{DAT_DIR}{{book}}.dat'
+
+# The filename pattern used for a single input book
+BOOK_FILE_PATTERN = f'{INPUT_DIR}{{book}}.txt'
+
+#------------------------------------------------------------
+# File lists
+
+# Build the list of book names. We need to use it multiple times when building
+# the lists of files that will be built in the workflow
+BOOK_NAMES = glob_wildcards(BOOK_FILE_PATTERN).book
+
+# The list of all dat files
+DATS = expand(DAT_FILE_PATTERN, book=BOOK_NAMES)
+
+# The list of all plot files
+PLOTS = expand(PLOT_FILE_PATTERN, book=BOOK_NAMES)
+
+#------------------------------------------------------------
+# Rules
+
+# pseudo-rule that tries to build everything.
+# Just add all the final outputs that you want built.
+rule all:
+    input: ARCHIVE_FILE
+
+# Generate summary table
+rule zipf_test:
+    input:
+        cmd='zipf_test.py',
+        dats=DATS
+    output: RESULTS_FILE
+    shell:  'python {input.cmd} {input.dats} > {output}'
+
+# delete everything so we can re-run things
+rule clean:
+    shell: f'rm -rf {DAT_DIR} {PLOT_DIR} {RESULTS_FILE} {ARCHIVE_FILE}'
+
+# Count words in one of the books
+rule count_words:
+    input:
+        cmd='wordcount.py',
+        book=BOOK_FILE_PATTERN
+    output: DAT_FILE_PATTERN
+    shell: 'python {input.cmd} {input.book} {output}'
+
+# plot one word count dat file
+rule make_plot:
+    input:
+        cmd='plotcount.py',
+        dat=DAT_FILE_PATTERN
+    output: PLOT_FILE_PATTERN
+    shell: 'python {input.cmd} {input.dat} {output}'
+
+# create an archive with all results
+rule create_archive:
+    input: RESULTS_FILE, DATS, PLOTS
+    output: ARCHIVE_FILE
+    shell: 'tar -czvf {output} {input}'
