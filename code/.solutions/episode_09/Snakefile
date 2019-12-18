@@ -1,46 +1,52 @@
 #------------------------------------------------------------
-# Directory configuration
-# Use a trailing slash so that an empty string will work to indicate
-# the current working directory
-INPUT_DIR = 'books/'
-PLOT_DIR = 'plots/'
-DAT_DIR = 'dats/'
+# load the configuration
+configfile: 'config.yaml'
+
+INPUT_DIR = config['input_dir']
+PLOT_DIR = config['plot_dir']
+DAT_DIR = config['dat_dir']
+RESULTS_FILE = config['results_file']
+ARCHIVE_FILE = config['archive_file']
 
 #------------------------------------------------------------
-# Configurable file names
-RESULTS_FILE = 'results.txt'
-ARCHIVE_FILE = 'zipf_analysis.tar.gz'
+# Single file patterns
+#
+# Now define all the wildcard patterns that either depend on
+# directory and file configuration, or are used more than once.
 
-#------------------------------------------------------------
-# Snakemake patterns
-# Wildcard patterns that either depend on directory and file
-# configuration, or are used more than once.
+# Note the use of single curly braces for global variables
+# and double curly braces for snakemake wildcards
 
-# The filename pattern used for a single plot file
-# Created here to reduce duplication.
-PLOT_FILE_PATTERN = f'{PLOT_DIR}{{book}}.png'
+# a single plot file
+PLOT_FILE = f'{PLOT_DIR}{{book}}.png'
 
-# The filename pattern used for a single dat file
-DAT_FILE_PATTERN = f'{DAT_DIR}{{book}}.dat'
+# a single dat file
+DAT_FILE = f'{DAT_DIR}{{book}}.dat'
 
-# The filename pattern used for a single input book
-BOOK_FILE_PATTERN = f'{INPUT_DIR}{{book}}.txt'
+# a single input book
+BOOK_FILE = f'{INPUT_DIR}{{book}}.txt'
 
 #------------------------------------------------------------
 # File lists
+#
+# Now we can use the single file patterns in conjunction with
+# glob_wildcards and expand to build the lists of all expected files.
 
-# Build the list of book names. We need to use it multiple times when building
-# the lists of files that will be built in the workflow
-BOOK_NAMES = glob_wildcards(BOOK_FILE_PATTERN).book
+# the list of book names
+BOOK_NAMES = glob_wildcards(BOOK_FILE).book
 
 # The list of all dat files
-DATS = expand(DAT_FILE_PATTERN, book=BOOK_NAMES)
+ALL_DATS = expand(DAT_FILE, book=BOOK_NAMES)
 
 # The list of all plot files
-PLOTS = expand(PLOT_FILE_PATTERN, book=BOOK_NAMES)
+ALL_PLOTS = expand(PLOT_FILE, book=BOOK_NAMES)
 
 #------------------------------------------------------------
 # Rules
+#
+# Note that when using this pattern, it is rare for a rule to
+# define filename patterns directly. Nearly all inputs and outputs
+# can be specified using the existing global variables.
 
 # pseudo-rule that tries to build everything.
 # Just add all the final outputs that you want built.
@@ -51,11 +57,15 @@ rule all:
 rule zipf_test:
     input:
         cmd='zipf_test.py',
-        dats=DATS
+        dats=ALL_DATS
     output: RESULTS_FILE
+    # This shell command only contains wildcards, so it does not
+    # require an f-string or double curly braces.
     shell:  'python {input.cmd} {input.dats} > {output}'
 
 # delete everything so we can re-run things
+# This rules uses an f-string and single curly braces since all values
+# are global variables rather than wildcards.
 rule clean:
     shell: f'rm -rf {DAT_DIR} {PLOT_DIR} {RESULTS_FILE} {ARCHIVE_FILE}'
 
@@ -63,20 +73,20 @@ rule clean:
 rule count_words:
     input:
         cmd='wordcount.py',
-        book=BOOK_FILE_PATTERN
-    output: DAT_FILE_PATTERN
+        book=BOOK_FILE
+    output: DAT_FILE
     shell: 'python {input.cmd} {input.book} {output}'
 
 # plot one word count dat file
 rule make_plot:
     input:
         cmd='plotcount.py',
-        dat=DAT_FILE_PATTERN
-    output: PLOT_FILE_PATTERN
+        dat=DAT_FILE
+    output: PLOT_FILE
     shell: 'python {input.cmd} {input.dat} {output}'
 
 # create an archive with all results
 rule create_archive:
-    input: RESULTS_FILE, DATS, PLOTS
+    input: RESULTS_FILE, ALL_DATS, ALL_PLOTS
     output: ARCHIVE_FILE
     shell: 'tar -czvf {output} {input}'

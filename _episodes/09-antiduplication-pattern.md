@@ -1,275 +1,335 @@
 ---
-title: "Final notes"
+title: "Make your workflow portable and reduce duplication"
 teaching: 15
-exercises: 15
+exercises: 20
 questions:
-- "What are some tips and tricks I can use to make this easier?"
+- "How can I eliminate duplicated file names and paths in my workflows?"
+- "How can I make my workflows portable and easily shared?"
 objectives:
-- "Learn a pattern to reduce duplication and improve maintainability of Snakefiles."
-- "Understand how to perform a dry-run of your workflow."
-- "Understand how to configure logging so that each rule generates a separate log."
-- "Understand how to visualise your workflow."
+- "Learn to use configuration files to make workflows portable."
+- "Learn a safe way to mix global variables and snakemake wildcards."
+- "Learn to use configuration files, global variables, and wildcards in a
+systematic way to reduce duplication and make your workflows less error-prone."
 keypoints:
-- "Duplication in file names and patterns can be reduced by careful and systematic
-use of configuration files, formatted strings, and global variables."
-- "`snakemake -n` performs a dry-run."
-- "Using log files can make your workflow easier to debug."
-- "Put log files in the same location as the rule outputs."
-- "Token files can be used to take the place of output files if none are created."
-- "`snakemake --unlock` can unlock a directory if snakemake crashes."
-- "`snakemake --dag | dot -Tsvg > dag.svg` creates a graphic of your workflow."
-- "`snakemake --gui` opens a browser window with your workflow."
+- "Careful use of global variables can eliminate duplication of file names
+and patterns in your Snakefiles"
+- "Consistent naming conventions help keep your code readable."
+- "Configuration files can make your workflow portable."
+-
 ---
-
-Now that we know how to write and scale a pipeline, here are some tips and
-tricks for making the process go more smoothly.
-
-## A Pattern for Reducing Duplication in File Names and Paths
 
 Duplication in file names, paths, and pattern strings is a common source of
 errors in snakefiles. For example, have a look at how often the directory
-nmore robust ames are mentioned (`dats`, `plots` etc) in the examples from this workshop.
+names are mentioned (`dats`, `plots` etc) in the examples from this workshop.
 
 This episode presents a pattern for reducing file name duplication and making
 your workflows less error-prone. In addition, this approach makes your
 workflows more portable by moving all configurable items into a separate
 configuration file.
 
-First, move all configurable values into a configuration file alongside the
-Snakefile. Snakemake supports `json` and `yaml` formats, here is a `yaml`
-version:
+For these exercises, you should start with either your completed Snakefile
+from the end of the previous episode, or else use the example Snakefile
+`.solutions/episode_09/Snakefile-start`. Copy it to your working directory
+and rename to `Snakefile`.
+
+## Removing Duplication
+
+First, examine the Snakefile to identify duplicated file names, paths, and patterns.
+Move each one to a common global variable at the top of the Snakefile.
+
+For example, we currently refer to single input books in two locations:
 
 ~~~
-# Use a trailing slash on directories so that an empty string will work to indicate
-# the current working directory
-input_dir: books/
-plot_dir: plots/
-dat_dir: dats/
-results_file: results.txt
-archive_file: zipf_analysis.tar.gz
+BOOK_NAMES = glob_wildcards('books/{book}.txt').book
 ~~~
-{:.language-yaml}
+{:.language-python}
 
-One way to reduce this is to increase the use of global variables at the
-start of the Snakefile to define all the configurable parts of your workflow.
-However, this requires some extra care when combining the global variables
-and Snakemake wildcards in your rule definitions. Let's see it in action
-first. In this extract from our workflow we introduce a global variable for
-the input directory and then use string formatting to define the
-`count_words` rule:
-
-{% raw %}
 ~~~
-INPUT_DIR = 'books/'
+rule count_words:
+    input:
+        cmd='wordcount.py',
+        book='books/{file}.txt'
+~~~
+{:.language-python}
+
+The different wildcard names (`{book}, {file}`) are a distraction. Both
+patterns refer to an input file.
+
+Similarly, the strings that identify a single plot and a single dat file
+are duplicated.
+
+> ## Identify Duplication
+> How many times does the dat file pattern occur?
+> > ## Solution
+> >
+> > Three times.
+> > ~~~
+> > DATS = expand('dats/{file}.dat', file=BOOK_NAMES)
+> > ~~~
+> > {:.language-python}
+> > ~~~
+> > rule count_words:
+> >     input:
+> >         cmd='wordcount.py',
+> >         book='books/{file}.txt'
+> >     output: 'dats/{file}.dat'
+> >     shell: 'python {input.cmd} {input.book} {output}'
+> > ~~~
+> > {:.language-python}
+> > ~~~
+> > rule make_plot:
+> >     input:
+> >         cmd='plotcount.py',
+> >         dat='dats/{file}.dat'
+> >     output: 'plots/{file}.png'
+> >     shell: 'python {input.cmd} {input.dat} {output}'
+> > ~~~
+> > {:.language-python}
+> {:.solution}
+{:.challenge}
+
+Once duplicated file patterns have been identified, they can be moved to
+global variables at the start of the Snakefile and then just refered to by
+name.
+
+Here is what the changes for input files might look like:
+
+~~~
+# a single input book
+BOOK_FILE = 'books/{book}.txt'
+
+# Build the list of book names.
+BOOK_NAMES = glob_wildcards(BOOK_FILE).book
 
 rule count_words:
     input:
         cmd='wordcount.py',
-        book=f'{INPUT_DIR}{{book}}.txt'
+        book=BOOK_FILE
     output: 'dats/{book}.dat'
     shell: 'python {input.cmd} {input.book} {output}'
 ~~~
 {:.language-python}
 
-The key points are:
-* The input directory is only specified in a single place.
-* When wildcards and global variables are combined in a single string (`input.book`),
-a Python f-string is used, and the wildcard is surrounded by double braces
-(`{{book}}`).
-* When you are just using wildcards (the `shell` section), you can use the standard
-Snakemake notation.
-{% endraw %}
+Note that we have adopted `{book}` as the wildcard name, rather than the
+inconsistent use of `{book}` and `{file}`.
 
-This can be taken further by moving the hardcoded value for `INPUT_DIR` into a
-configuration file. For example:
+> ## Global variables also work for `glob_wildcards` and `expand`
+>
+> Another point to note is the previous code used `BOOK_FILE` for a rule input
+> and for a call to `glob_wildcards`. Remember this when updating the calls to
+> `expand` in the next challenge.
+{:.callout}
 
-**config.yaml**:
+> ## Replace all other duplicated strings with global variables
+>
+> You will need to update:
+> * the string for `dat` files (`dats/{file}.dat`)
+> * the string for plot files (`plots/{file}.png`)
+> * the archive file `zipf_analysis.tar.gz`
+> * the results file `results.txt`
+>
+> > ## Hint
+> >
+> > * A formatted string can be used to get the global variables into the `clean`
+> > shell command.
+> > * If you have inconsistent wildcard names, make them the same.
+> {:.solution}
+>
+> > ## Solution
+> >
+> > This solution is also available as `.solutions/episode_09/Snakefile-remove-duplicates`.
+> > Possibly the only tricky part is in the `clean` rule where we use
+> > a formatted Python string to build the global variables into the shell
+> > command. We used f-string notation, but `string.format` would also work.
+> >
+> > ~~~
+> > RESULTS_FILE = 'results.txt'
+> > ARCHIVE_FILE = 'zipf_analysis.tar.gz'
+> >
+> > # a single plot file
+> > PLOT_FILE = 'plots/{book}.png'
+> >
+> > # a single dat file
+> > DAT_FILE = 'dats/{book}.dat'
+> >
+> > # a single input book
+> > BOOK_FILE = 'books/{book}.txt'
+> >
+> > # Build the list of book names.
+> > BOOK_NAMES = glob_wildcards(BOOK_FILE).book
+> >
+> > # The list of all dat files
+> > ALL_DATS = expand(DAT_FILE, book=BOOK_NAMES)
+> >
+> > # The list of all plot files
+> > ALL_PLOTS = expand(PLOT_FILE, book=BOOK_NAMES)
+> >
+> > # pseudo-rule that tries to build everything.
+> > # Just add all the final outputs that you want built.
+> > rule all:
+> >     input: ARCHIVE_FILE
+> >
+> > # Generate summary table
+> > rule zipf_test:
+> >     input:
+> >         cmd='zipf_test.py',
+> >         dats=ALL_DATS
+> >     output: RESULTS_FILE
+> >     shell:  'python {input.cmd} {input.dats} > {output}'
+> >
+> > # delete everything so we can re-run things
+> > rule clean:
+> >     shell: f'rm -rf dats/ plots/ {RESULTS_FILE} {ARCHIVE_FILE}'
+> >
+> > # Count words in one of the books
+> > rule count_words:
+> >     input:
+> >         cmd='wordcount.py',
+> >         book=BOOK_FILE
+> >     output: DAT_FILE
+> >     shell: 'python {input.cmd} {input.book} {output}'
+> >
+> > # plot one word count dat file
+> > rule make_plot:
+> >     input:
+> >         cmd='plotcount.py',
+> >         dat=DAT_FILE
+> >     output: PLOT_FILE
+> >     shell: 'python {input.cmd} {input.dat} {output}'
+> >
+> > # create an archive with all results
+> > rule create_archive:
+> >     input: RESULTS_FILE, ALL_DATS, ALL_PLOTS
+> >     output: ARCHIVE_FILE
+> >     shell: 'tar -czvf {output} {input}'
+> > ~~~
+> > {:.language-python}
+> {:.solution}
+{:.challenge}
+
+## The Benefits So Far
+
+These changes bring a lot of benefits to Snakefiles, and most of these
+benefits increase as your Snakefiles become more complex. Defining each file
+pattern just once reduces the chance of error, and makes changing patterns
+easier. Having all the file patterns and lists defined at the start of the
+file also makes things easier to read. Finally, using the global variable
+names elsewhere in the file tends to make rules easier to read. Instead of
+trying to remember what the right pattern is, or what a given pattern means,
+the extra level of abstraction should improve readability. For example, the `create_archive` rule now looks something like this:
+
+~~~
+rule create_archive:
+    input: RESULTS_FILE, ALL_DATS, ALL_PLOTS
+    output: ARCHIVE_FILE
+    shell: 'tar -czvf {output} {input}'
+~~~
+{:.language-python}
+
+The intent of the rule should be clear, and the intricacies of paths and file
+name patterns are not confusing things.
+
+> ## Use Consistent Naming Conventions
+>
+> I suggest the following global variable naming conventions:
+>
+> * `*_FILE` for single files or wildcard patterns
+> * `ALL_*` for lists of files (frequently build using `expand`)
+>
+> You can of course use your own conventions. Consistency is the key.
+{:.callout}
+
+## Improving Portability
+
+Imagine that we now want to share this workflow with a colleague, but they
+have their input files in a different location. Additionally, they require a
+different directory layout for the results, and a different results file
+name.
+
+In other words, they think our workflow is great, but they want to customise
+and configure it.
+
+Of course, they can just modify the Snakefile, but this can get annoying when
+the Snakefile is shared (such as through a shared directory or via Git).
+
+A better approach is to use configuration files. Snakemake supports `json`
+and `yaml` formats, we use `yaml` here as it is easier to edit and read.
+
+First, move all values that need to be configurable into a configuration file
+alongside the Snakefile. Here we show the input file directory that has been
+added to `config.yaml`:
+
 ~~~
 input_dir: books/
 ~~~
-{:.language-json}
+{:.language-yaml}
 
-In the Snakefile, a config is loaded with `configfile` and then values are accessed
-from the `config` dictionary:
+In the Snakefile we first load the configuration with the `configfile` keyword:
+
 ~~~
 configfile: 'config.yaml'
+~~~
+{:.language-python}
 
+Once that has been done, the configuration is accessed through the `config` dictionary created by Snakemake:
+
+~~~
 INPUT_DIR = config['input_dir']
 ~~~
 {:.language-python}
 
-This is particularly useful when sharing a workflow with others, or running in different
-environments where file locations or other parameters may not be the same.
+Finally, we use Python string formatting to build `BOOK_FILE`. Note that the
+we need to escape the wildcard in double curly braces. This ensures the
+formatted string contains `{book}`. Failure to do this will cause an
+exception since the string formatting code will be expecting a token called
+`book`.
 
-> ## Full Example
->
-> A full example of the entire workflow with no duplication and all configurable values moved
-> into a configuration file can be viewed in the `.solutions/episode_09` directory of the
-> downloaded code package.
->
-> Note that the example uses [f-strings][f-string], which are only available from Python 3.6.
-> If you must use an older version of Python then you can use the older string formatting
-> methods, although the results will be less concise.
-{:.callout}
-
-## dry-run is your friend
-
-Whenever you edit your Snakefile, you should perform a dry-run with
-`snakemake clean && snakemake -n` or `snakemake clean && snakemake --dry-run`
-immediately afterwards. This will check for errors and make sure that the
-pipeline is able to run. The clean is required to force the dry run to test
-the entire pipeline.
-
-The most common source of errors is a mismatch in filenames (Snakemake
-doesn't know how to produce a particular output file) - `snakemake -n` will
-catch this as long as the troublesome output files haven't already been made,
-and the `snakemake clean` should take care of that.
-
-## Configuring logging
-
-By default, Snakemake prints all output from stderr and stdout from rules.
-This is useful, but if a failure occurs (or we otherwise need to inspect the
-logs) it can be extremely difficult to determine what happened or which rule
-had an issue, especially when running in parallel.
-
-The solution to this issue is to redirect the output from each rule/ set of
-inputs to a dedicated logfile. We can do this using the `log` keyword. Let's
-modify our `count_words` rule to be slighly more verbose and redirect this
-output to a dedicated logfile.
-
-Two things before we start:
-
-* `&>` is a handy operator in bash that redirects both stdout and stderr to a file.
-* `&>>` does the same thing as `&>`, but appends to a file instead of overwriting it.
-
+{% raw %}
 ~~~
-# count words in one of our "books"
-rule count_words:
-    input:
-        wc='wordcount.py',
-        book='books/{file}.txt'
-    output: 'dats/{file}.dat'
-    threads: 4
-    log: 'dats/{file}.log'
-    shell:
-        '''
-        echo "Running {input.wc} with {threads} cores on {input.book}." &> {log}
-        python {input.wc} {input.book} {output} &>> {log}
-        '''
+BOOK_FILE = f'{INPUT_DIR}{{book}}.txt'
 ~~~
 {:.language-python}
+{% endraw %}
 
-~~~
-snakemake clean
-snakemake -j 8
-cat dats/abyss.log
-~~~
-{:.language-bash}
-
-~~~
-# snakemake output omitted
-Running wordcount.py with 4 cores on books/abyss.txt.
-~~~
-{: .output}
-
-Notice how the pipeline no longer prints to the terminal output, and instead
-redirects to a logfile.
-
-> ## Choosing a good log file location
+> ## Combining global variables and wildcards in formatted strings
 >
-> Though you can put a log anywhere (and name it anything),
-> it is often a good practice to put the log in the same directory
-> where the rule's output will be created.
-> If you need to investigate the output for a rule and associated logfiles,
-> this means that you only have to check one location!
-{: .callout}
-
-## Token files
-
-Often, a rule does not generate a unique output, and merely modifies a file.
-In these cases it is often worthwhile to create a placeholder, or "token
-file" as output. A token file is simply an empty file that you can create
-with the touch command (`touch some_file.txt` creates an empty file called
-`some_file.txt`).
-
-You can then use the token file as an input to other rules that shouldn't run
-until after the rule that generates the token.
-
-An example rule using this technique is shown below:
-
-~~~
-rule token_example:
-    input:  'some_file.txt'
-    output: 'some_file.tkn'   # marks some_file.txt as modified
-    shell:
-        '''
-        some_command --do-things {input} &&
-            touch {output}
-        '''
-~~~
-{:.language-python}
-
-## Directory locks
-
-Only one instance of Snakemake can run in a directory at a time. If a
-Snakemake run fails without unlocking the directory (if you killed the
-process, for instance), you can run `snakemake --unlock` to unlock it.
-
-## Python as a fallback
-
-Remember, you can use Python imports and functions anywhere in a Snakefile.
-If something seems a little tricky to implement - Python can do it. The `os`,
-`shutil`, and `subprocess` packages are useful tools for using Python to
-execute command line actions. In particular, `os.system('some command')` will
-run a command on the command-line and block until execution is complete.
-
-## Creating a workflow diagram
-
-Assuming graphviz is installed (`conda install graphviz`), you can create a
-diagram of your workflow with the command: `snakemake --dag | dot -Tsvg >
-dag.svg`. This creates a plot of your "directed acyclic graph" (a plot of all
-of the rules Snakemake thinks it needs to complete), which you can view using
-any picture viewing program. In fact this was the tool used to create all of
-the diagrams in this lesson:
-
-~~~
-snakemake --dag | dot -Tsvg > dag.svg
-eog dag.svg     # eog is an image viewer installed on many linux systems
-~~~
-{:.language-bash}
-
-![Example DAG plot](../fig/06-final-dag.svg)
-
-Rules that have yet to be completed are indicated with solid outlines.
-Already completed tasks will be indicated with dashed outlines. In this case,
-I ran `snakemake clean`, just before creating the diagram - no rules have
-been run yet.
-
-> ## CSIRO Clusters
+> The safest way to mix global variables and wildcards in a formatted string
+> is to remember the following:
 >
-> On CSIRO clusters, you can load the `imagemagick` module to view the
-> diagrams:
-> ~~~
-> module load imagemagick
-> snakemake --dag | dot -Tpng | display
-> ~~~
-> {:.language-bash}
+> * Global variables are surrounded in single curly braces (e.g. `{INPUT_DIR}`).
+> * Wildcards are surrounded with double curly braces (`{{book}}`).
+> * Use upper-case for globals and lower-case for wildcards.
 {:.callout}
 
-## Viewing the GUI
+> ## Make your workflow configurable
+>
+> Move all other configurable values into `config.yaml` and adjust the Snakefile.
+>
+> Remember to test your workflow as you go.
+>
+> > ## Solution
+> >
+> > No example code is given here. By this stage you should be able to trust your
+> > own judgement.
+> >
+> > If you really need it, a full example of the entire workflow with no
+> > duplication and all configurable values moved into a configuration file
+> > is in `.solutions/episode_09/Snakefile` and
+> > `.solutions/episode_09/config.yaml` in the downloaded code package.
+> >
+> > Note that the example uses [f-strings][f-string], which are only available from Python 3.6.
+> > If you must use an older version of Python then you can use the older string formatting
+> > methods, although the results will be less concise.
+> {:.solution}
+{:.challenge}
 
-Snakemake has an experimental web browser GUI. I personally haven't used it
-for anything, but it's cool to know it's there and can be used to view your
-workflow on the fly.
-
-`snakemake --gui`
-
-Note that this requires the installation of additional Python packages.
-
-## Where to go for documentation / help
-
-The Snakemake documentation is located at
-[snakemake.readthedocs.io](http://snakemake.readthedocs.io)
+> ## Don't put your configuration file in source control
+>
+> Instead:
+> * create a sample configuration with a different name such as `config_template.yaml`.
+> * instruct users to copy the template to the real configuration file (`config.yaml`).
+> * make sure the configuration file name is in the `.gitignore` file (or equivalent).
+{:.callout}
 
 {% include links.md %}
 
