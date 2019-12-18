@@ -5,13 +5,18 @@ exercises: 15
 questions:
 - "What are some tips and tricks I can use to make this easier?"
 objectives:
+- "Learn a pattern to reduce duplication and improve maintainability of Snakefiles."
 - "Understand how to perform a dry-run of your workflow."
 - "Understand how to configure logging so that each rule generates a separate log."
 - "Understand how to visualise your workflow."
-- "Learn a pattern to reduce duplication and improve maintainability of Snakefiles."
 keypoints:
+- "Duplication in file names and patterns can be reduced by careful and systematic
+use of configuration files, formatted strings, and global variables."
 - "`snakemake -n` performs a dry-run."
+- "Using log files can make your workflow easier to debug."
+- "Put log files in the same location as the rule outputs."
 - "Token files can be used to take the place of output files if none are created."
+- "`snakemake --unlock` can unlock a directory if snakemake crashes."
 - "`snakemake --dag | dot -Tsvg > dag.svg` creates a graphic of your workflow."
 - "`snakemake --gui` opens a browser window with your workflow."
 ---
@@ -19,11 +24,11 @@ keypoints:
 Now that we know how to write and scale a pipeline, here are some tips and
 tricks for making the process go more smoothly.
 
-## A Pattern for Reducing Duplication
+## A Pattern for Reducing Duplication in File Names and Paths
 
-Even though we devoted a lot of time to reducing duplication in your Snakefiles,
-there is still a lot of duplication remaining. For example, have a look at
-how often the directory names are mentioned (`dats`, `plots` etc).
+Duplication in file names, paths, and pattern strings is a common source of
+errors in snakefiles. For example, have a look at how often the directory
+names are mentioned (`dats`, `plots` etc) in the examples from this workshop.
 
 One way to reduce this is to increase the use of global variables at the
 start of the Snakefile to define all the configurable parts of your workflow.
@@ -58,7 +63,7 @@ Snakemake notation.
 This can be taken further by moving the hardcoded value for `INPUT_DIR` into a
 configuration file. For example:
 
-**config.yml**:
+**config.yaml**:
 ~~~
 input_dir: books/
 ~~~
@@ -67,7 +72,7 @@ input_dir: books/
 In the Snakefile, a config is loaded with `configfile` and then values are accessed
 from the `config` dictionary:
 ~~~
-configfile: 'config.yml'
+configfile: 'config.yaml'
 
 INPUT_DIR = config['input_dir']
 ~~~
@@ -90,7 +95,8 @@ the entire pipeline.
 
 The most common source of errors is a mismatch in filenames (Snakemake
 doesn't know how to produce a particular output file) - `snakemake -n` will
-catch this as long as the troublesome output files haven't already been made.
+catch this as long as the troublesome output files haven't already been made,
+and the `snakemake clean` should take care of that.
 
 ## Configuring logging
 
@@ -212,7 +218,16 @@ Already completed tasks will be indicated with dashed outlines. In this case,
 I ran `snakemake clean`, just before creating the diagram - no rules have
 been run yet.
 
-FIXME: add callout giving CSIRO cluster specific instructions
+> ## CSIRO Clusters
+>
+> On CSIRO clusters, you can load the `imagemagick` module to view the
+> diagrams:
+> ~~~
+> module load imagemagick
+> snakemake --dag | dot -Tpng | display
+> ~~~
+> {:.language-bash}
+{:.callout}
 
 ## Viewing the GUI
 
@@ -221,6 +236,8 @@ for anything, but it's cool to know it's there and can be used to view your
 workflow on the fly.
 
 `snakemake --gui`
+
+Note that this requires the installation of additional Python packages.
 
 ## Where to go for documentation / help
 
