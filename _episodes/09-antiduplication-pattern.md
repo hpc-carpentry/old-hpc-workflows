@@ -1,43 +1,38 @@
 ---
-title: "Final notes"
+title: "Make your workflow portable and reduce duplication"
 teaching: 15
 exercises: 15
 questions:
-- "What are some tips and tricks I can use to make this easier?"
+- "How can I eliminate duplicated file names and paths in my workflows?"
+- "How can I make my workflows portable and easily shared?"
 objectives:
-- "Learn a pattern to reduce duplication and improve maintainability of Snakefiles."
-- "Understand how to perform a dry-run of your workflow."
-- "Understand how to configure logging so that each rule generates a separate log."
-- "Understand how to visualise your workflow."
+- "Learn to use configuration files to make workflows portable."
+- "Learn a safe way to mix global variables and snakemake wildcards."
+- "Learn to use configuration files, global variables, and wildcards in a
+systematic way to reduce duplication and make your workflows less error-prone."
 keypoints:
-- "Duplication in file names and patterns can be reduced by careful and systematic
-use of configuration files, formatted strings, and global variables."
-- "`snakemake -n` performs a dry-run."
-- "Using log files can make your workflow easier to debug."
-- "Put log files in the same location as the rule outputs."
-- "Token files can be used to take the place of output files if none are created."
-- "`snakemake --unlock` can unlock a directory if snakemake crashes."
-- "`snakemake --dag | dot -Tsvg > dag.svg` creates a graphic of your workflow."
-- "`snakemake --gui` opens a browser window with your workflow."
 ---
-
-Now that we know how to write and scale a pipeline, here are some tips and
-tricks for making the process go more smoothly.
-
-## A Pattern for Reducing Duplication in File Names and Paths
 
 Duplication in file names, paths, and pattern strings is a common source of
 errors in snakefiles. For example, have a look at how often the directory
-nmore robust ames are mentioned (`dats`, `plots` etc) in the examples from this workshop.
+names are mentioned (`dats`, `plots` etc) in the examples from this workshop.
 
 This episode presents a pattern for reducing file name duplication and making
 your workflows less error-prone. In addition, this approach makes your
 workflows more portable by moving all configurable items into a separate
 configuration file.
 
-First, move all configurable values into a configuration file alongside the
-Snakefile. Snakemake supports `json` and `yaml` formats, here is a `yaml`
-version:
+For these exercises, you should start with either your completed Snakefile
+from the end of the previous episode, or else use the example Snakefile
+`.solutions/episode_09/Snakefile-start`. Copy it to your working directory
+and rename to `Snakefile`.
+
+## Use Configuration Files
+
+The first step in this pattern is to move all values that need to be
+configurable into a configuration file alongside the Snakefile. While Snakemake
+supports `json` and `yaml` formats, we use `yaml` here as it is easier to edit and
+read.
 
 ~~~
 # Use a trailing slash on directories so that an empty string will work to indicate
