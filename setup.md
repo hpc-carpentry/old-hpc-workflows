@@ -2,10 +2,10 @@
 title: Setup
 ---
 
-There are several pieces of software you will wish to install before the
-workshop. Though installation help will be provided at the workshop, we
-recommend that these tools are installed (or at least downloaded) beforehand.
-Anaconda Python is a very large download.
+There are several pieces of software you need to install before the workshop.
+Though installation help will be provided at the workshop, we recommend that
+these tools are installed (or at least downloaded) beforehand. Anaconda
+Python is a very large download.
 
 ## Lesson Data Files
 
@@ -23,8 +23,11 @@ the code download.
 A `requirements.txt` file is included in the download. As described below,
 this can be used to install the required Python packages.
 
-
 ## Python 3 / Anaconda
+
+You will need Python 3.6 or better to use the sample files, since some
+relatively new Python features are used. Instructions are given here for
+installing Anaconda, although any Python will work.
 
 1. Visit the [Anaconda download page][anaconda]
 2. Select your operating system (Windows, macOS, or Linux).
@@ -68,18 +71,19 @@ pip install --user numpy matplotlib
 
 The example files download also contains a `requirements.txt` file that can
 be used to specify the required packages for a Python virtual environment.
-There are many guides to this process online, and the [official
-documentation](https://docs.python.org/3/tutorial/venv.html) can help as
-well.
+There are many guides to this process online, including the [official
+documentation](https://docs.python.org/3/tutorial/venv.html).
 
 ## Snakemake
 
+Once you have Python 3 available, you need to install the Snakemake library.
+
 ### Anaconda
 
-Once Anaconda 3 is installed, you can install Snakemake at an Anaconda prompt:
+You can install Snakemake at an Anaconda prompt:
 
 ~~~
-conda create -c bioconda -c conda-forge -n snakemake snakemake-minimal
+conda install -c bioconda -c conda-forge snakemake-minimal
 ~~~
 {: .language-bash}
 
