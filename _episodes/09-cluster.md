@@ -276,37 +276,44 @@ localrules: all, clean, make_archive
 
 ## Running our workflow on the cluster
 
-Ok, time for the moment we've all been waiting for - let's run our workflow
-on the cluster. To run our Snakefile, we'll run the following command:
+Ok, time for the moment we've all been waiting for - let's run our workflow on
+the cluster. To run our Snakefile, we'll run the following command:
 
 ~~~
-snakemake -j 100 --cluster-config cluster.json --cluster "sbatch -A {cluster.account} --mem={cluster.mem} -t {cluster.time} -c {threads}"
+snakemake --jobs 100 --cluster-config cluster.yaml --cluster "sbatch --mem={cluster.mem} --time {cluster.time} --cpus-per-task {threads}"
 ~~~
 {:.language-bash}
+
+> ## Job submission options will vary
+>
+> Some HPC systems require additional options when submitting jobs, such as an
+> account or partitiion name. Please consult your system guidelines for the
+> additional arguments.
+>
+{:.callout}
 
 While things execute, you may wish to SSH to the cluster in another window so
 you can watch the pipeline's progress with `watch squeue -u $(whoami)`.
 
 Now, let's dissect the command we just ran:
 
-* **`-j 100`** - `-j` no longer controls the number of cores when running on a
-cluster. Instead, it controls the maximum number of jobs that snakemake can
-have submitted at a time. This does not come into play here, but generally a
-sensible default is slightly below the maximum number of jobs you are allowed
-to have submitted at a time on your system.
+* **`--jobs 100`** - `--jobs` or `-j` no longer controls the number of cores
+  when running on a cluster. Instead, it controls the maximum number of jobs
+  that snakemake can submit at a time. This does not come into play here, but
+  generally a sensible default is slightly below the maximum number of jobs you
+  are allowed to have submitted at a time on your system.
 
-* **`--cluster-config`** - This specifies the location of a JSON file to read
-cluster configuration values from. This should point to the `cluster.json`
-file we wrote earlier.
+* **`--cluster-config`** - This specifies the location of a configuration file
+  to read cluster configuration values from. This should point to the
+  `cluster.yaml` file we wrote earlier.
 
 * **`--cluster`** - This is the submission command that should be used for the
-scheduler. Note that command flags that normally are put in batch scripts are
-put here (most schedulers allow you to add submission flags like this when
-submitting a job). In this case, all of the values come from our
-`--cluster-config` file. You can access individual values with
-`{cluster.propertyName}`. Note that we can still use `{threads}` here.
-When submitting jobs, Snakemake will use the current value of `threads` given
-in the Snakefile for each rule.
+  scheduler. Note that command flags that normally are put in batch scripts are
+  put here (most schedulers allow you to add submission flags like this when
+  submitting a job). The values come from our `--cluster-config` file. You can
+  access individual values with `{cluster.propertyName}`. Note that we also use
+  `{threads}` here.  When submitting jobs, Snakemake will use the current value
+  of `threads` given in the Snakefile for each rule.
 
 > ## Notes on `$PATH`
 >
@@ -314,6 +321,22 @@ in the Snakefile for each rule.
 > they are running on `$PATH`. For some schedulers (SLURM), no modifications
 > are necessary - variables are passed to the jobs by default. You just need to
 > load all the required environment modules prior to running Snakemake.
+{:.callout}
+
+> ## Dealing with Busy Systems
+>
+> When some clusters are busy, there may be a delay between when a job completes
+> and when the output file appears on the file system being monitored by
+> Snakemake. If this delay is too long, Snakemake will decide that the rule has
+> failed. If this appears to be happening, you can instruct Snakemake to wait
+> longer with the `--latency-wait` argument:
+>
+> ~~~
+> snakemake --latency-wait 60 --jobs 100 --cluster-config cluster.yaml --cluster "sbatch --mem={cluster.mem} --time {cluster.time} --cpus-per-task {threads}"
+> ~~~
+> {:.language-bash}
+>
+> The value is a wait time in seconds.
 {:.callout}
 
 > ## Submitting a workflow with nohup
