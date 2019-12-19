@@ -233,34 +233,28 @@ pip install --user snakemake
 Assuming you've transferred your files and everything is set to go, the command
 `snakemake -n` should work without errors.
 
-## Cluster configuration with `cluster.json`
+## Cluster configuration with `cluster.yaml`
 
-Snakemake uses a JSON-formatted configuration file to retrieve cluster
-submission parameters. An example (using SLURM) is shown below. You can check
-to see if your `cluster.json` is valid JSON syntax by pasting its contents
-into the box at [jsonlint.com](https://jsonlint.com).
+Snakemake uses a YAML-formatted configuration file to retrieve cluster
+submission parameters (JSON is also supported, but not shown here). An example
+(using SLURM) is shown below. 
 
 ~~~
-{
-    "__default__":
-    {
-        "time": "0:5:0",
-        "mem": "1G"
-    },
-    "count_words":
-    {
-        "time": "0:10:0",
-        "mem": "2G"
-    }
-}
-~~~
-{:.language-json}
+__default__:
+    time: 0:5:0
+    mem: 1G
 
-This file has several components. The values under `__default__` represent a
-set of default configuration values that will be used for all rules. The
-defaults won't always be perfect, however - chances are some rules may need
-to run with non-default amounts of memory, cores, or time limits. We are
-using the `count_words` rule as an example of this.
+count_words:
+    time: 0:10:0
+    mem: 2G
+~~~
+{:.language-yaml}
+
+This file has several components. The values under `__default__` represent a set
+of default configuration values that will be used for all rules. The defaults
+won't always be perfect, however - chances are some rules may need to run with
+non-default amounts of memory, cores, or time limits. We are using the
+`count_words` rule as an example of this.
 
 This is sufficient configuration for these exercises. For more information,
 please consult the [Cluster Configuration][cluster-config-docs] documentation.
