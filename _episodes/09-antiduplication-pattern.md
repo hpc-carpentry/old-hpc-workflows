@@ -29,7 +29,7 @@ configuration file.
 
 For these exercises, you should start with either your completed Snakefile
 from the end of the previous episode, or else use the example Snakefile
-`.solutions/episode_09/Snakefile-start`. Copy it to your working directory
+`.solutions/reduce_duplication/Snakefile-start`. Copy it to your working directory
 and rename to `Snakefile`.
 
 ## Removing Duplication
@@ -137,7 +137,7 @@ inconsistent use of `{book}` and `{file}`.
 >
 > > ## Solution
 > >
-> > This solution is also available as `.solutions/episode_09/Snakefile-remove-duplicates`.
+> > This solution is also available as `.solutions/reduce_duplication/Snakefile-remove-duplicates`.
 > > Possibly the only tricky part is in the `clean` rule where we use
 > > a formatted Python string to build the global variables into the shell
 > > command. We used f-string notation, but `string.format` would also work.
@@ -314,8 +314,8 @@ BOOK_FILE = f'{INPUT_DIR}{{book}}.txt'
 > >
 > > If you really need it, a full example of the entire workflow with no
 > > duplication and all configurable values moved into a configuration file
-> > is in `.solutions/episode_09/Snakefile` and
-> > `.solutions/episode_09/config.yaml` in the downloaded code package.
+> > is in `.solutions/reduce_duplication/Snakefile` and
+> > `.solutions/reduce_duplication/config.yaml` in the downloaded code package.
 > >
 > > Note that the example uses [f-strings][f-string], which are only available from Python 3.6.
 > > If you must use an older version of Python then you can use the older string formatting
