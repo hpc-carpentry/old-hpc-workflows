@@ -19,9 +19,9 @@ to apply them to your own work.
 
 The example workflow performs a frequency analysis of several public domain
 books sourced from [Project Gutenberg](https://www.gutenberg.org/), testing
-how closely each book conforms to [Zipf's Law][ref-zipf]. This example has been
-chosen over a more complex scientific workflow as the goal is to appeal to a
-wide audience and to focus on building the workflow without getting
+how closely each book conforms to [Zipf's Law][ref-zipf]. This example has
+been chosen over a more complex scientific workflow as the goal is to appeal
+to a wide audience and to focus on building the workflow without getting
 distracted by the underlying science domain.
 
 At the end of this lesson, you will:
@@ -36,7 +36,8 @@ All code and data are provided.
 * Some basic Python programming experience, ideally in Python 3.
 * Familiarity with running programs on a command line.
 
-If you require a refresher or introductory course, then I suggest one or more of these Carpentry courses:
+If you require a refresher or introductory course, then I suggest one or more
+of these Carpentry courses:
 
 * [CSIRO Data School Introduction to Python](https://csiro-data-school.github.io/python/)
 * [Programming with Python](http://swcarpentry.github.io/python-novice-inflammation/)
@@ -48,8 +49,17 @@ If you require a refresher or introductory course, then I suggest one or more of
 >
 > The files used in this lesson can be downloaded:
 >
-> * [for Linux/Mac][linux_code_pack]
-> * [for Windows][win_code_pack]
+> * [Linux/Mac][linux_code_pack]
+> * [Windows][win_code_pack]
+>
+> Once downloaded, please extract to the directory you wish to work in for all
+> the hands-on exercises.
+>
+> Solutions for most episodes can be found in the `.solutions`
+> directory inside the code download.
+>
+> A `requirements.txt` file is included in the download.
+> This can be used to install the required Python packages.
 {: .prereq}
 
 [linux_code_pack]: {{ relative_root_path }}/files/workflow-engines-lesson.tar.gz

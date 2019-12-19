@@ -99,7 +99,7 @@ one place to update the list of files to process.
 >
 > > ## Solution
 > >
-> > See `.solutions/episode_05/Snakefile_dats_list` for a full Snakefile.
+> > See `.solutions/snakefiles_are_python/Snakefile_dats_list` for a full Snakefile.
 > > Otherwise, just refer to the code extracts above and modify your own file.
 >{:.solution}
 {:.challenge}
@@ -336,7 +336,7 @@ glob_wildcards('books/{example}.txt').example
 > >~~~
 > >{:.language-python}
 > >
-> > See `.solutions/episode_05/Snakefile_glob_dats` for a full Snakefile using
+> > See `.solutions/snakefiles_are_python/Snakefile_glob_dats` for a full Snakefile using
 > > this approach.
 > {: .solution}
 {: .challenge}
@@ -431,7 +431,7 @@ Finished job 0.
 > >~~~
 > >{:.language-python}
 > >
-> > See `.solutions/episode_05/Snakefile` for a ready-made implementation.
+> > See `.solutions/snakefiles_are_python/Snakefile` for a ready-made implementation.
 > {: .solution}
 {: .challenge}
 
