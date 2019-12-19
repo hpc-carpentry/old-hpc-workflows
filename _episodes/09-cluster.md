@@ -237,7 +237,7 @@ Assuming you've transferred your files and everything is set to go, the command
 
 Snakemake uses a YAML-formatted configuration file to retrieve cluster
 submission parameters (JSON is also supported, but not shown here). An example
-(using SLURM) is shown below. 
+(using SLURM) is shown below.
 
 ~~~
 __default__:
@@ -262,12 +262,12 @@ please consult the [Cluster Configuration][cluster-config-docs] documentation.
 ## Local rule execution
 
 Some Snakemake rules perform trivial tasks where job submission might be
-overkill (i.e. less than 1 minute worth of compute time). It would be a
-better idea to have these rules execute locally (i.e. where the `snakemake`
-command is run) instead of as a job. Snakemake lets you indicate which rules
-should run always run locally with the `localrules` keyword. Let's define
-`all`, `clean`, and `make_archive` as local rules near the top of our
-`Snakefile`.
+overkill (i.e. less than 1 minute worth of compute time). It would be a better
+idea to have these rules execute locally (i.e. where the `snakemake` command is
+run) instead of as a job. Snakemake lets you indicate which rules should always
+run locally with the `localrules` keyword. Let's define `all`, `clean`, and
+`make_archive` as local rules near the top of our `Snakefile` (in the example
+code we added this line just before the `all` rule).
 
 ~~~
 localrules: all, clean, make_archive
