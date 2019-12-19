@@ -49,14 +49,17 @@ of these Carpentry courses:
 >
 > The files used in this lesson can be downloaded:
 >
-> * [for Linux/Mac][linux_code_pack]
-> * [for Windows][win_code_pack]
+> * [Linux/Mac][linux_code_pack]
+> * [Windows][win_code_pack]
 >
 > Once downloaded, please extract to the directory you wish to work in for all
 > the hands-on exercises.
 >
 > Solutions for most episodes can be found in the `.solutions`
 > directory inside the code download.
+>
+> A `requirements.txt` file is included in the download.
+> This can be used to install the required Python packages.
 {: .prereq}
 
 [linux_code_pack]: {{ relative_root_path }}/files/workflow-engines-lesson.tar.gz

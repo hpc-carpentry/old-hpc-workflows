@@ -7,6 +7,23 @@ workshop. Though installation help will be provided at the workshop, we
 recommend that these tools are installed (or at least downloaded) beforehand.
 Anaconda Python is a very large download.
 
+## Lesson Data Files
+
+The files used in this lesson can be downloaded:
+
+* [Linux/Mac](files/workflow-engines-lesson.tar.gz)
+* [Windows](files/workflow-engines-lesson.zip)
+
+Once downloaded, please extract to the directory you wish to work in for all
+the hands-on exercises.
+
+Solutions for most episodes can be found in the `.solutions` directory inside
+the code download.
+
+A `requirements.txt` file is included in the download. As described below,
+this can be used to install the required Python packages.
+
+
 ## Python 3 / Anaconda
 
 1. Visit the [Anaconda download page][anaconda]
@@ -85,19 +102,6 @@ If you used the supplied `requirements.txt` to create a Python virtual
 environment then `snakemake` should already be installed. For more
 information, please refer to the [Snakemake installation
 documentation](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html).
-
-## Lesson Data Files
-
-The files used in this lesson can be downloaded:
-
-* [for Linux/Mac](files/workflow-engines-lesson.tar.gz)
-* [for Windows](files/workflow-engines-lesson.zip)
-
-Once downloaded, please extract to the directory you wish to work in for all
-the hands-on exercises.
-
-Solutions for most episodes can be found in the `.solutions` directory inside
-the code download.
 
 ## Windows-Specific Instructions
 
