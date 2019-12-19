@@ -13,113 +13,165 @@ keypoints:
 - "`nohup <command> &` prevents `<command>` from exiting when you log off."
 ---
 
-Right now we have a reasonably effective pipeline that scales nicely on our
-local computer. However, for the sake of this course, we'll pretend that our
-workflow actually takes significant computational resources and needs to be
-run on a [HPC cluster][ref-hpc-cluster].
-
 > ## HPC cluster architecture
 >
-> Most HPC clusters are run using a [scheduler][ref-scheduler].
-> The scheduler is a piece of software that decides when a job will run, and on which nodes.
-> It allows a set of users to share a shared computing system as efficiently as possible.
-> In order to use it, users typically must write their commands to be run into a shell script
-> and then "submit" it to the scheduler.
+> Most HPC clusters are run using a [scheduler][ref-scheduler].  The scheduler is
+> a piece of software that decides when a job will run, and on which nodes.  It
+> allows a set of users to share a shared computing system as efficiently as
+> possible.  In order to use it, users typically must write their commands to be
+> run into a shell script and then "submit" it to the scheduler.
 >
-> A good analogy would be a university's room booking system.
-> No one gets to use a room without going through the booking system.
-> The booking system decides which rooms people get based on their requirements
-> (# of students, time allotted, etc.).
+> A good analogy would be a university's room booking system.  No one gets to use
+> a room without going through the booking system.  The booking system decides
+> which rooms people get based on their requirements (# of students, time
+> allotted, etc.).
 {: .callout}
 
-Normally, moving a workflow to be run by a cluster scheduler requires a lot
-of work. Batch scripts need to be written, and you'll need to monitor and
-babysit the status of each of your jobs. This is especially difficult if one
-batch job depends on the output from another. Even moving from one cluster to
-another (especially ones using a different scheduler) requires a large
-investment of time and effort - all the batch scripts from before need to be
-rewritten.
+> ## Some Assumptions
+>
+> HPC clusters vary in their configuration, available software, and use. In
+> order to keep this episode focused, some assumptions have been made:
+> 
+> * Your cluster uses the Slurm scheduler. If your system uses a different
+>   scheduler such as PBS then you may need to adjust the batch system command
+>   used to submit jobs.
+> * Your cluster uses environment modules to manage the software available to you.
+>   While some module names are used here, the actual modules may not be the same
+>   on your system. Please consult your HPC user support if you have difficulty
+>   finding the correct modules to use.
+{:.callout}
 
-Snakemake does all of this for you. All details of running the pipeline
-through the cluster scheduler are handled by Snakemake - this includes
-writing batch scripts, submitting, and monitoring jobs. In this scenario, the
-role of the scheduler is limited to ensuring each Snakemake rule is executed
-with the resources it needs.
+Right now we have a reasonably effective pipeline that scales nicely on our
+local computer. However, for the sake of this course, we'll pretend that our
+workflow actually takes significant computational resources and needs to be run
+on a [HPC cluster][ref-hpc-cluster].
 
-We'll explore how to port our example Snakemake pipeline by example. Our
-current Snakefile is shown below:
+Normally, updating a workflow to run on a HPC cluster requires a lot of work.
+Batch scripts need to be written, and you'll need to monitor and babysit the
+status of each of your jobs. This is especially difficult if one batch job
+depends on the output from another. Even moving from one cluster to another
+(especially ones using a different scheduler) requires a large investment of
+time and effort. Frequently most of the batch scripts need to be rewritten.
 
-FIXME: update to match new sample code
+Snakemake does all of this for you. All details of running the pipeline on the
+cluster are handled by Snakemake - this includes writing batch scripts,
+submitting, and monitoring jobs. In this scenario, the role of the scheduler is
+limited to ensuring each Snakemake rule is executed with the resources it needs.
+
+We'll explore how to port our example Snakemake pipeline by example. Our current
+Snakefile is shown below. If you have skipped the previous episode, or if your
+current Snakefile does not match, then please update to the following code. If
+you require a configuration file, you can use
+`.solutions/reduce_duplication/config.yaml`.
 
 ~~~
-# our zipf analysis pipeline
-DATS = glob_wildcards('books/{book}.txt').book
+#------------------------------------------------------------
+# load the configuration
+configfile: 'config.yaml'
 
+INPUT_DIR = config['input_dir']
+PLOT_DIR = config['plot_dir']
+DAT_DIR = config['dat_dir']
+RESULTS_FILE = config['results_file']
+ARCHIVE_FILE = config['archive_file']
+
+#------------------------------------------------------------
+# Single file patterns
+#
+# Now define all the wildcard patterns that either depend on
+# directory and file configuration, or are used more than once.
+
+# Note the use of single curly braces for global variables
+# and double curly braces for snakemake wildcards
+
+# a single plot file
+PLOT_FILE = f'{PLOT_DIR}{{book}}.png'
+
+# a single dat file
+DAT_FILE = f'{DAT_DIR}{{book}}.dat'
+
+# a single input book
+BOOK_FILE = f'{INPUT_DIR}{{book}}.txt'
+
+#------------------------------------------------------------
+# File lists
+#
+# Now we can use the single file patterns in conjunction with
+# glob_wildcards and expand to build the lists of all expected files.
+
+# the list of book names
+BOOK_NAMES = glob_wildcards(BOOK_FILE).book
+
+# The list of all dat files
+ALL_DATS = expand(DAT_FILE, book=BOOK_NAMES)
+
+# The list of all plot files
+ALL_PLOTS = expand(PLOT_FILE, book=BOOK_NAMES)
+
+#------------------------------------------------------------
+# Rules
+#
+# Note that when using this pattern, it is rare for a rule to
+# define filename patterns directly. Nearly all inputs and outputs
+# can be specified using the existing global variables.
+
+# pseudo-rule that tries to build everything.
+# Just add all the final outputs that you want built.
 rule all:
-    input:
-        'zipf_analysis.tar.gz'
+    input: ARCHIVE_FILE
 
-# delete everything so we can re-run things
-rule clean:
-    shell:
-        '''
-        rm -rf results dats plots
-        rm -f results.txt zipf_analysis.tar.gz
-        '''
-
-# count words in one of our "books"
-rule count_words:
-    input:
-        wc='wordcount.py',
-        book='books/{file}.txt'
-    output: 'dats/{file}.dat'
-    threads: 4
-    shell:
-        '''
-        python {input.wc} {input.book} {output}
-        '''
-
-# create a plot for each book
-rule make_plot:
-    input:
-        plotcount='plotcount.py',
-        book='dats/{file}.dat'
-    output: 'plots/{file}.png'
-    resources: gpu=1
-    shell:  'python {input.plotcount} {input.book} {output}'
-
-# generate summary table
+# Generate summary table
 rule zipf_test:
     input:
-        zipf='zipf_test.py',
-        books=expand('dats/{book}.dat', book=DATS)
-    output: 'results.txt'
-    shell:  'python {input.zipf} {input.books} > {output}'
+        cmd='zipf_test.py',
+        dats=ALL_DATS
+    output: RESULTS_FILE
+    # This shell command only contains wildcards, so it does not
+    # require an f-string or double curly braces.
+    shell:  'python {input.cmd} {input.dats} > {output}'
 
-# create an archive with all of our results
-rule make_archive:
+# delete everything so we can re-run things
+# This rules uses an f-string and single curly braces since all values
+# are global variables rather than wildcards.
+rule clean:
+    shell: f'rm -rf {DAT_DIR} {PLOT_DIR} {RESULTS_FILE} {ARCHIVE_FILE}'
+
+# Count words in one of the books
+rule count_words:
     input:
-        expand('plots/{book}.png', book=DATS),
-        expand('dats/{book}.dat', book=DATS),
-        'results.txt'
-    output: 'zipf_analysis.tar.gz'
+        cmd='wordcount.py',
+        book=BOOK_FILE
+    output: DAT_FILE
+    shell: 'python {input.cmd} {input.book} {output}'
+
+# plot one word count dat file
+rule make_plot:
+    input:
+        cmd='plotcount.py',
+        dat=DAT_FILE
+    output: PLOT_FILE
+    shell: 'python {input.cmd} {input.dat} {output}'
+
+# create an archive with all results
+rule create_archive:
+    input: RESULTS_FILE, ALL_DATS, ALL_PLOTS
+    output: ARCHIVE_FILE
     shell: 'tar -czvf {output} {input}'
 ~~~
 {:.language-python}
 
-To run Snakemake on a cluster, we need to tell it how it to submit jobs. This
-is done using the `--cluster` argument. In this configuration, Snakemake runs
-on the cluster login node and submits jobs. Each cluster job executes a single
-rule and then exits. Snakemake detects the creation of output files, and
-submits new jobs (rules) once their dependencies are created.
+To run Snakemake on a cluster, we need to tell it how it to submit jobs. This is
+done using the `--cluster` argument. In this configuration, Snakemake runs on
+the cluster login node and submits jobs. Each cluster job executes a single rule
+and then exits. Snakemake detects the creation of output files, and submits new
+jobs (rules) once their dependencies are created. Snakemake has many options
+available to fine-tune the interactions with the scheduler, including resource
+requests, and the maximum number of jobs to submit at any time. We will explore
+the essential options here.
 
 ## Transferring our workflow
 
-FIXME: change to a CSIRO system (pearcey?)
-
-Let's port our workflow to Compute Canada's Graham cluster as an example (you
-will probably be using a different cluster, adapt these instructions to your
-cluster). The first step will be to transfer our files to the cluster and log
+The first step will be to transfer our files to the cluster and log
 on via SSH. Snakemake has a powerful archiving utility that we can use to
 bundle up our workflow and transfer it.
 
@@ -175,7 +227,7 @@ into the box at [jsonlint.com](https://jsonlint.com).
     {
         "time": "0:5:0",
         "mem": "1G"
-	},
+    },
     "count_words":
     {
         "time": "0:10:0",
