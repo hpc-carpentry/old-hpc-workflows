@@ -31,7 +31,7 @@ keypoints:
 >
 > HPC clusters vary in their configuration, available software, and use. In
 > order to keep this episode focused, some assumptions have been made:
-> 
+>
 > * Your cluster uses the Slurm scheduler. If your system uses a different
 >   scheduler such as PBS then you may need to adjust the batch system command
 >   used to submit jobs.
@@ -172,21 +172,31 @@ the essential options here.
 ## Transferring our workflow
 
 The first step will be to transfer our files to the cluster and log
-on via SSH. Snakemake has a powerful archiving utility that we can use to
-bundle up our workflow and transfer it.
+on via SSH.
+
+> ## Please Follow Your System Procedures
+>
+> Generic advice for transferring files and logging on to a HPC cluster is given
+> here. Please follow your system's own user guidelines. If your HPC system
+> allows graphical desktops, you could run a browser on the login node and
+> download the code samples for this workshop directly to the cluster.
+>
+> The essential thing is to be logged into the cluster login node, with your
+> Snakefile and other data files available.
+{:.callout}
 
 ~~~
 snakemake clean
 tar -czvf pipeline.tar.gz .
 # transfer the pipeline via scp
-scp pipeline.tar.gz yourUsername@graham.computecanada.ca:
+scp pipeline.tar.gz yourUsername@pearcey-login.hpc.csiro.au
 # log on to the cluster
-ssh -X yourUsername@graham.computecanada.ca
+ssh -X yourUsername@pearcey-login.hpc.csiro.au
 ~~~
 {:.language-bash}
 
 At this point we've archived our entire pipeline, sent it to the cluster, and
-logged on. Let's create a folder for our pipeline and unpack it there.
+logged on. Let's create a folder for our pipeline and unpack it there:
 
 ~~~
 mkdir pipeline
@@ -196,7 +206,16 @@ tar -xvzf pipeline.tar.gz
 ~~~
 {:.language-bash}
 
-FIXME: for pearcey, snakemake is installed, so direct to the appropriate module
+> ## CSIRO Clusters
+>
+> On the CSIRO Pearcey system, snakemake and all required Python packages are
+> available in the `python/3.6.1` module. Load it with:
+>
+> ~~~
+> module load python/3.6.1
+> ~~~
+> {:.language-bash}
+{:.callout}
 
 If Snakemake and Python are not already installed on your cluster, you can
 install them using the following commands:
@@ -211,8 +230,8 @@ pip install --user snakemake
 ~~~
 {:.language-bash}
 
-Assuming you've transferred your files and everything is set to go, the
-command `snakemake -n` should work without errors.
+Assuming you've transferred your files and everything is set to go, the command
+`snakemake -n` should work without errors.
 
 ## Cluster configuration with `cluster.json`
 
