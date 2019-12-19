@@ -13,11 +13,6 @@ keypoints:
 - "`nohup <command> &` prevents `<command>` from exiting when you log off."
 ---
 
-Right now we have a reasonably effective pipeline that scales nicely on our
-local computer. However, for the sake of this course, we'll pretend that our
-workflow actually takes significant computational resources and needs to be run
-on a [HPC cluster][ref-hpc-cluster].
-
 > ## HPC cluster architecture
 >
 > Most HPC clusters are run using a [scheduler][ref-scheduler].  The scheduler is
@@ -31,6 +26,25 @@ on a [HPC cluster][ref-hpc-cluster].
 > which rooms people get based on their requirements (# of students, time
 > allotted, etc.).
 {: .callout}
+
+> ## Some Assumptions
+>
+> HPC clusters vary in their configuration, available software, and use. In
+> order to keep this episode focused, some assumptions have been made:
+> 
+> * Your cluster uses the Slurm scheduler. If your system uses a different
+>   scheduler such as PBS then you may need to adjust the batch system command
+>   used to submit jobs.
+> * Your cluster uses environment modules to manage the software available to you.
+>   While some module names are used here, the actual modules may not be the same
+>   on your system. Please consult your HPC user support if you have difficulty
+>   finding the correct modules to use.
+{:.callout}
+
+Right now we have a reasonably effective pipeline that scales nicely on our
+local computer. However, for the sake of this course, we'll pretend that our
+workflow actually takes significant computational resources and needs to be run
+on a [HPC cluster][ref-hpc-cluster].
 
 Normally, updating a workflow to run on a HPC cluster requires a lot of work.
 Batch scripts need to be written, and you'll need to monitor and babysit the
@@ -146,19 +160,18 @@ rule create_archive:
 ~~~
 {:.language-python}
 
-To run Snakemake on a cluster, we need to tell it how it to submit jobs. This
-is done using the `--cluster` argument. In this configuration, Snakemake runs
-on the cluster login node and submits jobs. Each cluster job executes a single
-rule and then exits. Snakemake detects the creation of output files, and
-submits new jobs (rules) once their dependencies are created.
+To run Snakemake on a cluster, we need to tell it how it to submit jobs. This is
+done using the `--cluster` argument. In this configuration, Snakemake runs on
+the cluster login node and submits jobs. Each cluster job executes a single rule
+and then exits. Snakemake detects the creation of output files, and submits new
+jobs (rules) once their dependencies are created. Snakemake has many options
+available to fine-tune the interactions with the scheduler, including resource
+requests, and the maximum number of jobs to submit at any time. We will explore
+the essential options here.
 
 ## Transferring our workflow
 
-FIXME: change to a CSIRO system (pearcey?)
-
-Let's port our workflow to Compute Canada's Graham cluster as an example (you
-will probably be using a different cluster, adapt these instructions to your
-cluster). The first step will be to transfer our files to the cluster and log
+The first step will be to transfer our files to the cluster and log
 on via SSH. Snakemake has a powerful archiving utility that we can use to
 bundle up our workflow and transfer it.
 
