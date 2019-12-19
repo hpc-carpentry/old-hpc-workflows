@@ -2,9 +2,9 @@
 title: Setup
 ---
 
-There are several pieces of software you will wish to install before the workshop.
-Though installation help will be provided at the workshop,
-we recommend that these tools are installed (or at least downloaded) beforehand.
+There are several pieces of software you will wish to install before the
+workshop. Though installation help will be provided at the workshop, we
+recommend that these tools are installed (or at least downloaded) beforehand.
 Anaconda Python is a very large download.
 
 ## Python 3 / Anaconda
@@ -41,7 +41,8 @@ conda update --all
 
 The example code also requires the `matplotlib` and `numpy` libraries. They
 are installed by default with Anaconda, but if you are using a different
-Python you may need to install them manually. Using `pip`, the command would be:
+Python you may need to install them manually. Using `pip`, the command would
+be:
 
 ~~~
 pip install --user numpy matplotlib
@@ -66,8 +67,9 @@ conda create -c bioconda -c conda-forge -n snakemake snakemake-minimal
 {: .language-bash}
 
 > ## Note
-> At the time of writing, the `snakemake` conda package was not installing correctly, however the `snakemake-minimal` was working.
-> This lesson does not require any features beyond those included with the minimal install.
+> At the time of writing, the `snakemake` conda package was not installing correctly,
+> however the `snakemake-minimal` was working. This lesson does not require any
+> features beyond those included with the minimal install.
 {: .callout}
 
 ### Vanilla Python
@@ -93,6 +95,9 @@ The files used in this lesson can be downloaded:
 
 Once downloaded, please extract to the directory you wish to work in for all
 the hands-on exercises.
+
+Solutions for most episodes can be found in the `.solutions` directory inside
+the code download.
 
 ## Windows-Specific Instructions
 
