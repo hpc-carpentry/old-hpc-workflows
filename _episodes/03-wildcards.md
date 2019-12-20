@@ -18,7 +18,8 @@ keypoints:
 is executed if the code or script changes."
 ---
 
-After the exercise at the end of the previous episode, our Snakefile looked like this:
+After the exercise at the end of the previous episode, our Snakefile looked like
+this:
 
 ~~~
 # Generate summary table
@@ -58,11 +59,10 @@ rule count_words_last:
 ~~~
 {: .language-python}
 
-This has a lot of duplication. For example, the names of text
-files and data files are repeated in many places throughout the
-Snakefile. Snakefiles are a form of code and, in any code, repetition
-can lead to problems (e.g. we rename a data file in one part of the
-Snakefile but forget to rename it elsewhere).
+This has a lot of duplication. For example, the names of text files and data
+files are repeated in many places throughout the Snakefile. Snakefiles are
+a form of code and, in any code, repetition can lead to problems (e.g. we rename
+a data file in one part of the Snakefile but forget to rename it elsewhere).
 
 > ## D.R.Y. (Don't Repeat Yourself)
 >
@@ -76,9 +76,9 @@ Snakefile but forget to rename it elsewhere).
 > principle or D.R.Y.
 {: .callout}
 
-Let us set about removing some of the repetition from our Snakefile.
-In our `zipf_test` rule we duplicate the data file names and the
-name of the results file name:
+Let us set about removing some of the repetition from our Snakefile.  In our
+`zipf_test` rule we duplicate the data file names and the name of the results
+file name:
 
 ~~~
 rule zipf_test:
@@ -88,8 +88,8 @@ rule zipf_test:
 ~~~
 {: .language-python}
 
-Looking at the results file name first, we can replace it in the action
-with `{output}`:
+Looking at the results file name first, we can replace it in the action with
+`{output}`:
 
 ~~~
 rule zipf_test:
@@ -112,9 +112,8 @@ rule zipf_test:
 ~~~
 {: .language-python}
 
-`{input}` is another wildcard which means 'all the inputs
-of the current rule'. Again, when Snakemake runs it will replace this
-variable with the actual inputs.
+`{input}` is another wildcard which means 'all the inputs of the current rule'.
+Again, when Snakemake runs it will replace this variable with the actual inputs.
 
 Let's update our text files and re-run our rule:
 
@@ -207,8 +206,8 @@ Finished job 0.
 {: .challenge}
 
 As we saw, `{input}` means 'all the dependencies of the current rule'. This
-works well for `zipf_test` as its action treats all the dependencies the
-same - as the input for the `zipf_test.py` script.
+works well for `zipf_test` as its action treats all the dependencies the same
+- as the input for the `zipf_test.py` script.
 
 Time for you to update all the rules that build a `.dat` file to use the
 `{input}` and `{output}` wildcards.
@@ -217,7 +216,9 @@ Time for you to update all the rules that build a `.dat` file to use the
 >
 > Rewrite each `.dat` rule to use the `{input}` and `{output}` wildcards.
 > > ## Solution
-> > Only one rule is shown here, the others follow the same pattern:
+> > Only one rule is shown here, the others will have an identical action (the
+> > `shell:` line):
+> >
 > > ~~~
 > > rule count_words:
 > >     input: 'books/isles.txt'
@@ -231,16 +232,16 @@ Time for you to update all the rules that build a `.dat` file to use the
 ## Handling dependencies differently
 
 For many rules, we will need to make finer distinctions between inputs. It is
-not always appropriate to pass all inputs as a lump to your action. For
-example, our rules for `.dat` use their first (and only) dependency
-specifically as the input file to `wordcount.py`. If we add additional
-dependencies (as we will soon do) then we don't want these being passed as
-input files to `wordcount.py`: it expects just one input file.
+not always appropriate to pass all inputs as a lump to your action. For example,
+our rules for `.dat` use their first (and only) dependency specifically as the
+input file to `wordcount.py`. If we add additional dependencies (as we will soon
+do) then we don't want these being passed as input files to `wordcount.py`: it
+expects just one input file.
 
-Let's see this in action. We need to add `wordcount.py` as a dependency of
-each of our data files so that the rules will be executed if the script
-changes. In this case, we can use `{input[0]}` to refer to the first
-dependency, and `{input[1]}` to refer to the second.
+Let's see this in action. We need to add `wordcount.py` as a dependency of each
+of our data files so that the rules will be executed if the script changes. In
+this case, we can use `{input[0]}` to refer to the first dependency, and
+`{input[1]}` to refer to the second:
 
 ~~~
 rule count_words:
@@ -250,7 +251,7 @@ rule count_words:
 ~~~
 {: .language-python}
 
-Alternatively, we can name our dependencies.
+Alternatively, we can name our dependencies:
 
 ~~~
 rule count_words_abyss:
@@ -359,13 +360,13 @@ Finished job 0.
 {: .output}
 
 The whole pipeline is triggered, even the creation of the `results.txt` file!
-To understand this, note that according to the dependency graph,
-`results.txt` depends on the `.dat` files. The update of `wordcount.py`
-triggers an update of the `*.dat` files. Thus, `Snakemake` sees that the
-dependencies (the `.dat` files) are newer than the target file
-(`results.txt`) and thus it recreates `results.txt`. This is an example of
-the power of `Snakemake`: updating a subset of the files in the pipeline
-triggers rerunning the appropriate downstream steps.
+To understand this, note that according to the dependency graph, `results.txt`
+depends on the `.dat` files. The update of `wordcount.py` triggers an update of
+the `*.dat` files. Thus, `Snakemake` sees that the dependencies (the `.dat`
+files) are newer than the target file (`results.txt`) and it therefore recreates
+`results.txt`. This is an example of the power of `Snakemake`: updating a subset
+of the files in the pipeline triggers rerunning the appropriate downstream
+steps.
 
 > ## Updating One Input File
 >
@@ -395,10 +396,10 @@ triggers rerunning the appropriate downstream steps.
 
 > ## Updating `zipf_test` rule
 >
-> Add `zipf_test.py` as a dependency of `results.txt`
-> We haven't yet covered the techniques required to do this with named wildcards
-> so you will have to use indexing.
-> Yes, this will be clunky, but we'll fix that part later!
+> Add `zipf_test.py` as a dependency of `results.txt`.  We haven't yet covered
+> the techniques required to do this with named wildcards so you will have to
+> use indexing.  Yes, this will be clunky, but we'll fix that part later!
+>
 > Remember that you can do a dry run with `snakemake -n -p`!
 >
 > > ## Solution
