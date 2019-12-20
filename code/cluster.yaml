@@ -1,7 +1,0 @@
-__default__:
-    time: 0:5:0
-    mem: 1G
-
-count_words:
-    time: 0:10:0
-    mem: 2G
