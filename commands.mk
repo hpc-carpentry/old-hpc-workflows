@@ -5,7 +5,8 @@
 clean-sample-code :
 	@echo Cleaning sample code ...
 	@cd code; rm -rf .snakemake/ dats/ plots/ __pycache__/ \
-		Snakefile config.yaml cluster.yaml results.txt Pipfile.lock 
+		Snakefile config.yaml cluster.yaml results.txt \
+		zipf_analysis.tar.gz Pipfile.lock
 	@find code/ -name '*.pyc' -exec rm {} \;
 
 ## package-sample-code: package the sample code into downloadable archive
