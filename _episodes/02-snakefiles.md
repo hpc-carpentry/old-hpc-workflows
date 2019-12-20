@@ -1,6 +1,6 @@
 ---
 title: "Snakefiles"
-teaching: 15
+teaching: 25
 exercises: 15
 questions:
 - "How do I write a simple workflow?"
@@ -62,18 +62,18 @@ later episodes we see how to use Python code).
 * Together, the target, dependencies, and actions form a
 [rule][ref-rule]. A rule is a recipe for how to make things.
 
-The rule we just created describes how to build the target `isles.dat` using
-the action `python wordcount.py` and the dependency `books/isles.txt`.
+The rule we just created describes how to build the output `isles.dat` using
+the action `python wordcount.py` and the input `books/isles.txt`.
 
 Information that was implicit in our shell script - that we are generating a
 file called `isles.dat` and that creating this file requires
 `books/isles.txt` - is now made explicit by Snakemake's syntax.
 
-Let's first ensure we start from scratch and delete the `.dat` and `.png`
-files we created earlier:
+Let's first ensure we start from scratch and delete the `.dat`, `.png`, and
+`results.txt` files we created earlier:
 
 ~~~
-rm *.dat *.png
+rm *.dat *.png results.txt
 ~~~
 {: .language-bash}
 
@@ -236,9 +236,9 @@ Nothing to be done.
 ~~~
 {: .output}
 
-Nothing happens because Snakemake attempts to build the first target it finds
-in the Snakefile, the [default target][ref-default-target], which is
-`isles.dat` which is already up-to-date. We need to explicitly tell Snakemake we
+Nothing happens because Snakemake attempts to build the first target it finds in
+the Snakefile, the [default target][ref-default-target], which is `isles.dat`
+and this rule is already up-to-date. We need to explicitly tell Snakemake we
 want to build `abyss.dat`:
 
 ~~~
@@ -269,7 +269,7 @@ Finished job 0.
 > ## "Nothing to be Done" vs `MissingRuleException`
 >
 > If we ask Snakemake to build a file that already exists and is up to
-> date, then Snakemake informs us that:
+> date, then Snakemake informs us:
 >
 > ~~~
 > Nothing to be done
@@ -279,22 +279,22 @@ Finished job 0.
 > If we ask Snakemake to build a file which does not have a
 > rule in our Snakefile, then we get messages like:
 > ~~~
-> $ snakemake books/what.txt
+> $ snakemake what.dat
 > MissingRuleException:
-> No rule to produce books/what.txt (if you use input functions make sure that they don't raise unexpected exceptions).
+> No rule to produce what.dat (if you use input functions make sure that they
+> don't raise unexpected exceptions).
 > ~~~
 > {: .output}
 >
-> When you see this error, double-check that you have a rule to produce that file, and
-> also that the filename has been specified correctly. > Even a small
+> When you see this error, double-check that you have a rule to produce that
+> file, and also that the filename has been specified correctly. Even a small
 > difference in a filename will result in a MissingRuleException.
 {: .callout}
 
-We may want to remove all our data files so we can explicitly recreate them
-all. We can introduce a new target, and associated rule, to do this. We will
-call it `clean`, as this is a common name for rules that delete
-auto-generated files, like our `.dat` files. Add the following rule to the
-start of your Snakefile.
+We may want to remove all our data files so we can explicitly recreate them all.
+We can introduce a new target, and associated rule, to do this. We will call it
+`clean`, as this is a common name for rules that delete auto-generated files,
+like our `.dat` files. Add the following rule to the start of your Snakefile.
 
 ~~~
 # delete everything so we can re-run things
@@ -303,9 +303,9 @@ rule clean:
 ~~~
 {: .language-python}
 
-This is an example of a rule that has no inputs or outputs!. We just want to
-remove the data files whether or not they exist. If we run Snakemake and
-specify this target,
+This is an example of a rule that has no inputs or outputs! We just want to
+remove the data files whether or not they exist. If we run Snakemake and specify
+this target:
 
 ~~~
 snakemake clean
@@ -346,7 +346,7 @@ rule dats:
 ~~~
 {: .language-python}
 
-This is an example of a rule that has dependencies that are targets of other
+This is an example of a rule with dependencies that are targets of other
 rules. When Snakemake runs, it will check to see if the dependencies exist
 and, if not, will see if rules are available that will create these. If such
 rules exist it will invoke these first, otherwise Snakemake will raise an
