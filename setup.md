@@ -165,15 +165,21 @@ Now you are good to go!
 
 > ## Making it Permanent
 >
-> Note, you will need to repeat the previous three steps everytime you open
+> You will need to repeat the previous three steps everytime you open
 > a new Git Bash shell. If you want to make these changes permanent then you
-> can use the following command in Git Bash to add the changes to `$PATH`
-> to your `.bashrc` file:
+> can use the following commands in Git Bash to add the changes to `$PATH`
+> to your `.bashrc` file (remember to substitute the actual location of your
+> Anaconda installation):
 >
 > ~~~
-> echo export PATH=$PATH:~/AppData/Local/Continuum/Anaconda3/Scripts >> .bashrc`
+> cd
+> echo 'export PATH=$PATH:~/AppData/Local/Continuum/Anaconda3/Scripts' >> .bashrc`
+> echo 'source activate >> .bashrc'
 > ~~~
 > {: .language-bash}
+>
+> **Note that you must use single quotes, not double quotes due to the way that
+> `echo` expands values.**
 {:.callout}
 
 
