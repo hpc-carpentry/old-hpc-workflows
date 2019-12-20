@@ -4,7 +4,8 @@
 ## clean-sample-code: clean up outputs from the sample code
 clean-sample-code :
 	@echo Cleaning sample code ...
-	@rm -rf code/.snakemake/ code/dats/ code/plots/ code/Pipfile.lock code/__pycache__/
+	@cd code; rm -rf .snakemake/ dats/ plots/ __pycache__/ \
+		Snakefile config.yaml cluster.yaml results.txt Pipfile.lock 
 	@find code/ -name '*.pyc' -exec rm {} \;
 
 ## package-sample-code: package the sample code into downloadable archive
