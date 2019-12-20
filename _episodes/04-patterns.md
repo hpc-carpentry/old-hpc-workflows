@@ -19,16 +19,16 @@ file from a `.txt` file in `books/`:
 ~~~
 rule count_words:
     input:
-        wc='wordcount.py',
-        book='books/{file}.txt'
-    output: '{file}.dat'
-    shell: 'python {input.wc} {input.book} {output}'
+        cmd='wordcount.py',
+        book='books/{book}.txt'
+    output: '{book}.dat'
+    shell: 'python {input.cmd} {input.book} {output}'
 ~~~
 {: .language-python}
 
-Here `{file}` is an arbitrary [wildcard][ref-wildcard]
+Here `{book}` is an arbitrary [wildcard][ref-wildcard]
 that we can use as a placeholder for any generic book to analyze.
-Note that we don't have to use `{file}` as the name of our wildcard -
+Note that we don't have to use `{book}` as the name of our wildcard -
 it can be anything we want!
 
 This rule can be interpreted as:
@@ -78,7 +78,7 @@ Finished job 0.
 
 > ## Using wildcards
 >
-> Our arbitrary wildcards like `{file}` can only be used in
+> Our arbitrary wildcards like `{book}` can only be used in
 > `input:` and `output:` fields. They cannot be used directly in actions.
 > If you need to refer to the current value of a wildcard in an action you
 > need to qualify it with `wildcards.`. For example: `{wildcards.file}`.
@@ -124,8 +124,8 @@ rule clean:
 rule count_words:
     input:
         cmd='wordcount.py',
-        book='books/{file}.txt'
-    output: '{file}.dat'
+        book='books/{book}.txt'
+    output: '{book}.dat'
     shell: 'python {input.cmd} {input.book} {output}'
 ~~~
 {: .language-python}
@@ -138,7 +138,7 @@ rule count_words:
 
 If we look at a graph of our workflow now, you can see that Snakemake has
 identified all three inputs to the `count_words` rule, and the value of the
-`{file}` wildcard is displayed:
+`{book}` wildcard is displayed:
 ![Dependencies represented within the Snakefile when using a pattern rule][fig-pattern-rule]
 
 [ref-pattern-rule]: {{ relative_root_path }}/reference#pattern-rule
