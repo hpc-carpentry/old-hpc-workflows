@@ -207,7 +207,7 @@ Finished job 0.
 {: .challenge}
 
 As we saw, `{input}` means 'all the dependencies of the current rule'. This
-works well for `results.txt` as its action treats all the dependencies the
+works well for `zipf_test` as its action treats all the dependencies the
 same - as the input for the `zipf_test.py` script.
 
 Time for you to update all the rules that build a `.dat` file to use the
