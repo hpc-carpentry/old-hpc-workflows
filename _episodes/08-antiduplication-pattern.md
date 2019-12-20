@@ -331,6 +331,6 @@ BOOK_FILE = f'{INPUT_DIR}{{book}}.txt'
 > * make sure the configuration file name is in the `.gitignore` file (or equivalent).
 {:.callout}
 
-{% include links.md %}
-
 [f-string]: https://docs.python.org/3/reference/lexical_analysis.html#f-strings
+
+{% include links.md %}

@@ -98,7 +98,7 @@ Finished job 0.
 > WorkflowError:
 > Target rules may not contain wildcards. Please specify concrete files or a rule without wildcards.
 > ~~~
-> {:.language-output}
+> {:.output}
 >
 > As the error message indicates, you need to ask for specific files. For example, `snakemake last.dat`.
 >
