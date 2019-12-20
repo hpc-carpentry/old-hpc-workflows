@@ -14,8 +14,22 @@ The files used in this lesson can be downloaded:
 * [Linux/Mac](files/workflow-engines-lesson.tar.gz)
 * [Windows](files/workflow-engines-lesson.zip)
 
-Once downloaded, please extract to the directory you wish to work in for all
-the hands-on exercises.
+Once downloaded, please extract to the directory you wish to work in for all the
+hands-on exercises. If you are working on the Linux or Mac command-line, you can
+do something like the following. We assume you have downloaded the file to
+`~/Downloads`:
+
+~~~
+cd
+mkdir workflow-workshop
+cd workflow-workshop
+mv ../Downloads/workflow-engines-lesson.tar.gz .
+tar xf workflow-engines-lesson.tar.gz
+~~~
+{:.language-bash}
+
+On Windows, please use the Windows Explorer to create a directory and extract
+the Zip file into it.
 
 Solutions for most episodes can be found in the `.solutions` directory inside
 the code download.
