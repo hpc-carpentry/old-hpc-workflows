@@ -6,9 +6,8 @@ questions:
 - "How can I automatically manage dependencies and outputs?"
 - "How can I use Python code to add features to my pipeline?"
 objectives:
-- "Use variables, functions, and imports in a Snakefile."
+- "Use Python variables, functions, and imports in a Snakefile."
 - "Learn to use the `run` action to execute Python code as an action."
-- "Learn to mix Python variables and Snakemake wildcards when building strings."
 keypoints:
 - "Snakefiles are Python code."
 - "The entire Snakefile is executed whenever you run `snakemake`."
@@ -423,43 +422,6 @@ Finished job 0.
 > `--quiet` or `-q` suppresses a lot of the rule progress output from Snakemake.
 > This can be useful when you just want to see your own output.
 {:.callout}
-
-> ## Moving output locations
->
-> Alter the rules in your Snakefile so that the `.dat` files are created in
-> their own `dats/` folder.
-> Note that creating this folder beforehand is unnecessary.
-> Snakemake automatically create any folders for you, as needed.
->
-> > ## Solution
-> >
-> > First update the `DATS` variable with the `dats` directory:
-> >~~~
-> >DATS = expand('dats/{file}.dat', file=glob_wildcards('./books/{book}.txt').book)
-> >~~~
-> >{:.language-python}
-> >
-> > Then update `count_words` so the dat files get created in the same place:
-> >~~~
-> >rule count_words:
-> >    input:
-> >        cmd='wordcount.py',
-> >        book='books/{file}.txt'
-> >    output: 'dats/{file}.dat'
-> >    shell: 'python {input.cmd} {input.book} {output}'
-> >~~~
-> >{:.language-python}
-> >
-> > Finally, update the `clean` rule to remove the `dats` directory:
-> >~~~
-> > rule clean:
-> >     shell: 'rm -rf dats/ *.dat results.txt'
-> >~~~
-> >{:.language-python}
-> >
-> > See `.solutions/snakefiles_are_python/Snakefile` for a ready-made implementation.
-> {: .solution}
-{: .challenge}
 
 [ref-dependency]: {{ relative_root_path }}/reference#dependency
 [ref-target]: {{ relative_root_path }}/reference#target
