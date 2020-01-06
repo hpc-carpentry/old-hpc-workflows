@@ -51,9 +51,9 @@ that the pipeline still works.
 
 > ## Named Dependencies
 >
-> Note that we also had to switch to using named dependencies.
-> This was required since the first input, `zipf_text.py`, should
-> not be in the list of input files.
+> Note that we also had to switch to using named dependencies.  This was required
+> since the first input, `zipf_text.py`, **should not** be in the list of input
+> files.
 {: .callout}
 
 > ## Inputs: named vs indexed?
@@ -221,6 +221,26 @@ on disk) inside rules.
 
 Common tasks, such as building lists of input files that will be reused in
 multiple rules are a good fit for Python code that lives outside the rules.
+
+> ## Is your `print` output appearing last?
+> 
+> On some systems, output is buffered. This means that nothing is actually output
+> until the buffer is full. While this is more efficient, it can delay the output
+> from the `print` command. 
+> 
+> In my testing on Windows using the combination of Git Bash and Anaconda, the
+> `print` statement is buffered, resulting in the text printing to the terminal
+> ***after*** all the Snakemake output. If this is happening to you, tell the 
+> `print` statement to force a flush of the output buffer:
+> 
+> ~~~
+> print("Snakefile is being executed!", flush=True)
+> ~~~
+> {:.language-python}
+>
+> You should then see the printed text before the Snakemake output, confirming
+> that this code executes first.
+{:.callout}
 
 ## Using functions in Snakefiles
 
