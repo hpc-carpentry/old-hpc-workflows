@@ -9,6 +9,9 @@ objectives:
 keypoints:
 - "Use any named wildcard (`{some_name}`) as a placeholder in targets and dependencies.
 Snakemake will apply the pattern rule to all matching files."
+- "You cannot execute pattern rules by name. You need to request specific files."
+- "Wildcards can be used directly in `input:` and `output:` but not in actions.
+To use the current value of a wildcard in an action, prefix it with `{wildcards.}`."
 ---
 
 Our Snakefile still has a ton of repeated content. The rules for each `.dat`
@@ -35,6 +38,11 @@ This rule can be interpreted as:
 "In order to build a file named `[something].dat` (the target)
 find a file named `books/[that same something].txt` (the dependency)
 and run `wordcount.py [the dependency] [the target]`."
+
+> ## Update your Snakefile now
+>
+> Replace all your `count_words` rules with the given pattern rule now.
+{:.callout}
 
 Let's test the new pattern rule. We use the -p option to show that it is
 running things correctly:
