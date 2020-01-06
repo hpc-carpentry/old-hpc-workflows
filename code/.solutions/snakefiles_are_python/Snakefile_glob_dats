@@ -1,4 +1,4 @@
-DATS = expand('{file}.dat', file=glob_wildcards('./books/{book}.txt').book)
+DATS = expand('{book}.dat', book=glob_wildcards('./books/{book}.txt').book)
 
 # Generate summary table
 rule zipf_test:
@@ -19,6 +19,6 @@ rule clean:
 rule count_words:
     input:
         cmd='wordcount.py',
-        book='books/{file}.txt'
-    output: '{file}.dat'
+        book='books/{book}.txt'
+    output: '{book}.dat'
     shell: 'python {input.cmd} {input.book} {output}'

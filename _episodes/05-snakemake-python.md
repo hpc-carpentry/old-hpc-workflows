@@ -223,16 +223,16 @@ Common tasks, such as building lists of input files that will be reused in
 multiple rules are a good fit for Python code that lives outside the rules.
 
 > ## Is your `print` output appearing last?
-> 
+>
 > On some systems, output is buffered. This means that nothing is actually output
 > until the buffer is full. While this is more efficient, it can delay the output
-> from the `print` command. 
-> 
+> from the `print` command.
+>
 > In my testing on Windows using the combination of Git Bash and Anaconda, the
 > `print` statement is buffered, resulting in the text printing to the terminal
-> ***after*** all the Snakemake output. If this is happening to you, tell the 
+> ***after*** all the Snakemake output. If this is happening to you, tell the
 > `print` statement to force a flush of the output buffer:
-> 
+>
 > ~~~
 > print("Snakefile is being executed!", flush=True)
 > ~~~
@@ -259,6 +259,12 @@ they work.
 > You can use any Python environment for the following code exploring `expand()`
 > and `glob_wildcards()`. The standard Python interpreter, ipython, or
 > a Jupyter Notebook. It's up to personal preference and what you have installed.
+>
+> On Windows, calling `python` from Git Bash does not always work. It is better
+> to use the Anaconda start menu entries to run a Python prompt and then run
+> `python` from there.
+>
+> Make sure you change to your Snakefile directory before launching Python.
 {: .callout}
 
 In this example, we will import these Snakemake functions directly in our
@@ -352,7 +358,7 @@ glob_wildcards('books/{example}.txt').example
 > > the input `*.txt` file names.
 > >
 > >~~~
-> >DATS = expand('{file}.dat', file=glob_wildcards('./books/{book}.txt').book)
+> >DATS = expand('{book}.dat', book=glob_wildcards('./books/{book}.txt').book)
 > >~~~
 > >{:.language-python}
 > >
@@ -383,7 +389,7 @@ rule print_book_names:
 ~~~
 {: .language-python}
 
-Upon execution of the corresponding rule, Snakemake dutifully runs our Python code
+Upon execution of the corresponding rule, Snakemake runs our Python code
 in the `run:` block:
 
 ~~~
@@ -415,7 +421,7 @@ Finished job 0.
 > ## Note the `--quiet` option
 >
 > `--quiet` or `-q` suppresses a lot of the rule progress output from Snakemake.
-> This can be useful when you just want to see the output.
+> This can be useful when you just want to see your own output.
 {:.callout}
 
 > ## Moving output locations
