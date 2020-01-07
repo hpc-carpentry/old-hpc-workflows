@@ -1,7 +1,7 @@
 ---
 title: "Completing the Pipeline"
-teaching: 5
-exercises: 20
+teaching: 10
+exercises: 30
 questions:
 - "How do I move generated files into a subdirectory?"
 - "How do I add new processing rules to a Snakefile?"
@@ -196,7 +196,7 @@ rule can be anything you like, it is common practice to call the default rule
 > > ## Solution
 > >
 > > First, we modify the existing code that builds `DATS` to first extract the
-> > list of book names, and then to build `DATS` and a new global variable
+> > list of book names, and then to build `DATS` and a new global variable `PLOTS`
 > > listing all plots:
 > > ~~~
 > > # Build the list of book names. We need to use it multiple times when building
