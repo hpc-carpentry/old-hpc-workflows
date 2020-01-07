@@ -15,7 +15,8 @@ keypoints:
 and patterns in your Snakefiles"
 - "Consistent naming conventions help keep your code readable."
 - "Configuration files can make your workflow portable."
--
+- "Take care when mixing global variables and Snakemake wildcards in a formatted
+string. In general, surround wildcards with double curly braces."
 ---
 
 Duplication in file names, paths, and pattern strings is a common source of
@@ -234,7 +235,7 @@ name patterns are not confusing things.
 > I suggest the following global variable naming conventions:
 >
 > * `*_FILE` for single files or wildcard patterns
-> * `ALL_*` for lists of files (frequently build using `expand`)
+> * `ALL_*` for lists of files (frequently built using `expand`)
 >
 > You can of course use your own conventions. Consistency is the key.
 {:.callout}
@@ -257,7 +258,7 @@ and `yaml` formats, we use `yaml` here as it is easier to edit and read.
 
 First, move all values that need to be configurable into a configuration file
 alongside the Snakefile. Here we show the input file directory that has been
-added to `config.yaml`:
+added to a new file called `config.yaml` (it's just a text file):
 
 ~~~
 input_dir: books/
@@ -282,7 +283,7 @@ Finally, we use Python string formatting to build `BOOK_FILE`. Note that the
 we need to escape the wildcard in double curly braces. This ensures the
 formatted string contains `{book}`. Failure to do this will cause an
 exception since the string formatting code will be expecting a token called
-`book`.
+`book` (try it and see!).
 
 {% raw %}
 ~~~
@@ -291,13 +292,15 @@ BOOK_FILE = f'{INPUT_DIR}{{book}}.txt'
 {:.language-python}
 {% endraw %}
 
+The rest of the workflow remains unchanged.
+
 > ## Combining global variables and wildcards in formatted strings
 >
 > The safest way to mix global variables and wildcards in a formatted string
 > is to remember the following:
 >
 > * Global variables are surrounded in single curly braces (e.g. `{INPUT_DIR}`).
-> * Wildcards are surrounded with double curly braces (`{{book}}`).
+> * Wildcards are surrounded with double curly braces {% raw %}(e.g. `{{book}}`){% endraw %}.
 > * Use upper-case for globals and lower-case for wildcards.
 {:.callout}
 
@@ -317,7 +320,8 @@ BOOK_FILE = f'{INPUT_DIR}{{book}}.txt'
 > > is in `.solutions/reduce_duplication/Snakefile` and
 > > `.solutions/reduce_duplication/config.yaml` in the downloaded code package.
 > >
-> > Note that the example uses [f-strings][f-string], which are only available from Python 3.6.
+> > Note that the example uses [f-strings][f-string], which are only available in Python 3.6
+> > and higher.
 > > If you must use an older version of Python then you can use the older string formatting
 > > methods, although the results will be less concise.
 > {:.solution}
