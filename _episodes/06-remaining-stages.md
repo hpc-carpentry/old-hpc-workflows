@@ -104,6 +104,34 @@ directory.
 >{:.solution}
 {:.challenge}
 
+> ## Windows Note
+>
+> At the time of writing, there is an open bug in Snakemake (version 5.8.2) on Windows
+> systems that prevents requesting specific files from the command line when those files
+> are in a subdirectory.
+>
+> For example, before moving the `dat` files to the `dats` directory, you could request that Snakemake
+> build a specific file with a command like:
+>
+> ~~~
+> snakemake last.dat
+> ~~~
+> {:.language-bash}
+>
+> After moving the location of `dat` files, the correct command is:
+>
+> ~~~
+> snakemake dats/last.dat
+> ~~~
+> {:.language-bash}
+>
+> On Windows systems this command produces an error. However, Snakemake can still build the files
+> correctly when processing inputs for other rules (such as the `dats` rule). The bug only affects
+> files requested from the command line.
+>
+> Later in this episode we will see one way around this issue when we introduce the `all` rule.
+{:.callout}
+
 ## Generating Plots
 
 > ## Creating PNGs
@@ -112,7 +140,10 @@ directory.
 > files from `dat` files using `plotcount.py`.
 >
 > * The new rule should be called `make_plot`.
-> * All `.png` files should be created in a directory called `plots`.
+> * All `.png` files should be created in a directory called `plots`. If you are using a
+> Windows system, you could create the plots in the top-level directory instead in order
+> to avoid the Windows subdirectory bug. You may need to change back to the `plots` directory
+> after we introduce the `all` rule.
 >
 > As well as a new rule you may also need to update existing rules.
 >
@@ -139,14 +170,6 @@ directory.
 > > {:.language-python}
 > {: .solution}
 {: .challenge}
-
-## Cleaning House
-
-It is common practice to have a `clean` rule that deletes all intermediate
-and generated files, taking your workflow back to a blank slate.
-
-We already have a `clean` rule, so now is a good time to check that it
-removes all intermediate and output files.
 
 ## Default Rules
 
@@ -198,6 +221,16 @@ rule can be anything you like, it is common practice to call the default rule
 > > {:.language-python}
 > {:.solution}
 {:.challenge}
+
+## Cleaning House
+
+It is common practice to have a `clean` rule that deletes all intermediate
+and generated files, taking your workflow back to a blank slate.
+
+We already have a `clean` rule, so now is a good time to check that it
+removes all intermediate and output files. First do a `snakemake all` followed
+by `snakemake clean`. Then check to see if any output files remain and add them
+to the clean rule if required.
 
 ## Creating an Archive
 
