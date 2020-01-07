@@ -3,26 +3,113 @@ title: "Completing the Pipeline"
 teaching: 5
 exercises: 20
 questions:
+- "How do I move generated files into a subdirectory?"
 - "How do I add new processing rules to a Snakefile?"
 - "What are some common practices for Snakemake?"
 - "How can I get my workflow to clean up generated files?"
 - "What is a default rule?"
 objectives:
+- "Update existing rules so that `dat` files are created in a subdirectory."
 - "Add a rule to your Snakefile that generates PNG plots of word frequencies."
 - "Add an `all` rule to your Snakefile."
 - "Make `all` the default rule."
 keypoints:
+- "Keeping output files in the top-level directory can get messy. One solution is to put files into
+subdirectories."
 - "It is common practice to have a `clean` rule that deletes all intermediate and generated files, taking your workflow back to a blank slate."
 - "A default rule is the rule that Snakemake runs if you don't specify a rule on the command line. It is simply the first rule in a Snakefile."
 - "Many Snakefiles define a default target called `all` as first target in the file. This runs by default and typically executes the entire workflow."
 ---
+
+## Moving Output Files into a Subdirectory
+
+Currently our workflow is generating a lot of files in the main directory. This is not so bad with small numbers of files, but it can get messy as the file count grows. One approach to this is to generate outputs into their own directories, named after the file types. For example:
+
+~~~
+.
+├── books
+│   ├── abyss.txt
+│   ├── isles.txt
+│   ├── last.txt
+│   ├── LICENSE_TEXTS.md
+│   └── sierra.txt
+├── dats
+│   ├── abyss.dat
+│   ├── isles.dat
+│   ├── last.dat
+│   └── sierra.dat
+├── Pipfile
+├── plotcount.py
+├── requirements.txt
+├── results.txt
+├── Snakefile
+├── wordcount.py
+├── zipf_analysis.tar.gz
+└── zipf_test.py
+~~~
+{:.output}
+
+There are many potential arrangements, so you are free to choose whatever makes sense
+for your project. Snakemake is not prescriptive, it will put files wherever
+you tell it. So here we will learn how to move the `dat` files into a `dats`
+directory.
+
+> ## Moving the `dat` files
+>
+> Alter the rules in your Snakefile so that the `dat` files are created in
+> their own `dats/` folder.
+> Note that creating this folder beforehand is unnecessary.
+> Snakemake automatically create any folders for you, as needed.
+>
+> > ## Hint
+> >
+> > * Make sure your `Snakefile` is up to date with the end of
+> > the preceeding lesson. Use the provided solution files if necessary.
+> > * Look for all the locations that reference the `dat` files and update to add
+> > the `dats/` directory.
+> >
+> {:.solution}
+>
+> > ## Solution
+> >
+> > First update the `DATS` variable with the `dats` directory:
+> >~~~
+> >DATS = expand('dats/{file}.dat', file=glob_wildcards('./books/{book}.txt').book)
+> >~~~
+> >{:.language-python}
+> >
+> > Then update `count_words` so the dat files get created in the same place:
+> >~~~
+> >rule count_words:
+> >    input:
+> >        cmd='wordcount.py',
+> >        book='books/{file}.txt'
+> >    output: 'dats/{file}.dat'
+> >    shell: 'python {input.cmd} {input.book} {output}'
+> >~~~
+> >{:.language-python}
+> >
+> > Finally, update the `clean` rule to remove the `dats` directory:
+> >~~~
+> > rule clean:
+> >     shell: 'rm -rf dats/ *.dat results.txt'
+> >~~~
+> >{:.language-python}
+> >
+> > Note that in the clean rule there is no harm from keeping the `*.dat` pattern in
+> > the `rm` command even though no new files will be created in that location. It will
+> > help clean up if you forgot to run `snakemake clean` before updating the Snakefile.
+> >
+> > See `.solutions/completing_the_pipeline/Snakefile_move_dats`.
+>{:.solution}
+{:.challenge}
 
 ## Generating Plots
 
 > ## Creating PNGs
 >
 > Your challenge is to update your Snakefile so that it can create `.png`
-> files from `.dat` files using `plotcount.py`.
+> files from `dat` files using `plotcount.py`.
 >
 > * The new rule should be called `make_plot`.
 > * All `.png` files should be created in a directory called `plots`.
@@ -129,7 +216,7 @@ In this case, we will create an archive tar file.
 > Update your pipeline to:
 >
 > * Create an archive file called `zipf_analysis.tar.gz`
-> * The archive should contain all `.dat` files, plots, and the
+> * The archive should contain all `dat` files, plots, and the
 > Zipf summary table (`results.txt`).
 > * Update `all` to expect `zipf_analysis.tar.gz` as input.
 > * Remove the archive when `snakemake clean` is called.
