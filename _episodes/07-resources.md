@@ -16,7 +16,7 @@ for parallel tasks."
 - "While available resources will limit the total number of tasks that
 can execute in parallel, Snakemake will attempt to run at least one
 task even when sufficient resources are not available."
-- "It is up to you to tell code how many resources it should be using."
+- "It is up to you to tell the applications called by Snakemake how many resources it should be using."
 ---
 
 After the exercises at the end of our last lesson, our Snakefile looks
@@ -49,22 +49,22 @@ rule zipf_test:
 
 # delete everything so we can re-run things
 rule clean:
-    shell: 'rm -rf dats/ plots/ *.dat results.txt zipf_analysis.tar.gz'
+    shell: 'rm -rf dats/ plots/ results.txt zipf_analysis.tar.gz'
 
 # Count words in one of the books
 rule count_words:
     input:
         cmd='wordcount.py',
-        book='books/{file}.txt'
-    output: 'dats/{file}.dat'
+        book='books/{book}.txt'
+    output: 'dats/{book}.dat'
     shell: 'python {input.cmd} {input.book} {output}'
 
 # plot one word count dat file
 rule make_plot:
     input:
         cmd='plotcount.py',
-        dat='dats/{file}.dat'
-    output: 'plots/{file}.png'
+        dat='dats/{book}.dat'
+    output: 'plots/{book}.png'
     shell: 'python {input.cmd} {input.dat} {output}'
 
 # create an archive with all results
@@ -81,7 +81,7 @@ do we make it run as efficiently as possible?
 ## Running in parallel
 
 Up to this point, Snakemake has printed out an interesting message whenever
-we run our pipeline:
+we run our pipeline (the exact text may vary with the snakemake version):
 
 ~~~
 Provided cores: 1
@@ -89,14 +89,16 @@ Rules claiming more threads will be scaled down.
 ~~~
 {: .output}
 
-So far, Snakemake has been run in single-threaded mode, using just one CPU
+So far, Snakemake has been running in single-threaded mode, using just one CPU
 core. This means that even when Snakemake can identify tasks that could run
 at the same time, such as counting words in different books, it still runs
 them one at a time. Let's see how to change that, and scale up our pipeline
 to run in parallel.
 
 The only change we need to make is run Snakemake with the `-j` argument. `-j`
-tells Snakemake the maximum number or CPU cores that it can use.
+tells Snakemake the maximum number or CPU cores that it can use. You can also
+use the long-form `--cores`. The long-form is particularly useful in shell
+scripts to make your script self-documenting.
 
 ~~~
 snakemake clean
@@ -121,6 +123,16 @@ rest.
 Note you can also use `snakemake --cores 4` or `snakemake --jobs 4`. The
 `-j`, `--cores` and `--jobs` arguments all mean the same thing.
 
+> ## Self-documention
+>
+> Using the long-form of command-line arguments can be useful in scripts. They
+> make the code more understandable since you don't need to remember
+> what `-j` does. `--cores` is most useful in scripts that run snakemake
+> locally, while `--jobs` is most often used when running on a HPC cluster.
+>
+> When typing manually on the command-line, the short versions are faster.
+{:.callout}
+
 > ## How many CPUs does your computer have?
 >
 > Now that our pipeline can use multiple CPUs, how do we know how many CPUs
@@ -134,6 +146,7 @@ Note you can also use `snakemake --cores 4` or `snakemake --jobs 4`. The
 > Using `logical=False` returns the number of true CPU cores.
 > `logical=True` gives the number of CPU threads on your system.
 >
+> In a Python interpreter, try the following:
 > ~~~
 > import psutil
 > psutil.cpu_count(logical=False)
@@ -146,13 +159,13 @@ Note you can also use `snakemake --cores 4` or `snakemake --jobs 4`. The
 
 Each rule has a number of optional keywords aside from the usual `input`,
 `output`, and `shell`/`run`. The `threads` keyword is used to specify how
-many CPU cores a rule needs while executing. Though in reality CPU threads
-are not the same as CPU cores, the two terms are interchangeable when working
+many CPU cores a rule needs while executing. Though in reality threads are
+not the same as CPU cores, the two terms are interchangeable when working
 with Snakemake.
 
-Let's pretend that our `count_words` rule is multithreaded and can run on 4
+Let's pretend that our `count_words` rule is multithreaded and requires 4
 CPU cores. We can specify this with the `threads` keyword in our rule. We
-will also modify the rule to print out the number of threads it thinks it is
+will also modify the rule to print out the number of cores it thinks it is
 using.
 
 > ## Note
@@ -162,7 +175,7 @@ using.
 >
 > In this case `wordcount.py` is actually still running with 1 core, we
 > are simply using it as a demonstration of how to go about running
-> something with multiple cores.
+> something with multiple cores since we don't have any truly parallel tasks.
 {:.callout}
 
 ~~~
@@ -179,6 +192,29 @@ rule count_words:
         '''
 ~~~
 {:.language-python}
+
+> ## Windows Note
+>
+> When running on Windows using Git Bash and Anaconda, the previous code will
+> not work. Multiline strings containing multiple shell commands are not
+> executed correctly. The simplest workaround is to add `&&\` to the end of all
+> lines except the last inside the multiline shell command:
+>
+> ~~~
+> rule count_words:
+>     input:
+>         cmd='wordcount.py',
+>         book='books/{file}.txt'
+>     output: 'dats/{file}.dat'
+>     threads: 4
+>     shell:
+>         '''
+>         echo "Running {input.cmd} with {threads} cores." &&\
+>         python {input.cmd} {input.book} {output}
+>         '''
+> ~~~
+> {:.language-python}
+{:.callout}
 
 Now, when we run `snakemake -j 4`, the `count_words` rules are run one at a
 time. All of our other rules will still run in parallel. Unless otherwise
@@ -248,10 +284,43 @@ Finished job 6.
 
 The answer is given by `Rules claiming more threads will be scaled down.`.
 When Snakemake doesn't have enough cores to run a rule (as defined by
-`{threads}`), Snakemake will run that rule with the maximum available number
+`{threads}`), that rule will run with the maximum available number
 of cores instead. After all, Snakemake's job is to get our workflow done. It
 automatically scales our workload to match the maximum number of cores
 available without us editing the Snakefile.
+
+> ## If you absolutely must have a minimum number of cores for a rule
+>
+> If you have a task that cannot run with less than a specific
+> number of cores, then you can check the value of `{threads}` using a Bash if
+> test:
+>
+> ~~~
+>     shell:
+>         '''
+>         if [ {threads} -lt 4 ]
+>         then
+>             echo Not enough threads for task
+>             exit 1
+>         fi
+>
+>         # Your actual command goes here
+>         '''
+> ~~~
+> {:.language-bash}
+>
+> This code tests if the current value of `{threads}` is less than 4. If it is,
+> then it exits with an error code of 1. You can use any value you like so long
+> as it is not 0. An exit code of 0 indicates success.
+>
+> If the value of `{threads}` is at least the same as your minimum requirement
+> then the rest of the shell section will execute.
+>
+> If you have a Python `run` command then you should use regular Python to do a
+> similar check.
+>
+> Note that unfortunately this approach does not work on Windows.
+{:.callout}
 
 > ## Tasks Still Need to Know How Many Cores are Available
 >
@@ -268,7 +337,7 @@ available without us editing the Snakefile.
 
 ## Chaining multiple commands
 
-Up until now, all of our commands have fit on one line. To execute multiple
+Up until now, most of our commands have fit on one line. To execute multiple
 bash commands, the only modification we need to make is use a Python
 multiline string (begin and end with `"""` or `'''`).
 
@@ -278,7 +347,9 @@ fails, the remaining steps are not run. This is more forgiving than bash's
 default "hit an error and keep going" behavior. After all, if the first
 command failed, it's unlikely the other steps will work.
 
-Let's modify `count_words` to chain the `echo` and `python` commands:
+Let's modify `count_words` to chain the `echo` and `python` commands (Windows users
+may have already done this):
+
 ~~~
 rule count_words:
     input:
@@ -293,9 +364,6 @@ rule count_words:
         '''
 ~~~
 {:.language-python}
-
-Notice the use of the `{threads}` wildcard in the action to access the current
-number of CPU cores allocated to the rule.
 
 ## Managing other types of resources
 
