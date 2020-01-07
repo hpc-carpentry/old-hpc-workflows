@@ -15,6 +15,7 @@ keypoints:
 and patterns in your Snakefiles"
 - "Consistent naming conventions help keep your code readable."
 - "Configuration files can make your workflow portable."
+- "In general, don't add configuration files to source control. Instead, provide a template."
 - "Take care when mixing global variables and Snakemake wildcards in a formatted
 string. In general, surround wildcards with double curly braces."
 ---
