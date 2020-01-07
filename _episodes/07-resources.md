@@ -17,6 +17,8 @@ for parallel tasks."
 can execute in parallel, Snakemake will attempt to run at least one
 task even when sufficient resources are not available."
 - "It is up to you to tell the applications called by Snakemake how many resources it should be using."
+- "If your rule requires a minimum number of cores or resources, you can use a Bash `if` test to
+check the requirements."
 ---
 
 After the exercises at the end of our last lesson, our Snakefile looks
@@ -405,15 +407,18 @@ Provided resources: gpu=1
 ~~~
 {: .output}
 
+If you examine the output carefully, you should be able to see that the
+`make_plot` rules are no longer run in parallel. Since you have indicated
+that just one GPU is available, and each instance of `make_plot` requires one
+GPU, Snakemake runs the rules one at a time.
+
 Resources are entirely arbitrary - like wildcards, they can be named
 anything. Snakemake knows nothing about them aside from the fact that they
 have a name and a value. In this case `gpu` indicates simply that there is a
 resource called `gpu` used by `make_plot`. We provided 1 `gpu` to the
 workflow, and the `gpu` is considered in use as long as the rule is running.
 Once the `make_plot` rule completes, the `gpu` it consumed is added back to
-the pool of available `gpu`s. To be extra clear: `gpu` in this case does not
-actually represent a GPU, it is an arbitrary limit used to prevent multiple
-tasks that use a `gpu` from executing at the same time.
+the pool of available `gpu`s.
 
 But what happens if we run our pipeline without specifying the number of GPUs?
 
@@ -433,6 +438,8 @@ Unlimited resources: gpu
 If you have specified that a rule needs a certain resource, but do not
 specify how many you have, Snakemake will assume that the resources in
 question are unlimited.
+
+Note that this is opposite to `--cores` which defaults to 1.
 
 > ## What happens if Snakemake does not have enough resources?
 >
@@ -457,6 +464,10 @@ question are unlimited.
 > >
 > > Once again, it is up to the code being run by the rule to check that
 > > sufficient resources are actually available.
+> >
+> > The Bash `if` test approach used for `{threads}` works equally well to
+> > check for minimum required resource values. Just use `{resources.gpu}`
+> > (or your actual resource name) to access the value.
 > {:.solution}
 {:.challenge}
 
