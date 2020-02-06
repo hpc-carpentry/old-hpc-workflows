@@ -9,6 +9,9 @@ objectives:
 keypoints:
 - "Use any named wildcard (`{some_name}`) as a placeholder in targets and dependencies.
 Snakemake will apply the pattern rule to all matching files."
+- "You cannot execute pattern rules by name. You need to request specific files."
+- "Wildcards can be used directly in `input:` and `output:` but not in actions.
+To use the current value of a wildcard in an action, prefix it with `{wildcards.}`."
 ---
 
 Our Snakefile still has a ton of repeated content. The rules for each `.dat`
@@ -19,22 +22,27 @@ file from a `.txt` file in `books/`:
 ~~~
 rule count_words:
     input:
-        wc='wordcount.py',
-        book='books/{file}.txt'
-    output: '{file}.dat'
-    shell: 'python {input.wc} {input.book} {output}'
+        cmd='wordcount.py',
+        book='books/{book}.txt'
+    output: '{book}.dat'
+    shell: 'python {input.cmd} {input.book} {output}'
 ~~~
 {: .language-python}
 
-Here `{file}` is an arbitrary [wildcard][ref-wildcard]
+Here `{book}` is an arbitrary [wildcard][ref-wildcard]
 that we can use as a placeholder for any generic book to analyze.
-Note that we don't have to use `{file}` as the name of our wildcard -
+Note that we don't have to use `{book}` as the name of our wildcard -
 it can be anything we want!
 
 This rule can be interpreted as:
 "In order to build a file named `[something].dat` (the target)
 find a file named `books/[that same something].txt` (the dependency)
 and run `wordcount.py [the dependency] [the target]`."
+
+> ## Update your Snakefile now
+>
+> Replace all your `count_words` rules with the given pattern rule now.
+{:.callout}
 
 Let's test the new pattern rule. We use the -p option to show that it is
 running things correctly:
@@ -78,7 +86,7 @@ Finished job 0.
 
 > ## Using wildcards
 >
-> Our arbitrary wildcards like `{file}` can only be used in
+> Our arbitrary wildcards like `{book}` can only be used in
 > `input:` and `output:` fields. They cannot be used directly in actions.
 > If you need to refer to the current value of a wildcard in an action you
 > need to qualify it with `wildcards.`. For example: `{wildcards.file}`.
@@ -98,7 +106,7 @@ Finished job 0.
 > WorkflowError:
 > Target rules may not contain wildcards. Please specify concrete files or a rule without wildcards.
 > ~~~
-> {:.language-output}
+> {:.output}
 >
 > As the error message indicates, you need to ask for specific files. For example, `snakemake last.dat`.
 >
@@ -124,8 +132,8 @@ rule clean:
 rule count_words:
     input:
         cmd='wordcount.py',
-        book='books/{file}.txt'
-    output: '{file}.dat'
+        book='books/{book}.txt'
+    output: '{book}.dat'
     shell: 'python {input.cmd} {input.book} {output}'
 ~~~
 {: .language-python}
@@ -138,7 +146,7 @@ rule count_words:
 
 If we look at a graph of our workflow now, you can see that Snakemake has
 identified all three inputs to the `count_words` rule, and the value of the
-`{file}` wildcard is displayed:
+`{book}` wildcard is displayed:
 ![Dependencies represented within the Snakefile when using a pattern rule][fig-pattern-rule]
 
 [ref-pattern-rule]: {{ relative_root_path }}/reference#pattern-rule

@@ -24,15 +24,8 @@ details.
 
 ## Solution Files
 
-If students get lost, there are hidden Snakefiles in the lesson materials
-that students can use as a reference or use for the final "cluster
-submission" section.
-
-The files are:
-
-* `.Snakefile-final`: A version of the file that meets requirements of the final episode.
-
-FIXME: add additional files
+If students get lost, there are solutions to most episodes in the `.solutions`
+directory included in the downloadable files.
 
 ## C3DIS 2020 Notes
 

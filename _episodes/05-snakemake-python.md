@@ -6,9 +6,8 @@ questions:
 - "How can I automatically manage dependencies and outputs?"
 - "How can I use Python code to add features to my pipeline?"
 objectives:
-- "Use variables, functions, and imports in a Snakefile."
+- "Use Python variables, functions, and imports in a Snakefile."
 - "Learn to use the `run` action to execute Python code as an action."
-- "Learn to mix Python variables and Snakemake wildcards when building strings."
 keypoints:
 - "Snakefiles are Python code."
 - "The entire Snakefile is executed whenever you run `snakemake`."
@@ -51,9 +50,9 @@ that the pipeline still works.
 
 > ## Named Dependencies
 >
-> Note that we also had to switch to using named dependencies.
-> This was required since the first input, `zipf_text.py`, should
-> not be in the list of input files.
+> Note that we also had to switch to using named dependencies.  This was required
+> since the first input, `zipf_text.py`, **should not** be in the list of input
+> files.
 {: .callout}
 
 > ## Inputs: named vs indexed?
@@ -222,6 +221,26 @@ on disk) inside rules.
 Common tasks, such as building lists of input files that will be reused in
 multiple rules are a good fit for Python code that lives outside the rules.
 
+> ## Is your `print` output appearing last?
+>
+> On some systems, output is buffered. This means that nothing is actually output
+> until the buffer is full. While this is more efficient, it can delay the output
+> from the `print` command.
+>
+> In my testing on Windows using the combination of Git Bash and Anaconda, the
+> `print` statement is buffered, resulting in the text printing to the terminal
+> ***after*** all the Snakemake output. If this is happening to you, tell the
+> `print` statement to force a flush of the output buffer:
+>
+> ~~~
+> print("Snakefile is being executed!", flush=True)
+> ~~~
+> {:.language-python}
+>
+> You should then see the printed text before the Snakemake output, confirming
+> that this code executes first.
+{:.callout}
+
 ## Using functions in Snakefiles
 
 In our example here, we only have 4 books (and just 3 are being processed).
@@ -239,6 +258,12 @@ they work.
 > You can use any Python environment for the following code exploring `expand()`
 > and `glob_wildcards()`. The standard Python interpreter, ipython, or
 > a Jupyter Notebook. It's up to personal preference and what you have installed.
+>
+> On Windows, calling `python` from Git Bash does not always work. It is better
+> to use the Anaconda start menu entries to run a Python prompt and then run
+> `python` from there.
+>
+> Make sure you change to your Snakefile directory before launching Python.
 {: .callout}
 
 In this example, we will import these Snakemake functions directly in our
@@ -332,7 +357,7 @@ glob_wildcards('books/{example}.txt').example
 > > the input `*.txt` file names.
 > >
 > >~~~
-> >DATS = expand('{file}.dat', file=glob_wildcards('./books/{book}.txt').book)
+> >DATS = expand('{book}.dat', book=glob_wildcards('./books/{book}.txt').book)
 > >~~~
 > >{:.language-python}
 > >
@@ -363,7 +388,7 @@ rule print_book_names:
 ~~~
 {: .language-python}
 
-Upon execution of the corresponding rule, Snakemake dutifully runs our Python code
+Upon execution of the corresponding rule, Snakemake runs our Python code
 in the `run:` block:
 
 ~~~
@@ -395,45 +420,8 @@ Finished job 0.
 > ## Note the `--quiet` option
 >
 > `--quiet` or `-q` suppresses a lot of the rule progress output from Snakemake.
-> This can be useful when you just want to see the output.
+> This can be useful when you just want to see your own output.
 {:.callout}
-
-> ## Moving output locations
->
-> Alter the rules in your Snakefile so that the `.dat` files are created in
-> their own `dats/` folder.
-> Note that creating this folder beforehand is unnecessary.
-> Snakemake automatically create any folders for you, as needed.
->
-> > ## Solution
-> >
-> > First update the `DATS` variable with the `dats` directory:
-> >~~~
-> >DATS = expand('dats/{file}.dat', file=glob_wildcards('./books/{book}.txt').book)
-> >~~~
-> >{:.language-python}
-> >
-> > Then update `count_words` so the dat files get created in the same place:
-> >~~~
-> >rule count_words:
-> >    input:
-> >        cmd='wordcount.py',
-> >        book='books/{file}.txt'
-> >    output: 'dats/{file}.dat'
-> >    shell: 'python {input.cmd} {input.book} {output}'
-> >~~~
-> >{:.language-python}
-> >
-> > Finally, update the `clean` rule to remove the `dats` directory:
-> >~~~
-> > rule clean:
-> >     shell: 'rm -rf dats/ *.dat results.txt'
-> >~~~
-> >{:.language-python}
-> >
-> > See `.solutions/snakefiles_are_python/Snakefile` for a ready-made implementation.
-> {: .solution}
-{: .challenge}
 
 [ref-dependency]: {{ relative_root_path }}/reference#dependency
 [ref-target]: {{ relative_root_path }}/reference#target

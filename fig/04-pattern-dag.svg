@@ -12,7 +12,7 @@
 <!-- 0 -->
 <g id="node1" class="node">
 <title>0</title>
-<path fill="none" stroke="#d6d856" stroke-width="2" d="M152.5,-36C152.5,-36 117.5,-36 117.5,-36 111.5,-36 105.5,-30 105.5,-24 105.5,-24 105.5,-12 105.5,-12 105.5,-6 111.5,0 117.5,0 117.5,0 152.5,0 152.5,0 158.5,0 164.5,-6 164.5,-12 164.5,-12 164.5,-24 164.5,-24 164.5,-30 158.5,-36 152.5,-36"/>
+<path fill="none" stroke="#59d856" stroke-width="2" d="M152.5,-36C152.5,-36 117.5,-36 117.5,-36 111.5,-36 105.5,-30 105.5,-24 105.5,-24 105.5,-12 105.5,-12 105.5,-6 111.5,0 117.5,0 117.5,0 152.5,0 152.5,0 158.5,0 164.5,-6 164.5,-12 164.5,-12 164.5,-24 164.5,-24 164.5,-30 158.5,-36 152.5,-36"/>
 <text text-anchor="middle" x="135" y="-15.5" font-family="sans" font-size="10.00" fill="#000000">zipf_test</text>
 </g>
 <!-- 1 -->
@@ -20,7 +20,7 @@
 <title>1</title>
 <path fill="none" stroke="#d85656" stroke-width="2" d="M66,-108C66,-108 12,-108 12,-108 6,-108 0,-102 0,-96 0,-96 0,-84 0,-84 0,-78 6,-72 12,-72 12,-72 66,-72 66,-72 72,-72 78,-78 78,-84 78,-84 78,-96 78,-96 78,-102 72,-108 66,-108"/>
 <text text-anchor="middle" x="39" y="-93" font-family="sans" font-size="10.00" fill="#000000">count_words</text>
-<text text-anchor="middle" x="39" y="-82" font-family="sans" font-size="10.00" fill="#000000">file: isles</text>
+<text text-anchor="middle" x="39" y="-82" font-family="sans" font-size="10.00" fill="#000000">book: isles</text>
 </g>
 <!-- 1&#45;&gt;0 -->
 <g id="edge1" class="edge">
@@ -33,7 +33,7 @@
 <title>2</title>
 <path fill="none" stroke="#d85656" stroke-width="2" d="M162,-108C162,-108 108,-108 108,-108 102,-108 96,-102 96,-96 96,-96 96,-84 96,-84 96,-78 102,-72 108,-72 108,-72 162,-72 162,-72 168,-72 174,-78 174,-84 174,-84 174,-96 174,-96 174,-102 168,-108 162,-108"/>
 <text text-anchor="middle" x="135" y="-93" font-family="sans" font-size="10.00" fill="#000000">count_words</text>
-<text text-anchor="middle" x="135" y="-82" font-family="sans" font-size="10.00" fill="#000000">file: abyss</text>
+<text text-anchor="middle" x="135" y="-82" font-family="sans" font-size="10.00" fill="#000000">book: abyss</text>
 </g>
 <!-- 2&#45;&gt;0 -->
 <g id="edge2" class="edge">
@@ -46,7 +46,7 @@
 <title>3</title>
 <path fill="none" stroke="#d85656" stroke-width="2" d="M258,-108C258,-108 204,-108 204,-108 198,-108 192,-102 192,-96 192,-96 192,-84 192,-84 192,-78 198,-72 204,-72 204,-72 258,-72 258,-72 264,-72 270,-78 270,-84 270,-84 270,-96 270,-96 270,-102 264,-108 258,-108"/>
 <text text-anchor="middle" x="231" y="-93" font-family="sans" font-size="10.00" fill="#000000">count_words</text>
-<text text-anchor="middle" x="231" y="-82" font-family="sans" font-size="10.00" fill="#000000">file: last</text>
+<text text-anchor="middle" x="231" y="-82" font-family="sans" font-size="10.00" fill="#000000">book: last</text>
 </g>
 <!-- 3&#45;&gt;0 -->
 <g id="edge3" class="edge">
