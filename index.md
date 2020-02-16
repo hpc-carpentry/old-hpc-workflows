@@ -45,7 +45,7 @@ of these Carpentry courses:
 
 > ## Setup
 >
-> Please follow the instructions in the [Setup page][lesson-setup].
+> Please follow the instructions in the [Setup page][setup].
 >
 > The files used in this lesson can be downloaded:
 >
