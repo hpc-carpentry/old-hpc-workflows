@@ -414,6 +414,6 @@ steps.
 > {: .solution}
 {: .challenge}
 
-[ref-wildcard]: {{ relative_root_path }}/reference#wildcard
+[ref-wildcard]: ../reference#wildcard
 
 {% include links.md %}

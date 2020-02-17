@@ -361,8 +361,8 @@ Now, let's dissect the command we just ran:
 > Is this a good idea? What are some problems of this approach?
 {:.discussion}
 
-[ref-hpc-cluster]: {{ relative_root_path }}/reference#hpc-cluster
-[ref-scheduler]: {{ relative_root_path }}/reference#scheduler
+[ref-hpc-cluster]: ../reference#hpc-cluster
+[ref-scheduler]: ../reference#scheduler
 [cluster-config-docs]: https://snakemake.readthedocs.io/en/stable/snakefiles/configuration.html#cluster-configuration
 
 {% include links.md %}

@@ -547,16 +547,16 @@ The following figure shows the dependencies embodied within our Snakefile,
 involved in building the `results.txt` target:
 ![Dependencies represented within the Snakefile][fig-challenge]
 
-[ref-build-file]: {{ relative_root_path }}/reference#build-file
-[ref-target]: {{ relative_root_path }}/reference#target
-[ref-rule]: {{ relative_root_path }}/reference#rule
-[ref-incremental]: {{ relative_root_path }}/reference#incremental-builds
-[ref-dag]: {{ relative_root_path }}/reference#directed-acyclic-graph
-[ref-dependency]: {{ relative_root_path }}/reference#dependency
-[ref-default-target]: {{ relative_root_path }}/reference#default-target
-[ref-action]: {{ relative_root_path }}/reference#action
+[ref-build-file]: ../reference#build-file
+[ref-target]: ../reference#target
+[ref-rule]: ../reference#rule
+[ref-incremental]: ../reference#incremental-builds
+[ref-dag]: ../reference#directed-acyclic-graph
+[ref-dependency]: ../reference#dependency
+[ref-default-target]: ../reference#default-target
+[ref-action]: ../reference#action
 [snakemake]: https://snakemake.readthedocs.io/en/stable/
-[fig-challenge]: {{ relative_root_path }}/fig/02-challenge-dag.svg
-[fig-dats]: {{ relative_root_path }}/fig/02-dats-dag.svg
+[fig-challenge]: ../fig/02-challenge-dag.svg
+[fig-dats]: ../fig/02-dats-dag.svg
 
 {% include links.md %}

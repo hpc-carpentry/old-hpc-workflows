@@ -423,8 +423,8 @@ Finished job 0.
 > This can be useful when you just want to see your own output.
 {:.callout}
 
-[ref-dependency]: {{ relative_root_path }}/reference#dependency
-[ref-target]: {{ relative_root_path }}/reference#target
-[ref-action]: {{ relative_root_path }}/reference#action
+[ref-dependency]: ../reference#dependency
+[ref-target]: ../reference#target
+[ref-action]: ../reference#action
 
 {% include links.md %}
