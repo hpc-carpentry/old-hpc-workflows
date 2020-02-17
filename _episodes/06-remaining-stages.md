@@ -315,6 +315,6 @@ After these exercises our final workflow should look something like the followin
 > * check the results.txt file to see how this book compares to the others
 {: .challenge}
 
-[fig-final-dag]: {{ relative_root_path }}/fig/06-final-dag.svg
+[fig-final-dag]: ../fig/06-final-dag.svg
 
 {% include links.md %}

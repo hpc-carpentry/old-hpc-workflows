@@ -149,8 +149,8 @@ identified all three inputs to the `count_words` rule, and the value of the
 `{book}` wildcard is displayed:
 ![Dependencies represented within the Snakefile when using a pattern rule][fig-pattern-rule]
 
-[ref-pattern-rule]: {{ relative_root_path }}/reference#pattern-rule
-[ref-wildcard]: {{ relative_root_path }}/reference#wildcard
-[fig-pattern-rule]: {{ relative_root_path }}/fig/04-pattern-dag.svg
+[ref-pattern-rule]: ../reference#pattern-rule
+[ref-wildcard]: ../reference#wildcard
+[fig-pattern-rule]: ../fig/04-pattern-dag.svg
 
 {% include links.md %}

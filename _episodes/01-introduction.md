@@ -263,6 +263,6 @@ What we really want is an executable _description_ of our pipeline that
 allows software to do the tricky part for us: figuring out what tasks need to
 be run where and when, then perform those tasks for us.
 
-[ref-zipf]: {{ relative_root_path }}/reference#zipfs-law
+[ref-zipf]: ../reference#zipfs-law
 
 {% include links.md %}
