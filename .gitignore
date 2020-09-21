@@ -14,4 +14,20 @@ _site
 vendor/
 .docker-vendor/
 Gemfile.lock
-.*history
+.*history# Artifacts from running the lesson sample code in-place
+code/.snakemake/
+code/results/
+code/Pipfile.lock
+commands-local.mk
+code/*.dat
+code/*.png
+code/results.txt
+code/Snakefile
+code/dats/
+code/plots/
+code/zipf_analysis.tar.gz
+code/config.yaml
+**/slurm*.out
+Pipfile
+Pipfile.lock
+
