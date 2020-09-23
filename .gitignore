@@ -3,16 +3,21 @@
 .DS_Store
 .ipynb_checkpoints
 .sass-cache
+.jekyll-cache/
 __pycache__
 _site
-.jekyll-cache/
-Pipfile
-Pipfile.lock
 .Rproj.user
 .Rhistory
 .RData
+.bundle/
+.vendor/
+vendor/
+.docker-vendor/
+Gemfile.lock
+.*history
 .vscode/
-
+Pipfile
+Pipfile.lock
 # Artifacts from running the lesson sample code in-place
 code/.snakemake/
 code/results/
@@ -27,3 +32,4 @@ code/plots/
 code/zipf_analysis.tar.gz
 code/config.yaml
 **/slurm*.out
+
