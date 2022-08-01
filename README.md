@@ -45,11 +45,11 @@ it will appear in the correct order on the website.
 
 ### Publishing changes to Github + the Github pages website
 
-The lesson website is viewable at [https://csiro-data-school.github.io/workflows/](https://csiro-data-school.github.io/workflows/).
+The lesson website is viewable at [https://carpentries-incubator.github.io/hpc-workflows/](https://carpentries-incubator.github.io/hpc-workflows/).
 
 The lesson website itself is auto-generated from the `gh-pages` branch of this repository.
 Github pages will rebuild the website as soon as you push to the Github `gh-pages` branch.
-Because of this `gh-pages` is considered the "master" branch.
+Because of this `gh-pages` is considered the "main" branch.
 
 ### Previewing changes locally
 
