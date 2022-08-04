@@ -124,7 +124,7 @@ The first 5 lines of `isles.dat` should look exactly like before.
 > using the `-s` flag. For example, if our Snakefile is named `MyOtherSnakefile`:
 >
 > ~~~
-> snakemake -s MyOtherMakefile
+> snakemake --cores 1 -s MyOtherSnakefile
 > ~~~
 >{: .language-bash}
 >
@@ -167,7 +167,7 @@ its dependency:
 If we run Snakemake again,
 
 ~~~
-snakemake
+snakemake --cores 1
 ~~~
 {: .language-bash}
 
@@ -226,7 +226,7 @@ rule count_words_abyss:
 If we run Snakemake,
 
 ~~~
-snakemake
+snakemake --cores 1
 ~~~
 {: .language-bash}
 
@@ -243,7 +243,7 @@ and this rule is already up-to-date. We need to explicitly tell Snakemake we
 want to build `abyss.dat`:
 
 ~~~
-snakemake abyss.dat
+snakemake --cores 1 abyss.dat
 ~~~
 {: .language-bash}
 
@@ -280,7 +280,7 @@ Finished job 0.
 > If we ask Snakemake to build a file which does not have a
 > rule in our Snakefile, then we get messages like:
 > ~~~
-> $ snakemake what.dat
+> $ snakemake --cores 1 what.dat
 > MissingRuleException:
 > No rule to produce what.dat (if you use input functions make sure that they
 > don't raise unexpected exceptions).
@@ -309,7 +309,7 @@ remove the data files whether or not they exist. If we run Snakemake and specify
 this target:
 
 ~~~
-snakemake clean
+snakemake --cores 1 clean
 ~~~
 {: .language-bash}
 
@@ -370,7 +370,7 @@ to trigger the build of its dependencies, if needed.
 If we run,
 
 ~~~
-snakemake dats
+snakemake --cores 1 dats
 ~~~
 {: .language-bash}
 
@@ -416,7 +416,7 @@ If we run `dats` again, then snakemake will see that the dependencies
 no actions, there is `nothing to be done`:
 
 ~~~
-snakemake dats
+snakemake --cores 1 dats
 ~~~
 {: .language-bash}
 
@@ -462,8 +462,8 @@ prints out commands instead of actually executing them. Very useful for
 debugging!
 
 ~~~
-snakemake clean
-snakemake -n -p isles.dat
+snakemake --cores 1 clean
+snakemake --cores 1 -n -p isles.dat
 ~~~
 {: .language-bash}
 
