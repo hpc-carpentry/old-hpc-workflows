@@ -81,10 +81,11 @@ By default, Snakemake looks for a file called `Snakefile`, and we can run
 Snakemake as follows:
 
 ~~~
-snakemake
+snakemake --cores 1
 ~~~
 {: .language-bash}
 
+It is possible to use more cores, but a single core is sufficient for now.
 By default, Snakemake tells us what it's doing as it executes actions:
 
 ~~~
