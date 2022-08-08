@@ -16,7 +16,7 @@ engines and how to apply them to your own work.
 The example workflow will launch several cluster jobs with the [Amdahl][amdahl]
 program from the [Introduction to High-Performance Computing][hpc-intro] using
 different numbers of processors, collect the output from each job, and create a
-graph of "speedup" (runtime divided by the runtime with just one processor) as
+graph of "speedup" (reference runtime, usually one processor or node or GPU, divided by the runtime with increased compute resources) as
 a function of the processor count. You will use this data to analyze the
 performance of the program, and compare it to the predictions made by Amdahl's
 Law. This example has been chosen over a more complex, real-world scientific
