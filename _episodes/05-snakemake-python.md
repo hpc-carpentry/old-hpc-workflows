@@ -392,7 +392,7 @@ Upon execution of the corresponding rule, Snakemake runs our Python code
 in the `run:` block:
 
 ~~~
-snakemake -c 1 --quiet print_book_names
+snakemake -c 1 print_book_names --quiet rules
 ~~~
 {: .language-bash}
 
@@ -417,10 +417,11 @@ Finished job 0.
 ~~~
 {: .output}
 
-> ## Note the `--quiet` option
+> ## Note the `--quiet rules` option
 >
-> `--quiet` or `-q` suppresses a lot of the rule progress output from Snakemake.
-> This can be useful when you just want to see your own output.
+> `--quiet rules` or `-q rules` suppresses a lot of the rule progress output from Snakemake.
+> This can be useful when you just want to see your own output. Other choices are
+> `-q all` and `-q progress`.
 {:.callout}
 
 [ref-dependency]: ../reference#dependency
