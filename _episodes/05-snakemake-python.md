@@ -45,7 +45,7 @@ rule zipf_test:
 ~~~
 {: .language-python}
 
-After updating your rule, run `snakemake clean` and `snakemake -p` to confirm
+After updating your rule, run `snakemake -c 1 clean` and `snakemake -c 1 -p` to confirm
 that the pipeline still works.
 
 > ## Named Dependencies
@@ -94,7 +94,7 @@ one place to update the list of files to process.
 > Update your Snakefile with the `DATS` global variable.
 >
 > Try recreating both the `dats` and `results.txt` targets
-> (run `snakemake clean` in between).
+> (run `snakemake -c 1 clean` in between).
 >
 > > ## Solution
 > >
@@ -121,10 +121,10 @@ rule zipf_test:
 ~~~
 {: .language-python}
 
-Now let's clean up our workspace with `snakemake clean`:
+Now let's clean up our workspace with `snakemake -c 1 clean`:
 
 ~~~
-snakemake clean
+snakemake -c 1 clean
 ~~~
 {: .language-bash}
 
@@ -148,7 +148,7 @@ Finished job 0.
 Now let's re-run the pipeline...
 
 ~~~
-snakemake
+snakemake -c 1
 ~~~
 {: .language-bash}
 
@@ -202,7 +202,7 @@ Finished job 0.
 Let's do a dry-run:
 
 ~~~
-snakemake -n
+snakemake -c 1 -n
 ~~~
 {: .language-bash}
 
@@ -392,7 +392,7 @@ Upon execution of the corresponding rule, Snakemake runs our Python code
 in the `run:` block:
 
 ~~~
-snakemake --quiet print_book_names
+snakemake -c 1 --quiet print_book_names
 ~~~
 {: .language-bash}
 
