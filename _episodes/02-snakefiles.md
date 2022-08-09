@@ -85,8 +85,11 @@ snakemake --cores 1
 ~~~
 {: .language-bash}
 
-It is possible to use more cores, but a single core is sufficient for now.
-By default, Snakemake tells us what it's doing as it executes actions:
+The number of cores to use is a required argument for versions 5.11 and 
+above of Snakemake.  It is possible to use more cores, but a single core 
+is sufficient for now.  It is also possible to indicate the number of
+cores using `-c 1`, which will be used going forward. By default, 
+Snakemake tells us what it's doing as it executes actions:
 
 ~~~
 Provided cores: 1
@@ -124,7 +127,7 @@ The first 5 lines of `isles.dat` should look exactly like before.
 > using the `-s` flag. For example, if our Snakefile is named `MyOtherSnakefile`:
 >
 > ~~~
-> snakemake --cores 1 -s MyOtherSnakefile
+> snakemake -c 1 -s MyOtherSnakefile
 > ~~~
 >{: .language-bash}
 >
@@ -167,7 +170,7 @@ its dependency:
 If we run Snakemake again,
 
 ~~~
-snakemake --cores 1
+snakemake -c 1
 ~~~
 {: .language-bash}
 
@@ -226,7 +229,7 @@ rule count_words_abyss:
 If we run Snakemake,
 
 ~~~
-snakemake --cores 1
+snakemake -c 1
 ~~~
 {: .language-bash}
 
@@ -243,7 +246,7 @@ and this rule is already up-to-date. We need to explicitly tell Snakemake we
 want to build `abyss.dat`:
 
 ~~~
-snakemake --cores 1 abyss.dat
+snakemake -c 1 abyss.dat
 ~~~
 {: .language-bash}
 
@@ -280,7 +283,7 @@ Finished job 0.
 > If we ask Snakemake to build a file which does not have a
 > rule in our Snakefile, then we get messages like:
 > ~~~
-> $ snakemake --cores 1 what.dat
+> $ snakemake -c 1 what.dat
 > MissingRuleException:
 > No rule to produce what.dat (if you use input functions make sure that they
 > don't raise unexpected exceptions).
@@ -309,7 +312,7 @@ remove the data files whether or not they exist. If we run Snakemake and specify
 this target:
 
 ~~~
-snakemake --cores 1 clean
+snakemake -c 1 clean
 ~~~
 {: .language-bash}
 
@@ -370,7 +373,7 @@ to trigger the build of its dependencies, if needed.
 If we run,
 
 ~~~
-snakemake --cores 1 dats
+snakemake -c 1 dats
 ~~~
 {: .language-bash}
 
@@ -416,7 +419,7 @@ If we run `dats` again, then snakemake will see that the dependencies
 no actions, there is `nothing to be done`:
 
 ~~~
-snakemake --cores 1 dats
+snakemake -c 1 dats
 ~~~
 {: .language-bash}
 
@@ -462,8 +465,8 @@ prints out commands instead of actually executing them. Very useful for
 debugging!
 
 ~~~
-snakemake --cores 1 clean
-snakemake --cores 1 -n -p isles.dat
+snakemake -c 1 clean
+snakemake -c 1 -n -p isles.dat
 ~~~
 {: .language-bash}
 
