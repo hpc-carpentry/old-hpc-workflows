@@ -1,0 +1,27 @@
+# Snakefile to run Amdahl's Law for HPC Workflows
+
+TASKS = [1, 2, 4, 8, 16, 32]
+
+def get_tasks(wildcards):
+        return int(wildcards.sample)
+
+rule plot:
+    input:
+        expand("run_{task}.log", task=TASKS)
+    output:
+        "done.log"
+    shell:
+        "python3 plot_amdahl.py > done.log"
+
+rule slurm:
+    input:
+    output:
+        "run_{sample}.log"
+    resources:
+        tasks=get_tasks
+    shell:
+        "mpirun -np {wildcards.sample} amdahl --terse > run_{wildcards.sample}.log"
+
+rule clean:
+    shell:
+        "rm *.log"
