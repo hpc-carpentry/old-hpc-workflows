@@ -2,13 +2,14 @@
 Plotting script for HPC Workflows scaling study
 """
 
-import pandas as pd
 import json
-import matplotlib
 import matplotlib.pyplot as plt
+import pandas as pd
 import sys
+
 from math import ceil
-matplotlib.use("AGG")  # plot to disk, rather than to a window
+from matplotlib.lines import Line2D
+
 
 def actual_speedup(parallel_wall_time, serial_wall_time):
     return serial_wall_time / parallel_wall_time
@@ -33,8 +34,10 @@ def analyze_scaling_study(log_files, img_file):
 
     # Calculate speedup factor
     serial_wall_time = data_frame.iloc[0]["execution_time"]
-    data_frame["speedup"] = data_frame["execution_time"].apply(actual_speedup,
-                                                               args=(serial_wall_time,))
+    data_frame["speedup"] = data_frame["execution_time"].apply(
+        actual_speedup,
+        args=(serial_wall_time,)
+    )
 
     # Print out the data frame as a table
     print(data_frame.to_string(index=False))
@@ -50,19 +53,22 @@ def analyze_scaling_study(log_files, img_file):
     plt.ylabel("Speedup Factor $S$")
 
     # Print the scaling study data
-    plt.plot(data_frame["nproc"], data_frame["speedup"], "o", label="actual data")
+    plt.plot(data_frame["nproc"], data_frame["speedup"],
+             "o", label="actual data")
 
     # Save the limits of the plotted data in x and y
     data_range = [plt.xlim(), plt.ylim()]
 
     # Calculate and plot theoretical speedup factor
-    markers = matplotlib.lines.Line2D.filled_markers
+    markers = Line2D.filled_markers
     for index, parallel_proportion in enumerate((0.7, 0.8, 0.9, 1)):
         serial_proportion = 1 - parallel_proportion
         num_cores = range(1, data_frame["nproc"].max() + 1)
-        speedup = [amdahl_speedup(serial_proportion, parallel_proportion, x) for x in num_cores]
+        speedup = [amdahl_speedup(serial_proportion, parallel_proportion, x)
+                   for x in num_cores]
         label = r"theory, $p=%.2f$" % parallel_proportion
-        plt.plot(num_cores, speedup, linestyle=":", marker=markers[index+1], markersize=4, label=label, zorder=0)
+        plt.plot(num_cores, speedup, linestyle=":", marker=markers[index+1],
+                 markersize=4, label=label, zorder=0)
 
     # Reset plot limits to the actual data
     plt.xlim(data_range[0])
