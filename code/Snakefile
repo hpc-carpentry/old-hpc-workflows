@@ -11,7 +11,7 @@ rule plot:
     output:
         "plot.log"
     log:
-        "slurm_plot.log"
+        "slurm_plot.out"
     resources:
         tasks=1
     conda:
@@ -38,4 +38,4 @@ rule clean:
     conda:
         "amdahl"
     shell:
-        "rm *.log *.json *.png"
+        "rm *.json *.log *.out *.png"
