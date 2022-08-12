@@ -1,27 +1,38 @@
 # Snakefile to run Amdahl's Law for HPC Workflows
 
-TASKS = [1, 2, 4, 8, 16, 32]
-
-def get_tasks(wildcards):
-        return int(wildcards.sample)
+TASKS = range(1, 32)  # number of processors: start small for testing!
 
 rule plot:
     input:
-        expand("run_{task}.log", task=TASKS)
+        expand("amdahl_np{task}.json", task=TASKS)
     output:
-        "done.log"
+        "plot.log"
+    log:
+        "slurm_plot.log"
+    resources:
+        tasks=1
+    conda:
+        "amdahl"
     shell:
-        "python3 plot_amdahl.py > done.log"
+        "python3 plot_amdahl.py > {output}"
 
-rule slurm:
+rule amdahl:
     input:
     output:
-        "run_{sample}.log"
+        "amdahl_np{sample}.json"
+    log:
+        "slurm_np{sample}.out"
     resources:
-        tasks=get_tasks
+        tasks=lambda wildcards: int(wildcards.sample)
     shell:
-        "mpirun -np {wildcards.sample} amdahl --terse > run_{wildcards.sample}.log"
+        "mpirun amdahl --terse --exact > {output}"
 
 rule clean:
+    input:
+    output:
+    resources:
+        tasks=1
+    conda:
+        "amdahl"
     shell:
-        "rm *.log"
+        "rm *.log *.json *.png"
