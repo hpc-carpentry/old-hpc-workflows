@@ -35,7 +35,7 @@ default-resources:
 # ------------------------------------------
 
 # root of Conda or Mamba installation on the machine
-conda-base-path: "~/anaconda"
+conda-base-path: "${CONDA_PREFIX}"
 
 # use a Conda environment
 use-conda: true
