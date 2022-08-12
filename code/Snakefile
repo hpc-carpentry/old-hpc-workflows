@@ -1,6 +1,9 @@
 # Snakefile to run Amdahl's Law for HPC Workflows
 
-TASKS = range(1, 32)  # number of processors: start small for testing!
+cpu_min = 1
+cpu_max = 32
+
+TASKS = range(cpu_min, cpu_max + 1)  # number of processors: start small for testing!
 
 rule plot:
     input:
@@ -14,7 +17,7 @@ rule plot:
     conda:
         "amdahl"
     shell:
-        "python3 plot_amdahl.py > {output}"
+        "python3 plot_amdahl.py {input} > {output}"
 
 rule amdahl:
     input:
