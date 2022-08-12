@@ -16,19 +16,23 @@
 # <https://github.com/snakemake/snakemake/blob/main/snakemake/__init__.py>
 
 cluster:
+  mkdir -p logs/{rule} &&
   sbatch
     --job-name={rule}-np{resources.tasks}
     --partition={resources.partition}
     --nodes={resources.nodes}
     --ntasks={resources.tasks}
     --time={resources.time}
-    --output={log}
+    --output=logs/slurm_{rule}_np_{resources.tasks}.log
+    --parsable  # required to pass job IDs to scancel
 
 default-resources:
   - partition=rack6  # name of partition (or queue) on which jobs will run
   - nodes=1  # number of cluster nodes to reserve
   - tasks=1  # number of cluster cores to reserve (total)
   - time=5   # maximum expected runtime of each job, in minutes
+
+cluster-cancel: scancel
 
 # ------------------------------------------
 # Global job settings (platform independent)

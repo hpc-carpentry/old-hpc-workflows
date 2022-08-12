@@ -7,35 +7,36 @@ TASKS = range(cpu_min, cpu_max + 1)  # number of processors: start small for tes
 
 rule plot:
     input:
-        expand("amdahl_np{task}.json", task=TASKS)
+        expand("amdahl_np_{task}.json", task=TASKS)
     output:
-        "plot.log"
-    log:
-        "slurm_plot.out"
+        "amdahl-scaling-study.png"
     resources:
         tasks=1
     conda:
         "amdahl"
     shell:
-        "python3 plot_amdahl.py {input} > {output}"
+        "python3 plot_amdahl.py {input} {output}"
 
 rule amdahl:
     input:
     output:
-        "amdahl_np{sample}.json"
-    log:
-        "slurm_np{sample}.out"
+        "amdahl_np_{sample}.json"
     resources:
         tasks=lambda wildcards: int(wildcards.sample)
+    conda:
+        "amdahl"
     shell:
         "mpirun amdahl --terse > {output}"
 
 rule clean:
     input:
     output:
-    resources:
-        tasks=1
+    params:
+        results=expand("amdahl_np_{task}.json", task=TASKS),
+        stdouts=expand("logs/slurm_amdahl_np_{task}.log", task=TASKS),
+        plotimg="amdahl-scaling-study.png",
+        plotlog="logs/slurm_plot_np_1.log"
     conda:
         "amdahl"
     shell:
-        "rm *.json *.log *.out *.png"
+        "rm -vf {params.results} {params.stdouts} {params.plotimg} {params.plotlog}"
