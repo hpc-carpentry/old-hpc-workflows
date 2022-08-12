@@ -35,7 +35,7 @@ default-resources:
 # ------------------------------------------
 
 # root of Conda or Mamba installation on the machine
-conda-base-path: "/toolbox/tnk10/opt/mambaforge"
+conda-base-path: "~/anaconda"
 
 # use a Conda environment
 use-conda: true

@@ -25,7 +25,7 @@ rule amdahl:
     resources:
         tasks=lambda wildcards: int(wildcards.sample)
     shell:
-        "mpirun amdahl --terse --exact > {output}"
+        "mpirun amdahl --terse > {output}"
 
 rule clean:
     input:
