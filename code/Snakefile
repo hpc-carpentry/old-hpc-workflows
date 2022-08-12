@@ -7,7 +7,8 @@ TASKS = range(cpu_min, cpu_max + 1)  # number of processors: start small for tes
 
 rule plot:
     input:
-        expand("amdahl_np_{task}.json", task=TASKS)
+        script="plot_amdahl.py",
+        data=expand("amdahl_np_{task}.json", task=TASKS)
     output:
         "amdahl-scaling-study.png"
     resources:
@@ -15,7 +16,7 @@ rule plot:
     conda:
         "amdahl"
     shell:
-        "python3 plot_amdahl.py {input} {output}"
+        "python3 {input.script} {input.data} {output}"
 
 rule amdahl:
     input:
