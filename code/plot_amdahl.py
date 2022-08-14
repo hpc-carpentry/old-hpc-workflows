@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import sys
 
-from math import ceil
 from matplotlib.lines import Line2D
 
 
@@ -18,6 +17,7 @@ def actual_speedup(parallel_wall_time, serial_wall_time):
 def amdahl_speedup(serial_proportion, parallel_proportion, num_cores):
     normalized_run_time = serial_proportion + (parallel_proportion / num_cores)
     return 1.0 / normalized_run_time
+
 
 def analyze_scaling_study(log_files, img_file):
     # Initialize empty variable to hold data(frame)
