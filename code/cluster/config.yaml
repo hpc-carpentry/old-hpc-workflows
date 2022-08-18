@@ -1,0 +1,71 @@
+# Cluster profile for Snakemake used in the HPC Workflows lessons
+#
+# This is a YAML file (<https://yaml.org>, a hierarchical plain-text
+# data storage format for lists, key-value pairs, and nested instances
+# of either or both. Indentation and punctuation matter!
+#
+# Use a YAML linter to check for syntax errors after editing:
+#    yamllint config.yaml
+---
+# --------------------------------------
+# Scheduler settings (cluster-dependent)
+# --------------------------------------
+
+# A full listing is in the Snakemake distribution's top-level `__init__.py`
+# file. You can view the latest version on the official repository:
+# <https://github.com/snakemake/snakemake/blob/main/snakemake/__init__.py>
+
+cluster:
+  mkdir -p logs &&
+  sbatch
+    --job-name={rule}-np{resources.tasks}
+    --partition={resources.partition}
+    --nodes={resources.nodes}
+    --ntasks={resources.tasks}
+    --time={resources.time}
+    --output=logs/slurm_{rule}_np_{resources.tasks}.log
+    --parsable  # required to pass job IDs to scancel
+
+default-resources:
+  - partition=rack6  # name of partition (or queue) on which jobs will run
+  - nodes=1  # number of cluster nodes to reserve
+  - tasks=1  # number of cluster cores to reserve (total)
+  - time=5   # maximum expected runtime of each job, in minutes
+
+cluster-cancel: scancel
+
+# ------------------------------------------
+# Global job settings (platform independent)
+# ------------------------------------------
+
+# root of Conda or Mamba installation on the machine
+conda-base-path: "${CONDA_PREFIX}"
+
+# use a Conda environment
+use-conda: true
+
+# run at most N CPU cluster jobs in parallel
+# default: number of cores on host machine
+jobs: 500
+
+# max frequency of job status checks
+# default: 10
+max-status-checks-per-second: 1
+
+# use at most N cores of the host machine in parallel
+# (the cores are used to execute local rules)
+# default: number of cores on host machine
+local-cores: 1
+
+# how many seconds to wait for an output file
+# to appear after the execution of a rule
+# default: 3
+latency-wait: 60
+
+# keep going with independent jobs if a job fails?
+# default: false
+keep-going: false
+
+# print the shell command of each job
+# default: false
+printshellcmds: true

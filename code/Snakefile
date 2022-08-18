@@ -1,0 +1,43 @@
+# Snakefile to run Amdahl's Law for HPC Workflows
+
+cpu_min = 1
+cpu_max = 32
+
+TASKS = range(cpu_min, cpu_max + 1)  # number of processors: start small for testing!
+
+rule plot:
+    input:
+        script="plot_amdahl.py",
+        data=expand("amdahl_np_{task}.json", task=TASKS)
+    output:
+        "amdahl-scaling-study.png"
+    resources:
+        tasks=1
+    conda:
+        "amdahl"
+    shell:
+        "python3 {input.script} {input.data} {output}"
+
+rule amdahl:
+    input:
+    output:
+        "amdahl_np_{sample}.json"
+    resources:
+        tasks=lambda wildcards: int(wildcards.sample)
+    conda:
+        "amdahl"
+    shell:
+        "mpirun amdahl --terse > {output}"
+
+rule clean:
+    input:
+    output:
+    params:
+        results=expand("amdahl_np_{task}.json", task=TASKS),
+        stdouts=expand("logs/slurm_amdahl_np_{task}.log", task=TASKS),
+        plotimg="amdahl-scaling-study.png",
+        plotlog="logs/slurm_plot_np_1.log"
+    conda:
+        "amdahl"
+    shell:
+        "rm -vf {params.results} {params.stdouts} {params.plotimg} {params.plotlog}"
