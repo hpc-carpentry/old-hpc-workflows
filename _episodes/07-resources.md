@@ -130,7 +130,7 @@ when running locally on your own machine.
 >
 > Using the long-form of command-line arguments can be useful in scripts. They
 > make the code more understandable since you don't need to remember what
-> `-c` or `-j` does. If you forget use `snakemake -h` to get the help
+> `-c` does. If you forget use `snakemake -h` to get the help
 > commands for what each of these do, and how they differ when running on a
 > remote computational resource.
 >
