@@ -88,7 +88,7 @@ snakemake --cores 1
 The number of cores to use is a required argument for versions 5.11 and 
 above of Snakemake.  It is possible to use more cores, but a single core 
 is sufficient for now.  It is also possible to indicate the number of
-cores using `-c 1`, which will be used going forward. By default, 
+cores using `-c`, which will be used going forward. By default, 
 Snakemake tells us what it's doing as it executes actions:
 
 ~~~
