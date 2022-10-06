@@ -9,7 +9,7 @@ objectives:
 - "Modify your pipeline to run in parallel."
 keypoints:
 - "Use `threads` to indicate the number of cores required by a rule."
-- "Use the `-j` argument to Snakemake to indicate how many CPU cores can be used
+- "Use the `-c` argument to Snakemake to indicate how many CPU cores can be used
 for parallel tasks."
 - "Resources are arbitrary and can be used for anything."
 - "The `&&` operator is a useful tool when chaining bash commands."
