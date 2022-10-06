@@ -122,9 +122,11 @@ rules, Snakemake automatically identifies which tasks can run at the same
 time. All you need to do is describe your workflow and Snakemake does the
 rest.
 
-Note you can also use `snakemake --cores all` or `snakemake --jobs all`. The
-`-c`, `-j`, `--cores` and `--jobs` arguments all mean the same thing
-when running locally on your own machine.
+> ## Note
+> You can also use `snakemake --cores all` or `snakemake --jobs all`. The
+> `-c`, `-j`, `--cores` and `--jobs` arguments all mean the same thing
+> when running locally on your own machine.
+{: .callout}
 
 > ## Self-documention
 >
