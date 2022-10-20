@@ -119,7 +119,7 @@ Let's update our text files and re-run our rule:
 
 ~~~
 touch books/*.txt
-snakemake results.txt
+snakemake -c 1 results.txt
 ~~~
 {: .language-bash}
 
@@ -176,7 +176,7 @@ Finished job 0.
 >
 > ~~~
 > touch *.dat
-> snakemake results.txt
+> snakemake -c 1 results.txt
 > ~~~
 > {: .language-bash}
 >
@@ -196,7 +196,7 @@ Finished job 0.
 > >
 > > ~~~
 > > touch books/*.txt
-> > snakemake results.txt
+> > snakemake -c 1 results.txt
 > > ~~~
 > >{: .language-bash}
 > >
@@ -267,7 +267,7 @@ Let's mark `wordcount.py` as updated, and re-run the pipeline:
 
 ~~~
 touch wordcount.py
-snakemake
+snakemake -c 1
 ~~~
 {: .language-bash}
 
@@ -317,7 +317,7 @@ files. However, it turns out we don't have to! Let's see what happens to
 
 ~~~
 touch wordcount.py
-snakemake results.txt
+snakemake -c 1 results.txt
 ~~~
 {: .language-bash}
 
@@ -374,7 +374,7 @@ steps.
 >
 > ~~~
 > touch books/last.txt
-> snakemake results.txt
+> snakemake -c 1 results.txt
 > ~~~
 > {: .language-bash}
 >

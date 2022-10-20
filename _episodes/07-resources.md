@@ -9,7 +9,7 @@ objectives:
 - "Modify your pipeline to run in parallel."
 keypoints:
 - "Use `threads` to indicate the number of cores required by a rule."
-- "Use the `-j` argument to Snakemake to indicate how many CPU cores can be used
+- "Use the `-c` argument to Snakemake to indicate how many CPU cores can be used
 for parallel tasks."
 - "Resources are arbitrary and can be used for anything."
 - "The `&&` operator is a useful tool when chaining bash commands."
@@ -97,14 +97,14 @@ at the same time, such as counting words in different books, it still runs
 them one at a time. Let's see how to change that, and scale up our pipeline
 to run in parallel.
 
-The only change we need to make is run Snakemake with the `-j` argument. `-j`
-tells Snakemake the maximum number or CPU cores that it can use. You can also
-use the long-form `--cores`. The long-form is particularly useful in shell
-scripts to make your script self-documenting.
+The only change we need to make is run Snakemake with the `-c all` argument instead
+of `-c 1`. `-c all` tells Snakemake the maximum number or CPU cores that it can use. 
+You can also use the long-form `--cores`. The long-form is particularly useful in
+shell scripts to make your script self-documenting.
 
 ~~~
 snakemake clean
-snakemake -j 4    # 4 cores is usually a safe assumption when working on a laptop/desktop
+snakemake -c 4    # 4 cores is usually a safe assumption when working on a laptop/desktop
 ~~~
 {:.language-bash}
 
@@ -117,20 +117,19 @@ Rules claiming more threads will be scaled down.
 
 Our pipeline ran in parallel and finished roughly 4 times as quickly! The
 takeaway here is that all we need to do to scale from a serial pipeline is
-run `snakemake` with the `-j` option. By analysing the dependencies between
+run `snakemake` with the `-c 4` option. By analysing the dependencies between
 rules, Snakemake automatically identifies which tasks can run at the same
 time. All you need to do is describe your workflow and Snakemake does the
 rest.
 
-Note you can also use `snakemake --cores 4` or `snakemake --jobs 4`. The
-`-j`, `--cores` and `--jobs` arguments all mean the same thing.
 
 > ## Self-documention
 >
 > Using the long-form of command-line arguments can be useful in scripts. They
-> make the code more understandable since you don't need to remember
-> what `-j` does. `--cores` is most useful in scripts that run snakemake
-> locally, while `--jobs` is most often used when running on a HPC cluster.
+> make the code more understandable since you don't need to remember what
+> `-c` does. If you forget use `snakemake -h` to get the help
+> commands for what each of these do, and how they differ when running on a
+> remote computational resource.
 >
 > When typing manually on the command-line, the short versions are faster.
 {:.callout}
@@ -173,7 +172,7 @@ using.
 > ## Note
 > Please note that just giving something 4 threads in Snakemake does not
 > make it run in parallel! It just tells Snakemake to reserve that number
-> of cores from the total available (indicated by the value passed to `-j`).
+> of cores from the total available (indicated by the value passed to `-c`).
 >
 > In this case `wordcount.py` is actually still running with 1 core, we
 > are simply using it as a demonstration of how to go about running
@@ -218,7 +217,7 @@ rule count_words:
 > {:.language-python}
 {:.callout}
 
-Now, when we run `snakemake -j 4`, the `count_words` rules are run one at a
+Now, when we run `snakemake -c 4`, the `count_words` rules are run one at a
 time. All of our other rules will still run in parallel. Unless otherwise
 specified with `{threads}`, rules will use 1 core by default.
 
@@ -253,7 +252,7 @@ What happens when we don't have 4 cores available? What if we tell Snakemake
 to run with 2 cores instead?
 
 ~~~
-snakemake -j 2
+snakemake -c 2
 ~~~
 {:.language-bash}
 
@@ -327,7 +326,7 @@ available without us editing the Snakefile.
 > ## Tasks Still Need to Know How Many Cores are Available
 >
 > How the number of threads required by a rule matches the number of cores
-> allowed to Snakemake by the `-j N` argument determines how many instances
+> allowed to Snakemake by the `-c N` argument determines how many instances
 > of that rule Snakemake will run at the same time. It does not mean that
 > the code being executed will magically know what the limits are.
 >
@@ -395,7 +394,7 @@ We can execute our pipeline using the following (using 4 cores and 1 gpu):
 
 ~~~
 snakemake clean
-snakemake -j 4 --resources gpu=1
+snakemake -c 4 --resources gpu=1
 ~~~
 {:.language-bash}
 
@@ -424,7 +423,7 @@ But what happens if we run our pipeline without specifying the number of GPUs?
 
 ~~~
 snakemake clean
-snakemake -j 4
+snakemake -c 4
 ~~~
 {:.language-bash}
 

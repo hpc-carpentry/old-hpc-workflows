@@ -69,8 +69,8 @@ rule count_words:
 {:.language-python}
 
 ~~~
-snakemake clean
-snakemake -j 8
+snakemake -c 4 clean
+snakemake -c 4
 cat dats/abyss.log
 ~~~
 {:.language-bash}
@@ -142,7 +142,7 @@ any picture viewing program. In fact this was the tool used to create all of
 the diagrams in this lesson:
 
 ~~~
-snakemake --dag | dot -Tsvg > dag.svg
+snakemake -c 1 --dag | dot -Tsvg > dag.svg
 eog dag.svg     # eog is an image viewer installed on many linux systems
 ~~~
 {:.language-bash}

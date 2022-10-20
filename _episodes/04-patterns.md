@@ -48,8 +48,8 @@ Let's test the new pattern rule. We use the -p option to show that it is
 running things correctly:
 
 ~~~
-snakemake clean
-snakemake -p dats
+snakemake -c 1 clean
+snakemake -c 1 -p dats
 ~~~
 {: .language-bash}
 
@@ -58,7 +58,7 @@ to build individual `.dat` targets as before, and that our new rule will work
 no matter what stem is being matched.
 
 ~~~
-snakemake -p sierra.dat
+snakemake -c 1 -p sierra.dat
 ~~~
 {: .language-bash}
 
@@ -98,7 +98,7 @@ Finished job 0.
 > such as `snakemake clean`, you cannot execute a pattern rule this way:
 >
 > ~~~
-> snakemake count_words
+> snakemake -c 1 count_words
 > ~~~
 > {:.language-bash}
 > ~~~

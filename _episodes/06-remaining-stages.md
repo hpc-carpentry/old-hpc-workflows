@@ -114,14 +114,14 @@ directory.
 > build a specific file with a command like:
 >
 > ~~~
-> snakemake last.dat
+> snakemake -c 1 last.dat
 > ~~~
 > {:.language-bash}
 >
 > After moving the location of `dat` files, the correct command is:
 >
 > ~~~
-> snakemake dats/last.dat
+> snakemake -c 1 dats/last.dat
 > ~~~
 > {:.language-bash}
 >
@@ -174,7 +174,7 @@ directory.
 ## Default Rules
 
 The default rule is the rule that Snakemake runs if you don't specify a rule
-on the command-line (e.g.: if you just run `snakemake`).
+on the command-line (e.g.: if you just run `snakemake -c 1`).
 
 The default rule is simply the first rule in a Snakefile. While the default
 rule can be anything you like, it is common practice to call the default rule
@@ -228,8 +228,8 @@ It is common practice to have a `clean` rule that deletes all intermediate
 and generated files, taking your workflow back to a blank slate.
 
 We already have a `clean` rule, so now is a good time to check that it
-removes all intermediate and output files. First do a `snakemake all` followed
-by `snakemake clean`. Then check to see if any output files remain and add them
+removes all intermediate and output files. First do a `snakemake -c 1 all` followed
+by `snakemake -c 1 clean`. Then check to see if any output files remain and add them
 to the clean rule if required.
 
 ## Creating an Archive
@@ -252,7 +252,7 @@ In this case, we will create an archive tar file.
 > * The archive should contain all `dat` files, plots, and the
 > Zipf summary table (`results.txt`).
 > * Update `all` to expect `zipf_analysis.tar.gz` as input.
-> * Remove the archive when `snakemake clean` is called.
+> * Remove the archive when `snakemake -c 1 clean` is called.
 >
 > The syntax to create an archive is:
 > ~~~
