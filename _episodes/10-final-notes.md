@@ -8,6 +8,7 @@ objectives:
 - "Understand how to perform a dry-run of your workflow."
 - "Understand how to configure logging so that each rule generates a separate log."
 - "Understand how to visualise your workflow."
+- "Other workflow tools."
 keypoints:
 - "`snakemake -n` performs a dry-run."
 - "Using log files can make your workflow easier to debug."
@@ -179,5 +180,25 @@ Note that this requires the installation of additional Python packages.
 
 The Snakemake documentation is located at
 [snakemake.readthedocs.io](http://snakemake.readthedocs.io)
+
+## Other Workflow Tools
+
+Snakemake is not the only tool available for managing your worklfows. Many
+of the concepts you have learned and practised are applicable to other tools.
+Some other tools that might be of interest are:
+- [Nextflow](https://www.nextflow.io/): A Python based tool often used in
+genomics
+- [GNU Parallel](https://www.gnu.org/software/parallel/): A light tool that
+extends the BASH shell to run multiple tasks at once
+- [Balsam](https://balsam.readthedocs.io/en/latest/): A Python tool to enable
+submitting and managing jobs, in particular on supercomputers
+- [Fireworks](https://materialsproject.github.io/fireworks/): A Python tool
+used by the materials science community to manage workflows on supercomputers
+- [Parsl](https://parsl-project.org/): A parallel Python scripting library
+- [The Concise Common Workflow Language (CCWL](https://ccwl.systemreboot.net/):
+A workflow tool embedded in Guile scheme lisp dialect
+- [Guix Workflow Language (GWL)](https://guixwl.org/): A  workflow tool using
+the Guile scheme and a Python like extension to Guile scheme that enables
+running jobs on supercomputers
 
 {% include links.md %}
